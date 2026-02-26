@@ -11,85 +11,82 @@
 - [x] Crear esquema de base de datos (drizzle/schema.ts)
 - [x] Crear README.md con instrucciones de instalación
 
-## Fase 2: Backend - Servicios Principales
+## Fase 2: Backend - Servicios Principales (COMPLETADA)
 
-- [ ] Implementar LLM Service (server/services/llmService.ts)
-  - [ ] Integración con OpenAI API
-  - [ ] Análisis de guiones
-  - [ ] Parseo de respuestas JSON
-  - [ ] Manejo de errores y reintentos
+- [x] Implementar LLM Service (server/services/llmService.ts)
+  - [x] Integración con OpenAI API
+  - [x] Análisis de guiones
+  - [x] Parseo de respuestas JSON
+  - [x] Manejo de errores y reintentos
   
-- [ ] Implementar Image Service (server/services/imageService.ts)
-  - [ ] Generación de imágenes para escenas
-  - [ ] Construcción de prompts mejorados
-  - [ ] Manejo de timeouts
+- [x] Implementar Image Service (server/services/imageService.ts)
+  - [x] Generación de imágenes para escenas
+  - [x] Construcción de prompts mejorados
+  - [x] Manejo de timeouts
 
-- [ ] Implementar Storage Service (server/services/storageService.ts)
-  - [ ] Upload de imágenes de personajes
-  - [ ] Upload de imágenes generadas
-  - [ ] Upload de exportaciones
-  - [ ] Generación de URLs presignadas
+- [x] Implementar Storage Service (server/services/storageService.ts)
+  - [x] Upload de imágenes de personajes
+  - [x] Upload de imágenes generadas
+  - [x] Upload de exportaciones
+  - [x] Generación de URLs presignadas
 
-- [ ] Implementar Narrative Analyzer (server/services/narrativeAnalyzer.ts)
-  - [ ] Validación de consistencia
-  - [ ] Detección de cambios de vestuario
-  - [ ] Validación de duración de escenas
+- [x] Implementar Narrative Analyzer (server/services/narrativeAnalyzer.ts)
+  - [x] Validación de consistencia
+  - [x] Detección de cambios de vestuario
+  - [x] Validación de duración de escenas
 
-## Fase 3: Backend - Routers tRPC
+## Fase 3: Backend - Routers tRPC (COMPLETADA)
 
-- [ ] Implementar Projects Router (server/routers/projects.ts)
-  - [ ] projects.list - Listar proyectos
-  - [ ] projects.get - Obtener proyecto
-  - [ ] projects.create - Crear proyecto
-  - [ ] projects.update - Actualizar proyecto
-  - [ ] projects.delete - Eliminar proyecto
+- [x] Implementar Projects Router (server/routers/projects.ts)
+  - [x] projects.list - Listar proyectos
+  - [x] projects.get - Obtener proyecto
+  - [x] projects.create - Crear proyecto
+  - [x] projects.update - Actualizar proyecto
+  - [x] projects.delete - Eliminar proyecto
 
-- [ ] Implementar Scripts Router (server/routers/scripts.ts)
-  - [ ] scripts.upload - Subir guion
-  - [ ] scripts.analyze - Analizar con LLM
-  - [ ] scripts.get - Obtener guion
+- [x] Implementar Scripts Router (server/routers/scripts.ts)
+  - [x] scripts.upload - Subir guion
+  - [x] scripts.analyze - Analizar con LLM
+  - [x] scripts.get - Obtener guion
 
-- [ ] Implementar Characters Router (server/routers/characters.ts)
-  - [ ] characters.list - Listar personajes
-  - [ ] characters.get - Obtener personaje
-  - [ ] characters.create - Agregar personaje
-  - [ ] characters.update - Actualizar personaje
-  - [ ] characters.uploadImage - Subir imagen referencia
-  - [ ] characters.delete - Eliminar personaje
+- [x] Implementar Characters Router (server/routers/characters.ts)
+  - [x] characters.list - Listar personajes
+  - [x] characters.get - Obtener personaje
+  - [x] characters.create - Agregar personaje
+  - [x] characters.update - Actualizar personaje
+  - [x] characters.uploadImage - Subir imagen referencia
+  - [x] characters.delete - Eliminar personaje
 
-- [ ] Implementar Scenes Router (server/routers/scenes.ts)
-  - [ ] scenes.list - Listar escenas
-  - [ ] scenes.get - Obtener escena
-  - [ ] scenes.generateImage - Generar imagen
-  - [ ] scenes.update - Actualizar escena
+- [x] Implementar Scenes Router (server/routers/scenes.ts)
+  - [x] scenes.list - Listar escenas
+  - [x] scenes.get - Obtener escena
+  - [x] scenes.generateImage - Generar imagen
+  - [x] scenes.update - Actualizar escena
 
-- [ ] Implementar StoryBible Router (server/routers/storyBible.ts)
-  - [ ] storyBible.get - Obtener Story Bible completa
-  - [ ] storyBible.getBreakdown - Obtener Scene Breakdown
+- [x] Implementar StoryBible Router (server/routers/storyBibleAndExport.ts)
+  - [x] storyBible.getStoryBible - Obtener Story Bible completa
+  - [x] storyBible.getSceneBreakdown - Obtener Scene Breakdown
+  - [x] storyBible.generateExport - Generar exportación
 
-- [ ] Implementar Export Router (server/routers/export.ts)
-  - [ ] export.generate - Generar exportación
-  - [ ] export.download - Descargar archivo
+## Fase 4: Backend - Helpers y Utilidades (COMPLETADA)
 
-## Fase 4: Backend - Helpers y Utilidades
+- [x] Actualizar server/db.ts con query helpers
+  - [x] getProjectById
+  - [x] getUserProjects
+  - [x] getProjectCharacters
+  - [x] getProjectScenes
+  - [x] getStoryBible
+  - [x] etc.
 
-- [ ] Actualizar server/db.ts con query helpers
-  - [ ] getProjectById
-  - [ ] getUserProjects
-  - [ ] getProjectCharacters
-  - [ ] getProjectScenes
-  - [ ] getStoryBible
-  - [ ] etc.
+- [x] Crear server/utils/validators.ts
+  - [x] Validar contenido de guion
+  - [x] Validar estructura de Story Bible
+  - [x] Validar Scene Breakdown
 
-- [ ] Crear server/utils/validation.ts
-  - [ ] Validar contenido de guion
-  - [ ] Validar estructura de Story Bible
-  - [ ] Validar Scene Breakdown
-
-- [ ] Crear server/utils/formatting.ts
-  - [ ] Formatear exportación a texto plano
-  - [ ] Formatear exportación a JSON
-  - [ ] Formatear exportación a Markdown
+- [x] Crear server/utils/formatters.ts
+  - [x] Formatear exportación a texto plano
+  - [x] Formatear exportación a JSON
+  - [x] Formatear exportación a Markdown
 
 ## Fase 5: Frontend - Páginas Principales
 
