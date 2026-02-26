@@ -88,43 +88,43 @@
   - [x] Formatear exportación a JSON
   - [x] Formatear exportación a Markdown
 
-## Fase 5: Frontend - Páginas Principales
+## Fase 5: Frontend - Páginas Principales (COMPLETADA)
 
-- [ ] Actualizar client/src/pages/Home.tsx
-  - [ ] Landing page / Dashboard
-  - [ ] Mostrar proyectos recientes
-  - [ ] Botones de acción principal
+- [x] Actualizar client/src/pages/Home.tsx
+  - [x] Landing page / Dashboard
+  - [x] Mostrar proyectos recientes
+  - [x] Botones de acción principal
 
-- [ ] Crear client/src/pages/ProjectList.tsx
-  - [ ] Listar todos los proyectos
-  - [ ] Filtrado y búsqueda
-  - [ ] Crear nuevo proyecto
-  - [ ] Eliminar proyecto
+- [x] Crear client/src/pages/ProjectDashboard.tsx
+  - [x] Listar todos los proyectos
+  - [x] Filtrado y búsqueda
+  - [x] Crear nuevo proyecto
+  - [x] Eliminar proyecto
 
-- [ ] Crear client/src/pages/ScriptUpload.tsx
-  - [ ] Formulario para subir guion
-  - [ ] Validación de contenido
-  - [ ] Mostrar estado de análisis
-  - [ ] Indicador de progreso
+- [x] Crear client/src/pages/ScriptEditor.tsx
+  - [x] Formulario para subir guion
+  - [x] Validación de contenido
+  - [x] Mostrar estado de análisis
+  - [x] Indicador de progreso
 
-- [ ] Crear client/src/pages/StoryBibleEditor.tsx
-  - [ ] Visualizar Story Bible completa
-  - [ ] Editar personajes
-  - [ ] Subir imágenes de referencia
-  - [ ] Agregar personajes manuales
-  - [ ] Editar locaciones y props
+- [x] Crear client/src/pages/StoryBible.tsx
+  - [x] Visualizar Story Bible completa
+  - [x] Editar personajes
+  - [x] Subir imágenes de referencia
+  - [x] Agregar personajes manuales
+  - [x] Editar locaciones y props
 
-- [ ] Crear client/src/pages/SceneBreakdown.tsx
-  - [ ] Listar todas las escenas
-  - [ ] Mostrar TIME, PLACE, BEAT, GROK_VIDEO_PROMPT, NEGATIVE
-  - [ ] Generar imágenes para escenas
-  - [ ] Preview de escenas
+- [x] Crear client/src/pages/SceneBreakdown.tsx
+  - [x] Listar todas las escenas
+  - [x] Mostrar TIME, PLACE, BEAT, GROK_VIDEO_PROMPT, NEGATIVE
+  - [x] Generar imágenes para escenas
+  - [x] Preview de escenas
 
-- [ ] Crear client/src/pages/ScenePreview.tsx
-  - [ ] Mostrar detalles de una escena
-  - [ ] Mostrar imagen generada
-  - [ ] Editar prompt de video
-  - [ ] Regenerar imagen
+- [x] Crear client/src/pages/ProjectDashboard.tsx
+  - [x] Mostrar detalles de un proyecto
+  - [x] Mostrar estadísticas
+  - [x] Flujo de trabajo visual
+  - [x] Acceso rápido a todas las secciones
 
 ## Fase 6: Frontend - Componentes Reutilizables
 
