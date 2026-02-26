@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { useState } from "react";
-import { Loader2, Plus, Trash2, Edit2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Loader2, Plus, Trash2, Edit2, Search, Filter } from "lucide-react";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
@@ -17,12 +18,25 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Queries
   const { data: projects, isLoading, refetch } = trpc.projects.list.useQuery(
     undefined,
     { enabled: isAuthenticated }
   );
+
+  // Filtrado y búsqueda
+  const filteredProjects = useMemo(() => {
+    if (!projects) return [];
+    return projects.filter((project: any) => {
+      const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (project.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [projects, searchQuery, statusFilter]);
 
   // Mutations
   const createMutation = trpc.projects.create.useMutation({
@@ -120,7 +134,7 @@ export default function Home() {
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Mis Proyectos</h2>
             <p className="text-slate-600 mt-1">
-              {projects?.length || 0} proyecto{projects?.length !== 1 ? "s" : ""}
+              {filteredProjects?.length || 0} de {projects?.length || 0} proyecto{projects?.length !== 1 ? "s" : ""}
             </p>
           </div>
 
@@ -185,14 +199,45 @@ export default function Home() {
           </Dialog>
         </div>
 
+        {/* Search and Filter Section */}
+        {projects && projects.length > 0 && (
+          <div className="mb-8 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Input
+                  placeholder="Buscar por título o descripción..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="w-full sm:w-48 flex items-center gap-2">
+                <Filter className="h-4 w-4 text-slate-400" />
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filtrar por estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los estados</SelectItem>
+                    <SelectItem value="draft">Borrador</SelectItem>
+                    <SelectItem value="analyzing">Analizando</SelectItem>
+                    <SelectItem value="completed">Completado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Projects Grid */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
           </div>
-        ) : projects && projects.length > 0 ? (
+        ) : filteredProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project: any) => (
+            {filteredProjects.map((project: any) => (
               <Card
                 key={project.id}
                 className="hover:shadow-lg transition-shadow cursor-pointer group"
@@ -260,6 +305,15 @@ export default function Home() {
               </Card>
             ))}
           </div>
+        ) : projects && projects.length > 0 ? (
+          <Card className="text-center py-12">
+            <CardContent>
+              <p className="text-slate-600 mb-4">No se encontraron proyectos con los filtros aplicados</p>
+              <Button variant="outline" onClick={() => { setSearchQuery(""); setStatusFilter("all"); }} className="gap-2">
+                Limpiar filtros
+              </Button>
+            </CardContent>
+          </Card>
         ) : (
           <Card className="text-center py-12">
             <CardContent>
