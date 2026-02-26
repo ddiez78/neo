@@ -1,0 +1,35 @@
+{
+  "name": "neo-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp Bot con respuesta automática usando LLM para Neo-App",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "baileys",
+    "llm",
+    "openai"
+  ],
+  "author": "Neo-App",
+  "license": "MIT",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.4.0",
+    "openai": "^4.52.0",
+    "dotenv": "^16.4.5",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0"
+  }
+}

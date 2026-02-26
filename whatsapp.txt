@@ -1,0 +1,1078 @@
+================================================================================
+NEO-APP WHATSAPP BOT - DOCUMENTACION COMPLETA
+================================================================================
+
+INDICE
+------
+1. INTRODUCCION
+2. ARQUITECTURA DEL SISTEMA
+3. ESTRUCTURA DE CARPETAS
+4. DESCRIPCION DE ARCHIVOS
+5. COMO FUNCIONA BAILEYS
+6. FLUJO DE MENSAJES
+7. CONFIGURACION DISPONIBLE
+8. INSTALACION Y ARRANQUE
+9. DEPENDENCIAS
+10. RIESGOS Y CONSIDERACIONES
+11. TROUBLESHOOTING
+
+================================================================================
+1. INTRODUCCION
+================================================================================
+
+El Neo-App WhatsApp Bot es una solución de código abierto que permite crear un
+bot de WhatsApp personal con respuesta automática usando inteligencia artificial.
+
+Características principales:
+- Conexión segura a WhatsApp mediante Baileys (WhatsApp Web)
+- Respuestas automáticas generadas por LLM (OpenAI, Gemini, etc)
+- Contexto de conversación persistente
+- Modos de respuesta: Auto (todos) o Selectivo (contactos permitidos)
+- System prompt personalizable
+- Escaneo QR para conexión fácil
+- Historial de conversaciones guardado
+
+Tecnologías utilizadas:
+- Node.js 18+ (runtime)
+- TypeScript (lenguaje)
+- Baileys (conexión a WhatsApp)
+- OpenAI SDK (integración con LLM)
+- Dotenv (configuración)
+
+================================================================================
+2. ARQUITECTURA DEL SISTEMA
+================================================================================
+
+FLUJO GENERAL:
+
+    [WhatsApp] 
+        |
+        v
+    [Baileys] --> Recibe mensaje
+        |
+        v
+    [WhatsApp Service] --> Procesa mensaje
+        |
+        v
+    [Context Service] --> Obtiene historial
+        |
+        v
+    [LLM Service] --> Genera respuesta
+        |
+        v
+    [Baileys] --> Envía respuesta
+        |
+        v
+    [WhatsApp]
+
+COMPONENTES PRINCIPALES:
+
+1. WhatsApp Service (whatsappService.ts)
+   - Gestiona conexión a WhatsApp
+   - Recibe y procesa mensajes
+   - Verifica permisos (modo auto/selectivo)
+   - Coordina respuestas
+
+2. LLM Service (llmService.ts)
+   - Conecta con OpenAI o compatible
+   - Genera respuestas inteligentes
+   - Maneja errores de API
+
+3. Context Service (contextService.ts)
+   - Mantiene historial por chat
+   - Persiste contexto en JSON
+   - Limita tamaño de historial
+
+4. Config Module (config/index.ts)
+   - Carga variables de entorno
+   - Valida configuración
+   - Proporciona defaults
+
+CICLO DE VIDA:
+
+1. Inicio
+   - Cargar configuración desde .env
+   - Validar variables requeridas
+   - Crear directorios necesarios
+   - Inicializar servicios
+
+2. Conexión
+   - Baileys crea socket
+   - Genera código QR
+   - Usuario escanea con teléfono
+   - Se establece sesión
+
+3. Operación
+   - Escuchar eventos de mensajes
+   - Procesar cada mensaje entrante
+   - Generar respuesta con LLM
+   - Enviar respuesta a WhatsApp
+   - Guardar contexto
+
+4. Cierre
+   - Recibir SIGINT/SIGTERM
+   - Desconectar de WhatsApp
+   - Guardar estado final
+   - Salir
+
+================================================================================
+3. ESTRUCTURA DE CARPETAS
+================================================================================
+
+whatsapp-bot/
+│
+├── src/
+│   ├── config/
+│   │   └── index.ts
+│   │       Módulo de configuración
+│   │       - loadConfig(): Carga variables de entorno
+│   │       - validateConfig(): Valida configuración
+│   │
+│   ├── services/
+│   │   ├── llmService.ts
+│   │   │   Servicio de LLM
+│   │   │   - generateResponse(): Genera respuesta con LLM
+│   │   │   - testConnection(): Prueba conexión con API
+│   │   │
+│   │   ├── contextService.ts
+│   │   │   Gestión de contexto de conversación
+│   │   │   - getContext(): Obtiene contexto de chat
+│   │   │   - addMessage(): Agrega mensaje al contexto
+│   │   │   - getRecentMessages(): Obtiene últimos mensajes
+│   │   │   - clearContext(): Limpia contexto
+│   │   │
+│   │   └── whatsappService.ts
+│   │       Servicio principal de WhatsApp
+│   │       - connect(): Conecta a WhatsApp
+│   │       - handleMessages(): Procesa mensajes entrantes
+│   │       - generateResponse(): Genera respuesta
+│   │       - disconnect(): Desconecta
+│   │
+│   ├── types/
+│   │   └── index.ts
+│   │       Definiciones de tipos TypeScript
+│   │       - BotConfig: Configuración del bot
+│   │       - ConversationMessage: Mensaje en conversación
+│   │       - ChatContext: Contexto de chat
+│   │       - WhatsAppMessage: Mensaje de WhatsApp
+│   │       - BotState: Estado del bot
+│   │       - LLMResponse: Respuesta del LLM
+│   │
+│   └── index.ts
+│       Punto de entrada principal
+│       - main(): Función principal
+│       - Inicializa servicios
+│       - Maneja ciclo de vida
+│
+├── data/
+│   ├── sessions/
+│   │   Sesiones de Baileys (autogenerado)
+│   │   Contiene credenciales de WhatsApp
+│   │   NO compartir ni versionar
+│   │
+│   └── contexts.json
+│       Contexto de conversaciones (autogenerado)
+│       JSON con historial de chats
+│
+├── logs/
+│   Archivos de log (autogenerado)
+│   Registra eventos y errores
+│
+├── package.json
+│   Dependencias del proyecto
+│
+├── tsconfig.json
+│   Configuración de TypeScript
+│
+├── .env.example
+│   Plantilla de variables de entorno
+│
+├── .gitignore
+│   Archivos a ignorar en git
+│
+└── README.md
+    Documentación de usuario
+
+================================================================================
+4. DESCRIPCION DE ARCHIVOS
+================================================================================
+
+src/types/index.ts
+------------------
+Define todos los tipos TypeScript del proyecto.
+
+Tipos principales:
+- BotConfig: Configuración completa del bot
+  * openaiApiKey: Clave de API de OpenAI
+  * botMode: 'auto' o 'selective'
+  * allowedContacts: Array de números permitidos
+  * systemPrompt: Instrucción para el LLM
+  * maxContextMessages: Límite de mensajes en historial
+
+- ConversationMessage: Un mensaje en una conversación
+  * role: 'user' o 'assistant'
+  * content: Texto del mensaje
+  * timestamp: Cuando se envió
+
+- ChatContext: Contexto de un chat específico
+  * chatId: ID único del chat
+  * messages: Array de ConversationMessage
+  * lastUpdated: Timestamp de última actualización
+
+- WhatsAppMessage: Estructura de mensaje de Baileys
+  * key: Metadatos del mensaje
+  * message: Contenido del mensaje
+  * messageTimestamp: Cuando se recibió
+
+- BotState: Estado actual del bot
+  * isConnected: Conectado a WhatsApp
+  * isReady: Listo para recibir mensajes
+  * phoneNumber: Número de teléfono conectado
+
+- LLMResponse: Respuesta del servicio de LLM
+  * content: Texto de la respuesta
+  * tokensUsed: Tokens consumidos
+  * model: Modelo usado
+
+src/config/index.ts
+-------------------
+Gestiona configuración del bot.
+
+Funciones:
+- loadConfig(): Lee .env y retorna BotConfig
+  * Lee todas las variables de entorno
+  * Aplica valores por defecto
+  * Retorna objeto de configuración
+
+- validateConfig(): Valida configuración
+  * Verifica que variables requeridas existan
+  * Valida rangos de valores
+  * Retorna array de errores (vacío si válido)
+
+Flujo:
+1. Cargar variables de entorno (dotenv)
+2. Mapear a objeto BotConfig
+3. Aplicar defaults
+4. Validar
+5. Retornar
+
+src/services/llmService.ts
+--------------------------
+Servicio de integración con LLM.
+
+Clase: LLMService
+Constructor: Recibe BotConfig
+  * Inicializa cliente OpenAI
+  * Configura URL base y API key
+
+Métodos:
+- generateResponse(userMessage, conversationHistory)
+  * Prepara mensajes con system prompt
+  * Agrega historial de conversación
+  * Llama API de OpenAI
+  * Retorna LLMResponse
+
+- testConnection()
+  * Envía mensaje simple al LLM
+  * Verifica que API funcione
+  * Retorna boolean
+
+Manejo de errores:
+- Captura excepciones de API
+- Registra errores en console
+- Lanza Error con mensaje descriptivo
+
+src/services/contextService.ts
+------------------------------
+Gestiona contexto de conversaciones.
+
+Clase: ContextService
+Constructor: Recibe BotConfig
+  * Inicializa Map de contextos
+  * Carga contextos guardados desde JSON
+
+Métodos:
+- getContext(chatId)
+  * Obtiene contexto de un chat
+  * Crea nuevo si no existe
+  * Retorna ChatContext
+
+- addMessage(chatId, role, content)
+  * Agrega mensaje al contexto
+  * Limita tamaño de historial
+  * Guarda en JSON
+
+- getRecentMessages(chatId, limit)
+  * Retorna últimos N mensajes
+  * Usado para enviar al LLM
+
+- clearContext(chatId)
+  * Borra contexto de un chat
+  * Útil para resetear conversación
+
+- getContextStats()
+  * Retorna estadísticas
+  * Total de chats y mensajes
+
+Persistencia:
+- Guarda en data/contexts.json
+- Carga al iniciar
+- Actualiza con cada mensaje
+
+src/services/whatsappService.ts
+-------------------------------
+Servicio principal de WhatsApp.
+
+Clase: WhatsAppService
+Constructor: Recibe BotConfig, LLMService, ContextService
+  * Inicializa estado
+  * Prepara servicios
+
+Métodos:
+- connect()
+  * Crea socket de Baileys
+  * Genera código QR
+  * Escucha eventos de conexión
+  * Escucha eventos de mensajes
+
+- handleMessages(m)
+  * Procesa array de mensajes
+  * Filtra mensajes propios
+  * Filtra grupos (opcional)
+  * Extrae texto del mensaje
+  * Verifica permisos
+  * Genera respuesta
+  * Envía respuesta
+
+- shouldRespond(chatId)
+  * Verifica modo de respuesta
+  * Modo auto: siempre true
+  * Modo selective: verifica allowedContacts
+
+- generateResponse(chatId, userMessage)
+  * Agrega mensaje a contexto
+  * Obtiene historial reciente
+  * Llama LLMService
+  * Agrega respuesta a contexto
+  * Retorna texto de respuesta
+
+- disconnect()
+  * Cierra socket
+  * Actualiza estado
+  * Registra desconexión
+
+Eventos de Baileys:
+- connection.update: Estado de conexión
+- creds.update: Credenciales actualizadas
+- messages.upsert: Nuevos mensajes
+
+src/index.ts
+------------
+Punto de entrada principal.
+
+Flujo:
+1. Cargar configuración
+2. Validar configuración
+3. Crear directorios
+4. Inicializar servicios
+5. Probar conexión LLM
+6. Conectar a WhatsApp
+7. Mostrar estadísticas cada minuto
+8. Manejar señales de cierre
+
+Manejo de errores:
+- Valida configuración
+- Verifica conexión LLM
+- Captura excepciones
+- Registra errores
+
+================================================================================
+5. COMO FUNCIONA BAILEYS
+================================================================================
+
+¿Qué es Baileys?
+Baileys es una librería de Node.js que emula el cliente de WhatsApp Web.
+Permite conectarse a WhatsApp sin usar la API oficial.
+
+Ventajas:
+- No requiere API key de WhatsApp
+- Funciona con WhatsApp personal
+- Código abierto
+- Comunidad activa
+
+Desventajas:
+- Puede violar términos de servicio de WhatsApp
+- WhatsApp puede bloquear la cuenta
+- Depende de cambios en WhatsApp Web
+- No es oficialmente soportado
+
+Cómo funciona:
+1. Crea una sesión simulando WhatsApp Web
+2. Genera código QR
+3. Usuario escanea con teléfono
+4. Se establece conexión encriptada
+5. Recibe y envía mensajes
+
+Flujo de conexión:
+
+1. makeWASocket()
+   - Crea socket WebSocket
+   - Inicializa estado de autenticación
+   - Configura logger
+
+2. Evento: connection.update
+   - Emitido cuando estado cambia
+   - Puede incluir código QR
+   - Indica si está conectando/conectado/desconectado
+
+3. Escaneo QR
+   - Usuario abre WhatsApp en teléfono
+   - Escanea código QR con cámara
+   - Confirma conexión en teléfono
+   - Sesión se establece
+
+4. Evento: creds.update
+   - Emitido cuando credenciales cambian
+   - Se guardan en data/sessions/
+   - Permite reconectar sin QR
+
+5. Evento: messages.upsert
+   - Emitido cuando hay nuevos mensajes
+   - Contiene array de mensajes
+   - Se procesa cada mensaje
+
+Almacenamiento de sesión:
+- Guardado en data/sessions/
+- Múltiples archivos JSON
+- Contiene credenciales encriptadas
+- NO compartir ni versionar
+
+Reconexión:
+- Si se desconecta, intenta reconectar
+- Usa credenciales guardadas
+- No requiere nuevo escaneo QR
+- Automático si está configurado
+
+================================================================================
+6. FLUJO DE MENSAJES
+================================================================================
+
+Recepción de mensaje:
+
+1. Usuario envía mensaje en WhatsApp
+   - Mensaje se envía a servidor de WhatsApp
+   - Baileys recibe evento messages.upsert
+
+2. WhatsAppService.handleMessages()
+   - Recibe array de mensajes
+   - Itera sobre cada mensaje
+   - Filtra mensajes propios (fromMe = true)
+   - Filtra grupos (remoteJid.endsWith('@g.us'))
+
+3. Extracción de texto
+   - Intenta obtener de message.conversation
+   - Si no, intenta message.extendedTextMessage.text
+   - Si no hay texto, ignora mensaje
+
+4. Verificación de permisos
+   - shouldRespond(chatId)
+   - Modo auto: siempre responde
+   - Modo selective: verifica allowedContacts
+
+5. Marcar como leído (opcional)
+   - Si autoReadMessages = true
+   - Llama socket.readMessages([msg.key])
+
+Generación de respuesta:
+
+1. generateResponse(chatId, userMessage)
+   - Agrega mensaje de usuario a contexto
+   - contextService.addMessage(chatId, 'user', userMessage)
+
+2. Obtener historial
+   - contextService.getRecentMessages(chatId)
+   - Retorna últimos maxContextMessages
+
+3. Llamar LLM
+   - llmService.generateResponse(userMessage, recentMessages)
+   - Prepara array de mensajes con system prompt
+   - Envía a OpenAI
+   - Recibe respuesta
+
+4. Guardar respuesta en contexto
+   - contextService.addMessage(chatId, 'assistant', response)
+
+5. Enviar respuesta
+   - socket.sendMessage(chatId, { text: response })
+   - Baileys envía a WhatsApp
+   - Mensaje aparece en chat
+
+Manejo de errores:
+- Si falla LLM: respuesta genérica
+- Si falla envío: registra error
+- Si falla contexto: continúa sin contexto
+
+Ejemplo de flujo completo:
+
+Usuario: "Hola, ¿cómo estás?"
+
+1. Baileys recibe mensaje
+2. WhatsAppService.handleMessages() lo procesa
+3. Extrae: "Hola, ¿cómo estás?"
+4. Verifica permisos: OK
+5. Agrega a contexto: {role: 'user', content: '...'}
+6. Obtiene historial: [mensaje anterior si existe]
+7. Llama LLM con:
+   - system: "Eres un asistente amable..."
+   - history: [mensajes previos]
+   - user: "Hola, ¿cómo estás?"
+8. LLM retorna: "¡Hola! Estoy bien, gracias por preguntar."
+9. Agrega a contexto: {role: 'assistant', content: '...'}
+10. Envía respuesta a WhatsApp
+11. Usuario ve respuesta en chat
+
+Contexto persistente:
+
+Mensaje 1:
+User: "Mi nombre es Juan"
+Bot: "Mucho gusto Juan"
+
+Mensaje 2:
+User: "¿Cuál es mi nombre?"
+Bot: Accede a contexto, ve "Mi nombre es Juan", responde "Tu nombre es Juan"
+
+Sin contexto, el bot no sabría el nombre en el segundo mensaje.
+
+================================================================================
+7. CONFIGURACION DISPONIBLE
+================================================================================
+
+Variables de entorno (.env):
+
+OPENAI_API_KEY
+- Descripción: Clave de API de OpenAI
+- Tipo: string
+- Requerida: Sí
+- Ejemplo: sk-proj-xxxxx
+- Nota: Nunca compartir en repositorios públicos
+
+OPENAI_API_URL
+- Descripción: URL base de OpenAI
+- Tipo: string
+- Requerida: No
+- Default: https://api.openai.com/v1
+- Nota: Cambiar si usas proxy o API compatible
+
+LLM_MODEL
+- Descripción: Modelo de LLM a usar
+- Tipo: string
+- Requerida: No
+- Default: gpt-4.1-mini
+- Opciones: gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash
+- Nota: Debe existir en tu plan de OpenAI
+
+BOT_MODE
+- Descripción: Modo de respuesta del bot
+- Tipo: string
+- Requerida: No
+- Default: auto
+- Opciones: auto, selective
+- Nota: Ver sección de modos
+
+ALLOWED_CONTACTS
+- Descripción: Contactos permitidos en modo selective
+- Tipo: string (números separados por coma)
+- Requerida: No (solo si BOT_MODE=selective)
+- Default: vacío
+- Ejemplo: 5491234567,5491234568
+- Nota: Incluir código de país
+
+SYSTEM_PROMPT
+- Descripción: Instrucción del sistema para el LLM
+- Tipo: string
+- Requerida: No
+- Default: "Eres un asistente amable y útil. Responde de manera concisa y clara."
+- Nota: Define el comportamiento del bot
+
+MAX_CONTEXT_MESSAGES
+- Descripción: Máximo de mensajes a recordar por chat
+- Tipo: número
+- Requerida: No
+- Default: 10
+- Rango: 1-100
+- Nota: Más mensajes = más contexto pero más tokens
+
+RESPONSE_TIMEOUT
+- Descripción: Timeout para respuesta del LLM en ms
+- Tipo: número
+- Requerida: No
+- Default: 30000 (30 segundos)
+- Rango: 1000-120000
+- Nota: Aumentar si LLM es lento
+
+AUTO_READ_MESSAGES
+- Descripción: Marcar mensajes como leídos automáticamente
+- Tipo: boolean
+- Requerida: No
+- Default: true
+- Opciones: true, false
+- Nota: Si false, mensajes quedan sin leer
+
+LOG_LEVEL
+- Descripción: Nivel de logging
+- Tipo: string
+- Requerida: No
+- Default: info
+- Opciones: debug, info, warn, error
+- Nota: debug = más verbose
+
+DATA_DIR
+- Descripción: Directorio para datos
+- Tipo: string (ruta)
+- Requerida: No
+- Default: ./data
+- Nota: Donde se guardan contextos
+
+SESSION_DIR
+- Descripción: Directorio para sesiones de Baileys
+- Tipo: string (ruta)
+- Requerida: No
+- Default: ./data/sessions
+- Nota: Contiene credenciales, no compartir
+
+LOG_DIR
+- Descripción: Directorio para logs
+- Tipo: string (ruta)
+- Requerida: No
+- Default: ./logs
+- Nota: Archivos de log
+
+Modos de respuesta:
+
+MODO AUTO (BOT_MODE=auto)
+- Bot responde a TODOS los mensajes
+- Útil para: Asistente general, soporte automático
+- Configuración:
+  BOT_MODE=auto
+  ALLOWED_CONTACTS= (vacío)
+
+MODO SELECTIVE (BOT_MODE=selective)
+- Bot responde SOLO a contactos permitidos
+- Útil para: Amigos cercanos, números específicos
+- Configuración:
+  BOT_MODE=selective
+  ALLOWED_CONTACTS=5491234567,5491234568
+
+Ejemplo de .env completo:
+
+OPENAI_API_KEY=sk-proj-xxxxx
+OPENAI_API_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4.1-mini
+BOT_MODE=auto
+ALLOWED_CONTACTS=
+SYSTEM_PROMPT=Eres un asistente amable. Responde brevemente.
+MAX_CONTEXT_MESSAGES=10
+RESPONSE_TIMEOUT=30000
+AUTO_READ_MESSAGES=true
+LOG_LEVEL=info
+DATA_DIR=./data
+SESSION_DIR=./data/sessions
+LOG_DIR=./logs
+
+================================================================================
+8. INSTALACION Y ARRANQUE
+================================================================================
+
+Requisitos previos:
+- Node.js 18 o superior
+- npm o pnpm
+- Cuenta de WhatsApp personal
+- API Key de OpenAI (o servicio compatible)
+- Terminal que soporte caracteres especiales (para QR)
+
+Paso 1: Clonar o descargar el proyecto
+cd /home/ubuntu/neo-app/whatsapp-bot
+
+Paso 2: Instalar dependencias
+pnpm install
+o
+npm install
+
+Paso 3: Crear archivo .env
+cp .env.example .env
+
+Paso 4: Configurar variables de entorno
+Editar .env con editor de texto:
+- OPENAI_API_KEY: Tu clave de OpenAI
+- BOT_MODE: auto o selective
+- SYSTEM_PROMPT: Instrucción personalizada
+
+Paso 5: Crear directorios necesarios
+mkdir -p data/sessions logs
+
+Paso 6: Ejecutar en desarrollo
+pnpm dev
+
+Paso 7: Escanear código QR
+- Abre WhatsApp en tu teléfono
+- Ve a Ajustes > Dispositivos vinculados
+- Toca "Vincular un dispositivo"
+- Escanea el código QR que aparece en la terminal
+
+Paso 8: Esperar a que se conecte
+Deberías ver: "✓ Conectado a WhatsApp"
+
+Paso 9: Probar
+Envía un mensaje a tu número desde otro teléfono o contacto
+El bot debería responder automáticamente
+
+Para producción:
+
+Paso 1: Compilar código
+pnpm build
+
+Paso 2: Ejecutar
+pnpm start
+
+Paso 3: Mantener ejecutándose
+Usar PM2 o similar:
+pm2 start dist/index.js --name "whatsapp-bot"
+
+Troubleshooting de instalación:
+
+Error: "Cannot find module '@whiskeysockets/baileys'"
+Solución: pnpm install
+
+Error: "OPENAI_API_KEY no está configurada"
+Solución: Editar .env y agregar clave válida
+
+Error: "Código QR no aparece"
+Solución: Usar terminal diferente o aumentar tamaño
+
+Error: "No se puede conectar a OpenAI"
+Solución: Verificar OPENAI_API_KEY y OPENAI_API_URL
+
+================================================================================
+9. DEPENDENCIAS
+================================================================================
+
+Dependencias principales:
+
+@whiskeysockets/baileys@6.4.0
+- Librería para conectar a WhatsApp Web
+- Maneja conexión, mensajes, eventos
+- Mantiene sesión
+- Emula cliente de WhatsApp
+
+openai@4.52.0
+- SDK oficial de OpenAI
+- Permite llamar API de chat completions
+- Maneja autenticación
+- Parsea respuestas
+
+dotenv@16.4.5
+- Carga variables de entorno desde .env
+- Simplifica configuración
+- Seguridad para API keys
+
+pino@8.17.2
+- Logger de alto rendimiento
+- Registra eventos y errores
+- Configurable por nivel
+
+pino-pretty@10.3.1
+- Formatea logs de Pino
+- Mejora legibilidad en terminal
+- Colores y timestamps
+
+qrcode-terminal@0.12.0
+- Genera código QR en terminal
+- Necesario para escaneo inicial
+- Soporta caracteres Unicode
+
+Dependencias de desarrollo:
+
+@types/node@20.10.6
+- Tipos TypeScript para Node.js
+- Autocompletado en IDE
+- Verificación de tipos
+
+typescript@5.3.3
+- Compilador de TypeScript
+- Verificación de tipos en tiempo de compilación
+- Mejor desarrollo
+
+tsx@4.7.0
+- Ejecutor de TypeScript
+- Permite pnpm dev
+- Compila y ejecuta en tiempo real
+
+Compatibilidad:
+
+Node.js: 18.0.0 o superior
+npm: 9.0.0 o superior
+pnpm: 8.0.0 o superior
+
+Tamaño total:
+- node_modules: ~500MB
+- Código fuente: ~50KB
+- Datos (contextos): Variable
+
+================================================================================
+10. RIESGOS Y CONSIDERACIONES
+================================================================================
+
+RIESGOS DE USO:
+
+1. Violación de Términos de Servicio
+   - WhatsApp prohíbe bots automatizados
+   - Riesgo: Bloqueo de cuenta
+   - Mitigación: Usar solo para uso personal
+   - Recomendación: Revisar términos actuales
+
+2. Bloqueo de Cuenta
+   - WhatsApp puede detectar actividad automatizada
+   - Riesgo: Cuenta permanentemente bloqueada
+   - Mitigación: Usar modo selectivo con pocos contactos
+   - Recomendación: Tener cuenta de respaldo
+
+3. Privacidad
+   - Bot procesa mensajes personales
+   - Riesgo: Exposición de información sensible
+   - Mitigación: No compartir información confidencial
+   - Recomendación: Revisar system prompt
+
+4. Seguridad de API Key
+   - OPENAI_API_KEY en archivo .env
+   - Riesgo: Exposición en repositorio público
+   - Mitigación: Agregar .env a .gitignore
+   - Recomendación: Usar variables de entorno en producción
+
+5. Costos de API
+   - Cada respuesta consume tokens de OpenAI
+   - Riesgo: Factura inesperada
+   - Mitigación: Limitar MAX_CONTEXT_MESSAGES
+   - Recomendación: Configurar límite de gasto en OpenAI
+
+6. Datos Persistentes
+   - Contextos guardados en data/contexts.json
+   - Riesgo: Información sensible en disco
+   - Mitigación: Encriptar archivo
+   - Recomendación: Limpiar contextos regularmente
+
+7. Disponibilidad
+   - Bot requiere conexión a internet
+   - Riesgo: Desconexión = sin respuestas
+   - Mitigación: Usar hosting con alta disponibilidad
+   - Recomendación: Monitorear conexión
+
+8. Dependencias Externas
+   - Baileys depende de cambios en WhatsApp
+   - Riesgo: Bot deja de funcionar
+   - Mitigación: Mantener dependencias actualizadas
+   - Recomendación: Revisar actualizaciones regularmente
+
+CONSIDERACIONES LEGALES:
+
+- Revisar leyes locales sobre automatización
+- Informar a contactos que es un bot
+- No usar para spam o phishing
+- Respetar privacidad de otros usuarios
+- Cumplir con GDPR si aplica
+
+CONSIDERACIONES TÉCNICAS:
+
+- Sesión se guarda en data/sessions/
+- No versionar ni compartir data/sessions/
+- Contextos se guardan en JSON sin encripción
+- Logs pueden contener información sensible
+- Requiere conexión estable a internet
+
+MEJORES PRÁCTICAS:
+
+1. Usar modo selective con contactos de confianza
+2. Revisar system prompt regularmente
+3. Monitorear logs para actividad anormal
+4. Limpiar contextos antiguos
+5. Actualizar dependencias regularmente
+6. Hacer backup de data/contexts.json
+7. Usar contraseña fuerte en OpenAI
+8. Habilitar 2FA en cuenta de OpenAI
+
+================================================================================
+11. TROUBLESHOOTING
+================================================================================
+
+PROBLEMA: El código QR no aparece en terminal
+CAUSAS POSIBLES:
+- Terminal no soporta caracteres especiales
+- Terminal muy pequeña
+- Problema de encoding
+
+SOLUCIONES:
+1. Usar terminal diferente (iTerm2, Windows Terminal, etc)
+2. Aumentar tamaño de terminal
+3. Verificar encoding: export LANG=en_US.UTF-8
+4. Usar otra terminal: gnome-terminal, konsole, etc
+
+PROBLEMA: "Cannot find module '@whiskeysockets/baileys'"
+CAUSAS POSIBLES:
+- Dependencias no instaladas
+- Instalación incompleta
+- Versión incorrecta
+
+SOLUCIONES:
+1. Ejecutar: pnpm install
+2. Limpiar cache: pnpm store prune
+3. Reinstalar: rm -rf node_modules && pnpm install
+4. Verificar versión: pnpm list @whiskeysockets/baileys
+
+PROBLEMA: "OPENAI_API_KEY no está configurada"
+CAUSAS POSIBLES:
+- Archivo .env no existe
+- .env no tiene OPENAI_API_KEY
+- Variable no se cargó
+
+SOLUCIONES:
+1. Crear .env: cp .env.example .env
+2. Editar .env y agregar clave
+3. Verificar: echo $OPENAI_API_KEY
+4. Reiniciar terminal
+
+PROBLEMA: "Error: 401 Unauthorized" (OpenAI)
+CAUSAS POSIBLES:
+- API Key inválida
+- API Key expirada
+- API Key sin permisos
+
+SOLUCIONES:
+1. Verificar API Key en https://platform.openai.com/api-keys
+2. Generar nueva si es necesario
+3. Verificar que tenga créditos
+4. Verificar que modelo esté disponible
+
+PROBLEMA: No se reciben mensajes
+CAUSAS POSIBLES:
+- Bot no está conectado
+- Modo selectivo sin contactos permitidos
+- Problema de Baileys
+
+SOLUCIONES:
+1. Verificar: "✓ Conectado a WhatsApp" en logs
+2. Si modo selective: verificar ALLOWED_CONTACTS
+3. Probar con modo auto: BOT_MODE=auto
+4. Reiniciar bot
+5. Volver a escanear QR
+
+PROBLEMA: "Sesión expirada"
+CAUSAS POSIBLES:
+- Sesión de Baileys expirada
+- Credenciales corrompidas
+- Cambio en WhatsApp Web
+
+SOLUCIONES:
+1. Eliminar sesión: rm -rf data/sessions/
+2. Reiniciar bot
+3. Escanear nuevo código QR
+4. Esperar a que se reconecte
+
+PROBLEMA: Bot responde lentamente
+CAUSAS POSIBLES:
+- LLM es lento
+- Conexión a internet lenta
+- Demasiados mensajes en contexto
+
+SOLUCIONES:
+1. Aumentar RESPONSE_TIMEOUT
+2. Reducir MAX_CONTEXT_MESSAGES
+3. Usar modelo más rápido (gpt-4.1-nano)
+4. Verificar conexión a internet
+5. Verificar carga de OpenAI
+
+PROBLEMA: "Error: 429 Too Many Requests"
+CAUSAS POSIBLES:
+- Límite de rate de OpenAI excedido
+- Demasiados mensajes simultáneos
+
+SOLUCIONES:
+1. Esperar antes de enviar más mensajes
+2. Aumentar RESPONSE_TIMEOUT
+3. Reducir MAX_CONTEXT_MESSAGES
+4. Verificar límites en OpenAI dashboard
+5. Usar modelo con límites más altos
+
+PROBLEMA: Contexto no se guarda
+CAUSAS POSIBLES:
+- Permisos de archivo
+- Disco lleno
+- Ruta incorrecta
+
+SOLUCIONES:
+1. Verificar permisos: ls -la data/
+2. Verificar espacio: df -h
+3. Verificar ruta en .env: DATA_DIR=./data
+4. Crear directorio: mkdir -p data
+
+PROBLEMA: "Error: ENOENT: no such file or directory"
+CAUSAS POSIBLES:
+- Directorios no existen
+- Ruta incorrecta
+
+SOLUCIONES:
+1. Crear directorios: mkdir -p data/sessions logs
+2. Verificar rutas en .env
+3. Usar rutas absolutas si es necesario
+
+PROBLEMA: Bot deja de responder después de un tiempo
+CAUSAS POSIBLES:
+- Desconexión de WhatsApp
+- Error no capturado
+- Sesión expirada
+
+SOLUCIONES:
+1. Revisar logs: tail -f logs/bot.log
+2. Reiniciar bot
+3. Verificar conexión a internet
+4. Usar PM2 para reinicio automático
+
+PROBLEMA: "Modo selectivo no funciona"
+CAUSAS POSIBLES:
+- ALLOWED_CONTACTS vacío
+- Formato incorrecto
+- Números sin código de país
+
+SOLUCIONES:
+1. Verificar ALLOWED_CONTACTS en .env
+2. Incluir código de país: 5491234567
+3. Separar con comas sin espacios
+4. Verificar número exacto del contacto
+
+PARA REPORTAR BUGS:
+
+1. Recopilar información:
+   - Versión de Node.js: node --version
+   - Versión de pnpm: pnpm --version
+   - Mensaje de error completo
+   - Pasos para reproducir
+
+2. Revisar logs:
+   - tail -f logs/bot.log
+   - Buscar errores relacionados
+
+3. Abrir issue en GitHub con:
+   - Descripción del problema
+   - Pasos para reproducir
+   - Logs relevantes
+   - Información del sistema
+
+================================================================================
+FIN DE DOCUMENTACION
+================================================================================
+
+Para más información, revisar:
+- README.md en whatsapp-bot/
+- Código fuente en src/
+- Ejemplos en .env.example
+
+Última actualización: 2026-02-26
+Versión: 1.0.0
