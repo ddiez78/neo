@@ -1,0 +1,761 @@
+================================================================================
+NEO-APP: STORY TO VIDEO GENERATOR
+Guía Maestra del Proyecto para Continuidad de Desarrollo
+Versión: 1.0 | Fecha: 2026-02-26
+================================================================================
+
+DESCRIPCIÓN GENERAL
+================================================================================
+
+Neo-App es una plataforma de generación de contenido visual narrativo que transforma
+guiones maestros en historias visuales completas. Utiliza análisis de IA (LLM) para
+detectar personajes, locaciones y props, genera Scene Breakdown con prompts optimizados
+para Grok Video, y produce imágenes para cada escena.
+
+Objetivo: Permitir a usuarios (especialmente creadores de contenido infantil) convertir
+guiones en planes de video listos para usar en generadores de video de IA.
+
+STACK TECNOLÓGICO
+================================================================================
+
+Frontend:
+  - React 19.2.1 con Vite 7.1.7
+  - TypeScript 5.9.3
+  - Tailwind CSS 4.1.14 + Tailwind Animate
+  - shadcn/ui (componentes Radix UI)
+  - Lucide React (iconos)
+  - Sonner (notificaciones toast)
+  - Wouter (routing ligero)
+  - React Hook Form + Zod (validación)
+  - tRPC React Query (client RPC)
+
+Backend:
+  - Node.js 22.13.0
+  - Express 4.21.2
+  - tRPC 11.6.0 (RPC framework)
+  - TypeScript (compilado a ESM)
+  - OpenAI SDK (LLM integration)
+
+Base de Datos:
+  - MySQL/TiDB (Manus hosted)
+  - Drizzle ORM 0.44.5 (type-safe queries)
+  - Drizzle Kit 0.31.4 (migrations)
+
+Almacenamiento:
+  - AWS S3 (Manus managed)
+  - Presigned URLs para acceso
+
+Servicios Externos:
+  - OpenAI API (gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash)
+  - Manus Forge API (LLM, Image Generation, Storage)
+  - Manus OAuth (autenticación)
+
+ESTRUCTURA DE CARPETAS
+================================================================================
+
+neo-app/
+├── client/                          # Frontend React + Vite
+│   ├── public/                      # Archivos estáticos (favicon, robots.txt)
+│   ├── src/
+│   │   ├── pages/                   # Páginas principales
+│   │   │   ├── Home.tsx             # Dashboard de proyectos
+│   │   │   ├── ProjectDashboard.tsx # Panel de control del proyecto
+│   │   │   ├── ScriptEditor.tsx     # Editor de guion maestro
+│   │   │   ├── StoryBible.tsx       # Visualización de Story Bible
+│   │   │   ├── SceneBreakdown.tsx   # Visualización de escenas
+│   │   │   └── NotFound.tsx         # Página 404
+│   │   ├── components/              # Componentes reutilizables
+│   │   │   ├── ui/                  # shadcn/ui components
+│   │   │   ├── DashboardLayout.tsx  # Layout para dashboards
+│   │   │   ├── AIChatBox.tsx        # Chat con IA
+│   │   │   ├── Map.tsx              # Integración Google Maps
+│   │   │   └── ErrorBoundary.tsx    # Manejo de errores
+│   │   ├── contexts/                # React Contexts
+│   │   │   └── ThemeContext.tsx     # Tema (light/dark)
+│   │   ├── hooks/                   # Custom hooks
+│   │   │   └── useAuth.tsx          # Hook de autenticación
+│   │   ├── lib/
+│   │   │   └── trpc.ts              # Cliente tRPC
+│   │   ├── _core/                   # Core utilities (no editar)
+│   │   ├── App.tsx                  # Router principal
+│   │   ├── main.tsx                 # Entry point
+│   │   ├── index.css                # Estilos globales + tema
+│   │   └── const.ts                 # Constantes y URLs
+│   ├── index.html                   # HTML base
+│   └── vite.config.ts               # Configuración Vite
+│
+├── server/                          # Backend Node.js + Express
+│   ├── services/                    # Servicios de negocio
+│   │   ├── llmService.ts            # Análisis de guiones con LLM
+│   │   ├── imageService.ts          # Generación de imágenes
+│   │   ├── storageService.ts        # Gestión de S3
+│   │   └── narrativeAnalyzer.ts     # Validación de consistencia
+│   ├── routers/                     # Routers tRPC
+│   │   ├── projects.ts              # CRUD de proyectos
+│   │   ├── scripts.ts               # Gestión de guiones
+│   │   ├── characters.ts            # Gestión de personajes
+│   │   ├── scenes.ts                # Gestión de escenas
+│   │   └── storyBibleAndExport.ts   # Story Bible y exportación
+│   ├── utils/                       # Utilidades
+│   │   ├── validators.ts            # Validación de datos
+│   │   └── formatters.ts            # Formateo de exportación
+│   ├── prompts/                     # System prompts para LLM
+│   │   └── narrativeDirector.ts     # Prompt del Director Narrativo
+│   ├── types/                       # Tipos TypeScript compartidos
+│   │   └── index.ts                 # Tipos de Story Bible, Scene, etc.
+│   ├── db.ts                        # Helpers de base de datos
+│   ├── routers.ts                   # Integración de todos los routers
+│   ├── _core/                       # Core framework (no editar)
+│   │   ├── index.ts                 # Entry point del servidor
+│   │   ├── context.ts               # Contexto tRPC (auth, req, res)
+│   │   ├── trpc.ts                  # Configuración tRPC
+│   │   ├── env.ts                   # Variables de entorno
+│   │   ├── llm.ts                   # Helper de LLM
+│   │   ├── imageGeneration.ts       # Helper de generación de imágenes
+│   │   ├── voiceTranscription.ts    # Helper de transcripción
+│   │   ├── map.ts                   # Helper de Google Maps
+│   │   ├── notification.ts          # Helper de notificaciones
+│   │   ├── cookies.ts               # Manejo de cookies
+│   │   ├── oauth.ts                 # OAuth flow
+│   │   └── systemRouter.ts          # Router del sistema
+│   └── storage.ts                   # Helpers de S3
+│
+├── drizzle/                         # Base de datos
+│   ├── schema.ts                    # Esquema de tablas (8 tablas)
+│   └── migrations/                  # Migraciones SQL
+│
+├── shared/                          # Código compartido
+│   └── const.ts                     # Constantes globales
+│
+├── storage/                         # Helpers de almacenamiento
+│   └── (generado automáticamente)
+│
+├── dist/                            # Build output (generado)
+├── node_modules/                    # Dependencias (generado)
+│
+├── ARCHITECTURE.md                  # Documentación de arquitectura
+├── README.md                        # Guía de instalación y uso
+├── plan.txt                         # Este archivo
+├── package.json                     # Dependencias y scripts
+├── tsconfig.json                    # Configuración TypeScript
+├── vite.config.ts                   # Configuración Vite
+├── vitest.config.ts                 # Configuración Vitest
+├── .env.example                     # Variables de entorno ejemplo
+├── .gitignore                       # Archivos ignorados por git
+└── todo.md                          # Tareas pendientes
+
+ESQUEMA DE BASE DE DATOS (8 TABLAS)
+================================================================================
+
+Tabla: users
+  - id (INT, PK, AI)
+  - openId (VARCHAR, UNIQUE) - Identificador Manus OAuth
+  - name (TEXT)
+  - email (VARCHAR)
+  - loginMethod (VARCHAR)
+  - role (ENUM: user, admin)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+  - lastSignedIn (TIMESTAMP)
+
+Tabla: projects
+  - id (INT, PK, AI)
+  - userId (INT, FK -> users.id)
+  - title (VARCHAR)
+  - description (TEXT)
+  - status (ENUM: draft, analyzing, completed)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: scripts
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - content (LONGTEXT) - Contenido del guion
+  - status (ENUM: pending, analyzing, completed, failed)
+  - analysisResult (JSON) - Story Bible y Scene Breakdown
+  - errorMessage (TEXT)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: characters
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - name (VARCHAR)
+  - species (VARCHAR) - Ej: Niña, Gato, Hada
+  - ageVibe (VARCHAR) - Ej: 7 años, Joven, Antiguo
+  - visualTraits (TEXT) - Descripción visual
+  - outfit (VARCHAR) - Vestuario
+  - personalityVibe (TEXT) - Personalidad
+  - referenceImageUrl (VARCHAR) - URL en S3
+  - detectedFromScript (BOOLEAN)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: locations
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - name (VARCHAR)
+  - visualDescription (TEXT)
+  - timeOfDay (VARCHAR) - EXT/INT, DAY/NIGHT
+  - detectedFromScript (BOOLEAN)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: props
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - name (VARCHAR)
+  - description (TEXT)
+  - usedBy (VARCHAR) - Personaje que lo usa
+  - detectedFromScript (BOOLEAN)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: scenes
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - scriptId (INT, FK -> scripts.id)
+  - sceneNumber (INT)
+  - timeStart (VARCHAR) - Ej: 00:00
+  - timeEnd (VARCHAR) - Ej: 00:10
+  - place (VARCHAR) - Locación
+  - beat (TEXT) - Qué cambia en la escena
+  - grokVideoPrompt (TEXT) - Prompt en inglés para Grok
+  - negative (TEXT) - Prompts negativos
+  - imageUrl (VARCHAR) - URL en S3
+  - status (ENUM: pending, generating, completed, failed)
+  - createdAt (TIMESTAMP)
+  - updatedAt (TIMESTAMP)
+
+Tabla: exports
+  - id (INT, PK, AI)
+  - projectId (INT, FK -> projects.id)
+  - format (ENUM: text, json, markdown)
+  - content (LONGTEXT)
+  - fileUrl (VARCHAR) - URL en S3
+  - createdAt (TIMESTAMP)
+
+TIPOS TYPESCRIPT PRINCIPALES
+================================================================================
+
+Story Bible (server/types/index.ts):
+  - characters: Character[]
+  - locations: Location[]
+  - props: Prop[]
+  - narrativeTheme: string
+  - targetAudience: string
+  - toneAndMood: string
+
+Scene Breakdown:
+  - sceneNumber: number
+  - timeStart: string (HH:MM)
+  - timeEnd: string (HH:MM)
+  - place: string (EXT/INT.LOCATION-TIMEOFDAY)
+  - beat: string (1 frase de cambio)
+  - grokVideoPrompt: string (280-520 caracteres, inglés)
+  - negative: string (prompts negativos)
+  - imageUrl?: string (URL en S3)
+  - status: 'pending' | 'generating' | 'completed' | 'failed'
+
+LLM Analysis Result:
+  - storyBible: Story Bible
+  - scenes: Scene[]
+  - totalScenes: number
+  - totalDuration: string (MM:SS)
+
+ENDPOINTS TRPC (API)
+================================================================================
+
+PROJECTS ROUTER
+  - projects.list() -> Project[]
+    Retorna proyectos del usuario autenticado
+  
+  - projects.get(projectId: number) -> Project
+    Obtiene un proyecto específico
+  
+  - projects.create(title, description?) -> Project
+    Crea un nuevo proyecto
+  
+  - projects.update(projectId, title?, description?, status?) -> Project
+    Actualiza un proyecto
+  
+  - projects.delete(projectId) -> { success: boolean }
+    Elimina un proyecto
+
+SCRIPTS ROUTER
+  - scripts.upload(projectId, content) -> Script
+    Sube un guion maestro
+  
+  - scripts.analyze(scriptId) -> { storyBible, scenes, totalScenes, totalDuration }
+    Analiza guion con LLM usando system prompt del Director Narrativo
+  
+  - scripts.get(scriptId) -> Script
+    Obtiene un guion
+  
+  - scripts.listByProject(projectId) -> Script[]
+    Lista guiones de un proyecto
+
+CHARACTERS ROUTER
+  - characters.list(projectId) -> Character[]
+    Lista personajes de un proyecto
+  
+  - characters.get(characterId) -> Character
+    Obtiene un personaje
+  
+  - characters.create(projectId, name, species?, ageVibe?, visualTraits?, outfit?, personalityVibe?) -> Character
+    Crea un personaje manualmente
+  
+  - characters.update(characterId, name?, species?, ageVibe?, visualTraits?, outfit?, personalityVibe?) -> Character
+    Actualiza un personaje
+  
+  - characters.uploadImage(characterId, imageFile) -> { url: string }
+    Sube imagen de referencia a S3
+  
+  - characters.delete(characterId) -> { success: boolean }
+    Elimina un personaje
+
+SCENES ROUTER
+  - scenes.list(projectId) -> Scene[]
+    Lista escenas de un proyecto
+  
+  - scenes.get(sceneId) -> Scene
+    Obtiene una escena
+  
+  - scenes.generateImage(sceneId) -> { imageUrl: string }
+    Genera imagen para una escena usando Image Service
+  
+  - scenes.update(sceneId, beat?, grokVideoPrompt?, negative?) -> Scene
+    Actualiza una escena
+
+STORY BIBLE & EXPORT ROUTER
+  - storyBible.getStoryBible(projectId) -> Story Bible
+    Obtiene Story Bible completa (personajes, locaciones, props)
+  
+  - storyBible.getSceneBreakdown(projectId) -> { scenes, totalScenes, totalDuration }
+    Obtiene Scene Breakdown con todos los campos requeridos
+  
+  - storyBible.generateExport(projectId, format: 'text' | 'json' | 'markdown') -> { downloadUrl, fileName }
+    Genera exportación en formato especificado
+
+AUTH ROUTER (Sistema)
+  - auth.me() -> User | null
+    Obtiene usuario autenticado
+  
+  - auth.logout() -> { success: boolean }
+    Cierra sesión
+
+FLUJO DE DATOS COMPLETO
+================================================================================
+
+1. CREACIÓN DE PROYECTO
+   Usuario -> Home.tsx (crear proyecto) -> projects.create() -> BD (INSERT projects)
+
+2. UPLOAD DE GUION
+   Usuario -> ScriptEditor.tsx (upload) -> scripts.upload() -> BD (INSERT scripts)
+   -> Mostrar guion en lista
+
+3. ANÁLISIS DE GUION (LLM)
+   Usuario -> ScriptEditor.tsx (click "Analizar") -> scripts.analyze()
+   -> llmService.analyzeScript() -> OpenAI API
+   -> Parsear respuesta (Story Bible + Scene Breakdown)
+   -> Guardar en scripts.analysisResult (JSON)
+   -> BD (UPDATE scripts, INSERT characters, locations, props, scenes)
+   -> Retornar resultado al frontend
+
+4. VISUALIZACIÓN DE STORY BIBLE
+   Usuario -> StoryBible.tsx -> storyBible.getStoryBible()
+   -> db.getStoryBible() -> Consultar BD (characters, locations, props)
+   -> Retornar datos al frontend
+   -> Renderizar tabs (Personajes, Locaciones, Props)
+
+5. AGREGAR PERSONAJE MANUALMENTE
+   Usuario -> StoryBible.tsx (agregar personaje) -> characters.create()
+   -> BD (INSERT characters)
+   -> Retornar personaje
+   -> Actualizar lista en frontend
+
+6. SUBIR IMAGEN DE PERSONAJE
+   Usuario -> StoryBible.tsx (upload imagen) -> characters.uploadImage()
+   -> storageService.uploadCharacterImage() -> S3
+   -> BD (UPDATE characters.referenceImageUrl)
+   -> Retornar URL
+   -> Mostrar imagen en frontend
+
+7. VISUALIZACIÓN DE SCENE BREAKDOWN
+   Usuario -> SceneBreakdown.tsx -> storyBible.getSceneBreakdown()
+   -> db.getSceneBreakdown() -> Consultar BD (scenes)
+   -> Retornar escenas con TIME, PLACE, BEAT, GROK_VIDEO_PROMPT, NEGATIVE
+   -> Renderizar tarjetas de escenas
+
+8. GENERACIÓN DE IMAGEN PARA ESCENA
+   Usuario -> SceneBreakdown.tsx (click "Generar Imagen") -> scenes.generateImage()
+   -> imageService.generateImage() -> Manus Image API
+   -> storageService.uploadSceneImage() -> S3
+   -> BD (UPDATE scenes.imageUrl, status='completed')
+   -> Retornar URL
+   -> Mostrar imagen en frontend
+
+9. EXPORTACIÓN
+   Usuario -> SceneBreakdown.tsx (click "Exportar") -> storyBible.generateExport()
+   -> formatters.formatExport() -> Generar contenido en formato solicitado
+   -> storageService.uploadExport() -> S3
+   -> BD (INSERT exports)
+   -> Retornar URL de descarga
+   -> Descargar archivo en navegador
+
+SERVICIOS BACKEND PRINCIPALES
+================================================================================
+
+LLM SERVICE (server/services/llmService.ts)
+  Función: analyzeScript(scriptContent: string) -> { storyBible, scenes }
+  
+  Proceso:
+  1. Obtener OpenAI client (usa env OPENAI_API_KEY)
+  2. Construir mensaje con system prompt del Director Narrativo
+  3. Enviar a OpenAI API (modelo configurable)
+  4. Parsear respuesta JSON
+  5. Validar estructura (Story Bible + Scene Breakdown)
+  6. Retornar datos estructurados
+  
+  System Prompt: Embebido en server/prompts/narrativeDirector.ts
+  - Especifica análisis de guiones infantiles (3-7 años)
+  - Requiere Scene Breakdown con TIME, PLACE, BEAT, GROK_VIDEO_PROMPT, NEGATIVE
+  - Prompts de video en inglés, 280-520 caracteres
+  - Duración exacta de 10 segundos por escena
+  - Tono calmado, tierno, sin violencia explícita
+
+IMAGE SERVICE (server/services/imageService.ts)
+  Función: generateImage(prompt: string, negativePrompt?: string) -> { url: string }
+  
+  Proceso:
+  1. Construir prompt mejorado para Grok Video
+  2. Llamar a Manus Image Generation API
+  3. Esperar resultado (puede tomar 5-20 segundos)
+  4. Retornar URL de imagen generada
+  
+  Nota: Usa VITE_FRONTEND_FORGE_API_URL y VITE_FRONTEND_FORGE_API_KEY
+
+STORAGE SERVICE (server/services/storageService.ts)
+  Funciones:
+  - uploadCharacterImage(file, characterId) -> { url }
+  - uploadSceneImage(file, sceneId) -> { url }
+  - uploadExport(content, projectId, format) -> { url }
+  - getPresignedUrl(key) -> { url }
+  
+  Proceso:
+  1. Generar key único (userId-type/filename-random.ext)
+  2. Llamar storagePut() (helper preconfigrado)
+  3. Retornar URL pública
+  4. Guardar URL en BD
+
+NARRATIVE ANALYZER (server/services/narrativeAnalyzer.ts)
+  Función: validateConsistency(storyBible, scenes) -> { isValid, errors }
+  
+  Validaciones:
+  - Todos los personajes mencionados en escenas existen en Story Bible
+  - Todas las locaciones son válidas
+  - Duración total de escenas = 10s * número de escenas
+  - Sin cambios de vestuario no documentados
+  - Prompts de video en inglés, sin caracteres especiales
+
+DATABASE HELPERS (server/db.ts)
+  - getProjectById(projectId, userId) -> Project
+  - getUserProjects(userId) -> Project[]
+  - getProjectCharacters(projectId) -> Character[]
+  - getProjectLocations(projectId) -> Location[]
+  - getProjectProps(projectId) -> Prop[]
+  - getProjectScenes(projectId) -> Scene[]
+  - getStoryBible(projectId) -> { characters, locations, props }
+  - getSceneBreakdown(projectId) -> { scenes, totalScenes, totalDuration }
+  - updateScriptStatus(scriptId, status) -> void
+  - updateProjectStatus(projectId, status) -> void
+
+VALIDADORES Y FORMATEADORES
+================================================================================
+
+Validadores (server/utils/validators.ts):
+  - validateScriptContent(content) -> boolean
+    Verifica que el guion no esté vacío y tenga longitud mínima
+  
+  - validateStoryBible(storyBible) -> boolean
+    Valida estructura de Story Bible
+  
+  - validateSceneBreakdown(scenes) -> boolean
+    Valida que cada escena tenga todos los campos requeridos
+
+Formateadores (server/utils/formatters.ts):
+  - formatAsPlainText(scenes, storyBible) -> string
+    Exporta en formato texto plano (sin Markdown)
+    Estructura:
+    Scene01
+    TIME: 00:00–00:10
+    PLACE: EXT.-
+    BEAT: ____
+    GROK_VIDEO_PROMPT: ____
+    NEGATIVE: ____
+  
+  - formatAsJSON(scenes, storyBible) -> string
+    Exporta como JSON estructurado
+  
+  - formatAsMarkdown(scenes, storyBible) -> string
+    Exporta como Markdown con tablas
+
+FLUJO DE AUTENTICACIÓN
+================================================================================
+
+1. Usuario accede a la app
+2. Si no está autenticado, ve botón "Login"
+3. Click en "Login" -> getLoginUrl() -> Redirige a Manus OAuth
+4. Usuario se autentica en Manus
+5. Redirige a /api/oauth/callback con código
+6. Backend intercambia código por token
+7. Crea sesión (cookie JWT)
+8. Redirige a / (Home)
+9. Frontend llama auth.me() -> Retorna usuario autenticado
+10. Renderiza dashboard
+
+Logout:
+1. Click en "Logout"
+2. Llama auth.logout()
+3. Backend limpia cookie
+4. Redirige a login
+
+VARIABLES DE ENTORNO
+================================================================================
+
+Requeridas (Manus managed):
+  DATABASE_URL              - Conexión MySQL/TiDB
+  JWT_SECRET                - Firma de cookies
+  VITE_APP_ID               - OAuth app ID
+  OAUTH_SERVER_URL          - URL del servidor OAuth
+  VITE_OAUTH_PORTAL_URL     - URL del portal de login
+  OWNER_OPEN_ID             - OpenID del propietario
+  OWNER_NAME                - Nombre del propietario
+  BUILT_IN_FORGE_API_URL    - URL de Manus Forge API
+  BUILT_IN_FORGE_API_KEY    - Bearer token para Forge API
+  VITE_FRONTEND_FORGE_API_KEY - Token para frontend
+  VITE_FRONTEND_FORGE_API_URL  - URL para frontend
+  VITE_ANALYTICS_ENDPOINT   - Endpoint de analytics
+  VITE_ANALYTICS_WEBSITE_ID - ID de website para analytics
+
+Opcionales (usuario debe configurar):
+  OPENAI_API_KEY            - Para usar OpenAI directamente (si no usa Forge)
+  CUSTOM_LLM_MODEL          - Modelo LLM a usar (default: gpt-4.1-mini)
+
+INSTRUCCIONES DE DESPLIEGUE LOCAL (OpenCode/Antigravity)
+================================================================================
+
+REQUISITOS:
+  - Node.js 22.13.0+
+  - pnpm 10.4.1+
+  - MySQL 8.0+ o compatible (TiDB)
+  - Git
+
+PASOS:
+
+1. Clonar repositorio
+   git clone https://github.com/ddiez78/neo.git
+   cd neo
+
+2. Instalar dependencias
+   pnpm install
+
+3. Configurar variables de entorno
+   cp .env.example .env
+   Editar .env con credenciales reales
+
+4. Crear base de datos
+   mysql -u root -p
+   CREATE DATABASE neo_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   EXIT;
+
+5. Ejecutar migraciones
+   pnpm db:push
+
+6. Iniciar servidor de desarrollo
+   pnpm dev
+   Acceder a http://localhost:3000
+
+7. Para producción
+   pnpm build
+   pnpm start
+
+COMANDOS ÚTILES:
+
+  pnpm dev              - Inicia servidor de desarrollo
+  pnpm build            - Compila para producción
+  pnpm start            - Inicia servidor de producción
+  pnpm db:push          - Ejecuta migraciones de BD
+  pnpm test             - Ejecuta tests con Vitest
+  pnpm format           - Formatea código con Prettier
+  pnpm check            - Verifica tipos TypeScript
+
+FASES COMPLETADAS
+================================================================================
+
+FASE 1: Arquitectura y Configuración ✓
+  - Documento ARCHITECTURE.md (615 líneas)
+  - Estructura de carpetas completa
+  - Esquema de base de datos (8 tablas)
+  - Tipos TypeScript compartidos
+  - System prompt del Director Narrativo
+  - README.md con instrucciones
+  - todo.md para rastrear tareas
+
+FASE 2: Backend ✓
+  - LLM Service (analyzeScript con OpenAI)
+  - Image Service (generateImage con Manus API)
+  - Storage Service (uploadCharacterImage, uploadSceneImage, uploadExport)
+  - Narrative Analyzer (validateConsistency)
+  - 5 Routers tRPC: projects, scripts, characters, scenes, storyBibleAndExport
+  - Database helpers (20+ funciones)
+  - Validadores y formateadores
+  - Integración completa de servicios
+
+FASE 3: Frontend ✓
+  - 5 páginas React principales (1,650+ líneas)
+    * Home.tsx (Dashboard de proyectos)
+    * ProjectDashboard.tsx (Panel de control)
+    * ScriptEditor.tsx (Editor de guion)
+    * StoryBible.tsx (Visualización de Story Bible)
+    * SceneBreakdown.tsx (Visualización de escenas)
+  - Rutas configuradas en App.tsx
+  - Tema Tailwind CSS (azul + índigo)
+  - Componentes shadcn/ui integrados
+  - Notificaciones con Sonner
+  - Responsive design
+
+FASES PENDIENTES Y MEJORAS PROPUESTAS
+================================================================================
+
+FASE 4: Testing y Validación
+  - Crear tests unitarios con Vitest para servicios
+  - Crear tests de integración para routers tRPC
+  - Crear tests E2E con Playwright
+  - Validar flujo completo de usuario
+
+FASE 5: Optimizaciones
+  - Implementar caché en frontend (React Query)
+  - Optimizar queries de BD (índices)
+  - Lazy loading de imágenes
+  - Compresión de imágenes antes de upload
+  - Paginación en listados
+
+FASE 6: Características Avanzadas
+  - Plantillas predefinidas de Story Bible
+  - Editor visual de Scene Breakdown
+  - Previsualización de video en tiempo real
+  - Historial de versiones de proyectos
+  - Colaboración en tiempo real (WebSocket)
+  - Exportación a formatos adicionales (XML, YAML)
+
+FASE 7: UX/UI Mejorado
+  - Drag & drop para reordenar escenas
+  - Editor inline de personajes
+  - Preview de imágenes en modal
+  - Atajos de teclado
+  - Modo oscuro completo
+  - Animaciones de transición
+
+FASE 8: Integraciones
+  - Integración con Grok Video API directamente
+  - Integración con Runway ML
+  - Integración con Synthesia
+  - Webhooks para notificaciones
+  - API pública para terceros
+
+FASE 9: Monetización
+  - Sistema de créditos
+  - Planes de suscripción
+  - Límites de generación por plan
+  - Analytics de uso
+  - Reportes de proyectos
+
+FASE 10: Escalabilidad
+  - Caché distribuido (Redis)
+  - Queue de trabajos (Bull)
+  - Microservicios para LLM
+  - CDN para imágenes
+  - Replicación de BD
+
+MEJORAS INMEDIATAS RECOMENDADAS:
+
+1. Hooks Personalizados
+   Crear useProject, useCharacters, useScenes para centralizar lógica
+   Beneficio: Reducir duplicación, facilitar testing
+
+2. Validación de Imágenes
+   Implementar preview y validación de tamaño/formato antes de upload
+   Beneficio: Mejor UX, evitar errores de upload
+
+3. Búsqueda y Filtrado
+   Agregar búsqueda en Home, filtrado por estado
+   Beneficio: Mejor navegación con muchos proyectos
+
+4. Manejo de Errores Mejorado
+   Crear ErrorBoundary específico para cada página
+   Beneficio: Mejor experiencia ante fallos
+
+5. Indicadores de Progreso
+   Mostrar barra de progreso en análisis de guion
+   Beneficio: Feedback visual al usuario
+
+NOTAS IMPORTANTES
+================================================================================
+
+1. SEGURIDAD
+   - Todos los endpoints están protegidos con autenticación
+   - Las queries de BD filtran por userId del usuario autenticado
+   - Las imágenes se almacenan en S3 con URLs presignadas
+   - Las variables de entorno sensibles nunca se exponen al frontend
+
+2. PERFORMANCE
+   - tRPC usa SuperJSON para serialización eficiente
+   - Las imágenes se comprimen antes de upload
+   - Las queries de BD están optimizadas con índices
+   - El frontend usa lazy loading y code splitting
+
+3. ESCALABILIDAD
+   - La arquitectura permite fácil adición de nuevos servicios
+   - Los routers tRPC pueden dividirse en módulos
+   - La BD está normalizada para evitar duplicación
+   - El almacenamiento en S3 es ilimitado
+
+4. MANTENIBILIDAD
+   - Código bien documentado con comentarios
+   - Tipos TypeScript en todo el proyecto
+   - Separación clara de responsabilidades
+   - Uso de patrones establecidos (service layer, router layer)
+
+5. COMPATIBILIDAD
+   - Compatible con OpenCode (Node.js + npm/pnpm)
+   - Compatible con Antigravity (mismo stack)
+   - Usa estándares web (React, Express, tRPC)
+   - No depende de herramientas propietarias
+
+REFERENCIAS Y RECURSOS
+================================================================================
+
+Documentación del Proyecto:
+  - ARCHITECTURE.md - Arquitectura completa
+  - README.md - Guía de instalación
+  - plan.txt - Este archivo (guía maestra)
+  - todo.md - Tareas pendientes
+
+Documentación Técnica Externa:
+  - React: https://react.dev
+  - tRPC: https://trpc.io
+  - Drizzle ORM: https://orm.drizzle.team
+  - Tailwind CSS: https://tailwindcss.com
+  - shadcn/ui: https://ui.shadcn.com
+  - Express: https://expressjs.com
+  - OpenAI API: https://platform.openai.com/docs
+
+Contacto y Soporte:
+  - Email: neo@manus.im
+  - GitHub: https://github.com/ddiez78/neo
+  - Issues: https://github.com/ddiez78/neo/issues
+
+================================================================================
+FIN DEL DOCUMENTO
+================================================================================
