@@ -16,6 +16,20 @@ export type Sentiment = "positive" | "neutral" | "negative" | "no_data";
 export type WorkspaceRole = "owner" | "admin" | "member" | "viewer";
 export type RunStatus = "queued" | "running" | "completed" | "failed";
 export type SuggestionStatus = "pending" | "approved" | "rejected";
+export type RecommendationCategory =
+	| "entity"
+	| "content"
+	| "sources"
+	| "competitors"
+	| "prompts"
+	| "technical"
+	| "authority"
+	| "sentiment";
+export type RecommendationStatus =
+	| "pending"
+	| "in_progress"
+	| "done"
+	| "dismissed";
 
 export interface Workspace {
 	id: string;
@@ -142,4 +156,46 @@ export interface PromptMetrics {
 	negative_mentions: number;
 	source_count: number;
 	total_cost: number;
+}
+
+export interface RecommendationSource {
+	id: string;
+	workspace_id: string;
+	title: string;
+	slug: string;
+	category: RecommendationCategory;
+	content: string;
+	version: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface Recommendation {
+	id: string;
+	workspace_id: string;
+	source_id?: string | null;
+	title: string;
+	description: string;
+	category: RecommendationCategory;
+	priority: number;
+	impact_score: number;
+	confidence_score: number;
+	status: RecommendationStatus;
+	related_prompt_ids: string[];
+	related_competitor_ids: string[];
+	related_source_domains: string[];
+	evidence: Record<string, unknown>;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface RecommendationAction {
+	id: string;
+	recommendation_id: string;
+	label: string;
+	status: RecommendationStatus;
+	owner_id?: string | null;
+	due_date?: string | null;
+	created_at: string;
+	updated_at: string;
 }

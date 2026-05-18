@@ -1,6 +1,10 @@
 import { TrendChart } from "@/components/dashboard/TrendChart";
 import { FiltersPanel } from "@/components/layout/FiltersPanel";
-import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
+import {
+	getWorkspaceOverview,
+	requireUser,
+	requireWorkspace,
+} from "@/lib/data/workspace";
 
 export default async function Page({
 	params,
@@ -9,7 +13,15 @@ export default async function Page({
 }) {
 	const { workspace: slug } = await params;
 	const workspace = await requireWorkspace(slug);
+	const { supabase } = await requireUser();
 	const overview = await getWorkspaceOverview(workspace.id);
+	const { data: recommendations } = await supabase
+		.from("recommendations")
+		.select("*")
+		.eq("workspace_id", workspace.id)
+		.in("status", ["pending", "in_progress"])
+		.order("impact_score", { ascending: false })
+		.limit(3);
 	const latestMetric = overview.metrics.at(-1);
 	const totalRuns = overview.runs.length;
 	const mentions = overview.runs.filter((run) => run.brand_mentioned).length;
@@ -51,7 +63,7 @@ export default async function Page({
 					))}
 				</div>
 				<TrendChart metrics={overview.metrics} />
-				<section className="grid gap-4 lg:grid-cols-2">
+				<section className="grid gap-4 lg:grid-cols-3">
 					<div className="rounded-md border border-slate-200 bg-white p-4">
 						<h2 className="font-semibold text-slate-950">Runs recientes</h2>
 						<div className="mt-4 divide-y divide-slate-100">
@@ -76,6 +88,32 @@ export default async function Page({
 							{overview.runs.length === 0 ? (
 								<p className="py-4 text-sm text-slate-500">
 									Sin ejecuciones todavia.
+								</p>
+							) : null}
+						</div>
+					</div>
+					<div className="rounded-md border border-slate-200 bg-white p-4">
+						<h2 className="font-semibold text-slate-950">
+							Top recommendations
+						</h2>
+						<div className="mt-4 grid gap-3">
+							{(recommendations ?? []).map((recommendation) => (
+								<div
+									className="rounded-md bg-slate-50 p-3"
+									key={recommendation.id}
+								>
+									<p className="text-sm font-medium text-slate-950">
+										{recommendation.title}
+									</p>
+									<p className="mt-1 text-xs uppercase text-slate-500">
+										{recommendation.category} · impact{" "}
+										{Number(recommendation.impact_score).toFixed(0)}
+									</p>
+								</div>
+							))}
+							{(recommendations ?? []).length === 0 ? (
+								<p className="text-sm text-slate-500">
+									Generate recommendations to see prioritized SEO actions here.
 								</p>
 							) : null}
 						</div>

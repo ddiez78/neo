@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	/* config options here */
+	outputFileTracingIncludes: {
+		"/*": ["./knowledge/recommendations/**/*.md"],
+	},
 };
 
 export default nextConfig;
