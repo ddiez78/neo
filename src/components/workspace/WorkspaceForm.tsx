@@ -31,6 +31,15 @@ export function WorkspaceForm() {
 			</label>
 			<div className="grid gap-3 sm:grid-cols-2">
 				<label className="grid gap-2 text-sm font-medium text-slate-700">
+					Pais
+					<input
+						className="rounded-md border border-slate-300 px-3 py-2"
+						defaultValue="ES"
+						maxLength={2}
+						name="country_code"
+					/>
+				</label>
+				<label className="grid gap-2 text-sm font-medium text-slate-700">
 					Idioma
 					<input
 						className="rounded-md border border-slate-300 px-3 py-2"
@@ -38,6 +47,8 @@ export function WorkspaceForm() {
 						name="locale"
 					/>
 				</label>
+			</div>
+			<div className="grid gap-3 sm:grid-cols-2">
 				<label className="grid gap-2 text-sm font-medium text-slate-700">
 					Zona horaria
 					<input

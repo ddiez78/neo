@@ -2,9 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/data/workspace";
+import { getWorkspaceOverview, requireUser } from "@/lib/data/workspace";
+import { executePromptRun } from "@/lib/llm/executePromptRun";
 import { csvToArray, promptSchema } from "@/lib/validations/schemas";
-import type { ActionResult } from "@/types";
+import type { ActionResult, LlmProviderKey, Workspace } from "@/types";
 
 export async function placeholderAction(): Promise<ActionResult> {
 	return { success: true };
@@ -53,37 +54,34 @@ export async function runPromptAction(
 	formData: FormData,
 ) {
 	const { supabase } = await requireUser();
-	const provider = String(formData.get("provider") ?? "chatgpt");
+	const provider = String(
+		formData.get("provider") ?? "chatgpt",
+	) as LlmProviderKey;
 	const model = String(formData.get("model") ?? "mock-geo");
 	const promptBody = String(formData.get("body") ?? "");
-	const simulatedResponse =
-		"Respuesta simulada GEO: la marca aparece con contexto neutral junto a competidores y fuentes pendientes de verificacion.";
+	const [{ data: workspace }, overview] = await Promise.all([
+		supabase.from("workspaces").select("*").eq("id", workspaceId).single(),
+		getWorkspaceOverview(workspaceId),
+	]);
 
-	const { error } = await supabase.from("prompt_runs").insert({
-		workspace_id: workspaceId,
-		prompt_id: promptId,
+	if (!workspace) {
+		redirect(
+			`/${workspaceSlug}/prompts?error=${encodeURIComponent("Workspace not found")}`,
+		);
+	}
+
+	await executePromptRun({
+		supabase,
+		workspace: workspace as Workspace,
+		company: overview.company,
+		competitors: overview.competitors,
+		promptId,
+		promptBody,
 		provider,
 		model,
-		status: "completed",
-		input_text: promptBody,
-		response_text: simulatedResponse,
-		sentiment: "neutral",
-		brand_mentioned: true,
-		competitors_mentioned: [],
-		prompt_tokens: Math.max(10, Math.round(promptBody.length / 4)),
-		completion_tokens: Math.round(simulatedResponse.length / 4),
-		total_cost: 0.0025,
-		started_at: new Date().toISOString(),
-		completed_at: new Date().toISOString(),
 	});
-
-	if (!error) {
-		await supabase
-			.from("prompts")
-			.update({ last_run_at: new Date().toISOString() })
-			.eq("id", promptId);
-	}
 
 	revalidatePath(`/${workspaceSlug}/prompts`);
 	revalidatePath(`/${workspaceSlug}/dashboard`);
+	revalidatePath(`/${workspaceSlug}/sources`);
 }

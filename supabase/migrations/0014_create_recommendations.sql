@@ -1,22 +1,32 @@
-create type public.recommendation_category as enum (
-  'entity',
-  'content',
-  'sources',
-  'competitors',
-  'prompts',
-  'technical',
-  'authority',
-  'sentiment'
-);
+do $$
+begin
+  create type public.recommendation_category as enum (
+    'entity',
+    'content',
+    'sources',
+    'competitors',
+    'prompts',
+    'technical',
+    'authority',
+    'sentiment'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create type public.recommendation_status as enum (
-  'pending',
-  'in_progress',
-  'done',
-  'dismissed'
-);
+do $$
+begin
+  create type public.recommendation_status as enum (
+    'pending',
+    'in_progress',
+    'done',
+    'dismissed'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create table public.recommendation_sources (
+create table if not exists public.recommendation_sources (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   title text not null,
@@ -29,7 +39,7 @@ create table public.recommendation_sources (
   unique (workspace_id, slug, version)
 );
 
-create table public.recommendations (
+create table if not exists public.recommendations (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   source_id uuid references public.recommendation_sources(id) on delete set null,
@@ -48,7 +58,7 @@ create table public.recommendations (
   updated_at timestamptz not null default now()
 );
 
-create table public.recommendation_actions (
+create table if not exists public.recommendation_actions (
   id uuid primary key default gen_random_uuid(),
   recommendation_id uuid not null references public.recommendations(id) on delete cascade,
   label text not null,
@@ -59,36 +69,41 @@ create table public.recommendation_actions (
   updated_at timestamptz not null default now()
 );
 
-create index recommendation_sources_workspace_idx on public.recommendation_sources(workspace_id, category);
-create index recommendations_workspace_status_idx on public.recommendations(workspace_id, status, priority);
-create index recommendation_actions_recommendation_idx on public.recommendation_actions(recommendation_id);
+create index if not exists recommendation_sources_workspace_idx on public.recommendation_sources(workspace_id, category);
+create index if not exists recommendations_workspace_status_idx on public.recommendations(workspace_id, status, priority);
+create index if not exists recommendation_actions_recommendation_idx on public.recommendation_actions(recommendation_id);
 
 alter table public.recommendation_sources enable row level security;
 alter table public.recommendations enable row level security;
 alter table public.recommendation_actions enable row level security;
 
+drop policy if exists "recommendation sources member read" on public.recommendation_sources;
 create policy "recommendation sources member read"
 on public.recommendation_sources
 for select
 using (public.is_workspace_member(workspace_id));
 
+drop policy if exists "recommendation sources member write" on public.recommendation_sources;
 create policy "recommendation sources member write"
 on public.recommendation_sources
 for all
 using (public.has_workspace_role(workspace_id, '{owner,admin,member}'))
 with check (public.has_workspace_role(workspace_id, '{owner,admin,member}'));
 
+drop policy if exists "recommendations member read" on public.recommendations;
 create policy "recommendations member read"
 on public.recommendations
 for select
 using (public.is_workspace_member(workspace_id));
 
+drop policy if exists "recommendations member write" on public.recommendations;
 create policy "recommendations member write"
 on public.recommendations
 for all
 using (public.has_workspace_role(workspace_id, '{owner,admin,member}'))
 with check (public.has_workspace_role(workspace_id, '{owner,admin,member}'));
 
+drop policy if exists "recommendation actions member read" on public.recommendation_actions;
 create policy "recommendation actions member read"
 on public.recommendation_actions
 for select
@@ -101,6 +116,7 @@ using (
   )
 );
 
+drop policy if exists "recommendation actions member write" on public.recommendation_actions;
 create policy "recommendation actions member write"
 on public.recommendation_actions
 for all

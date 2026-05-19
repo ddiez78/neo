@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEO GEO | Prompt Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#b05e3d",
+                      "secondary-fixed": "#dbe1ff",
+                      "primary-container": "#008378",
+                      "inverse-surface": "#2c3130",
+                      "secondary": "#0051d5",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#dee4e1",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-variant": "#dee4e1",
+                      "tertiary-fixed": "#ffdbce",
+                      "outline-variant": "#bcc9c6",
+                      "outline": "#6d7a77",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f0f5f2",
+                      "on-tertiary-container": "#fffbff",
+                      "on-secondary-container": "#fefcff",
+                      "tertiary": "#924628",
+                      "surface-bright": "#f5faf8",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "inverse-on-surface": "#edf2f0",
+                      "surface": "#f5faf8",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-background": "#171d1c",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#00174b",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "surface-container": "#eaefed",
+                      "on-surface": "#171d1c",
+                      "background": "#f5faf8",
+                      "inverse-primary": "#6bd8cb",
+                      "surface-dim": "#d6dbd9",
+                      "primary-fixed": "#89f5e7",
+                      "on-surface-variant": "#3d4947",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e4e9e7",
+                      "secondary-container": "#316bf3",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "on-primary-fixed": "#00201d",
+                      "surface-tint": "#006a61",
+                      "primary": "#00685f",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary-container": "#f4fffc",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb59a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "base": "4px",
+                      "table-cell-padding": "12px",
+                      "sidebar-width": "240px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "metric-sm": ["JetBrains Mono"],
+                      "metric-lg": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 20px;
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #00685f;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eaefed;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bcc9c6;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden flex h-screen">
+<!-- NavigationDrawer (Shared Component) -->
+<aside class="hidden md:flex flex-col w-sidebar-width h-screen sticky top-0 py-4 bg-surface border-r border-outline-variant z-50">
+<div class="px-6 mb-8">
+<span class="text-headline-md font-headline-md font-black text-primary">NEO GEO ANALYTICS</span>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="text-label-sm font-label-sm">Competitors</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">travel_explore</span>
+<span class="text-label-sm font-label-sm">Sources</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-label-sm font-label-sm">Company Bio</span>
+</a>
+</li>
+<li class="relative">
+<div class="sidebar-active-indicator"></div>
+<a class="flex items-center gap-3 px-6 py-3 text-primary bg-surface-container border-primary font-bold transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="text-label-sm font-label-sm">Prompts</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">search_insights</span>
+<span class="text-label-sm font-label-sm">Prompt Research</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="text-label-sm font-label-sm">Admin</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="mt-auto px-6 pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-3 py-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs">
+                    JD
+                </div>
+<div class="overflow-hidden">
+<p class="text-label-sm font-bold truncate">John Doe</p>
+<p class="text-[10px] text-outline truncate">Chief Data Scientist</p>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 hover:bg-surface-container-low transition-colors rounded">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-bold tracking-tight text-primary">Prompts</h1>
+</div>
+<div class="flex-1 max-w-xl mx-8 hidden lg:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-primary transition-colors text-body-md" placeholder="Quick find prompts or entities..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="flex items-center gap-2 pl-2 pr-1 py-1 hover:bg-surface-container-low rounded-lg transition-colors">
+<img alt="User Profile" class="w-8 h-8 rounded-lg object-cover" data-alt="A professional studio portrait of a male data executive in a dark tailored blazer, set against a minimalist gray backdrop. High-key soft lighting emphasizes facial features and a look of analytical confidence. The visual style is crisp and modern corporate, aligned with a high-end data analytics platform aesthetic featuring neutral tones and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOPNjffilNqWVOZiJgIDlXe0ll7RwCGM2j4twlC9iAYha4zIfZMjMnUMK1b5_VQVfrtlDjTLagBWXj_z3EQNzI-dy1mrHTT23UmLoQ6tlAdzaUravK8BhRSPOwhiJQxVR7LSjSGfGmCDlEMpL1scZ6U8czFOHpUXjhe86j-qIZ89YsLOSk7e0ALjWfTGUuN5SoAeBnldyu0mYUFY0sdwSXDPEgWIUUxOH8KOtvPhWgKkBLci8on2mXgNe532Yfod7FJ2_5XohMRzqF"/>
+<span class="material-symbols-outlined text-outline">keyboard_arrow_down</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-background p-margin-desktop space-y-6">
+<!-- Page Header Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-display-lg font-display-lg text-on-background">Management</h2>
+<p class="text-body-md text-on-surface-variant mt-1">Configure and monitor automated monitoring prompts across your AI ecosystem.</p>
+</div>
+<button class="inline-flex items-center gap-2 px-6 h-11 bg-primary text-on-primary rounded-lg font-bold hover:bg-on-primary-fixed-variant transition-colors shadow-sm">
+<span class="material-symbols-outlined">add</span>
+                    Create Prompt
+                </button>
+</div>
+<!-- Filter Bar -->
+<section class="bg-surface border border-outline-variant p-4 rounded-xl flex flex-wrap items-center gap-4">
+<div class="flex-1 min-w-[240px]">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">filter_list</span>
+<input class="w-full h-9 pl-9 pr-4 bg-surface-container-lowest border border-outline-variant rounded focus:ring-0 focus:border-primary text-body-md" placeholder="Search prompts..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<label class="text-label-sm text-outline font-bold uppercase tracking-wider">Status</label>
+<select class="h-9 border border-outline-variant rounded bg-surface-container-lowest px-3 text-body-md focus:ring-0 focus:border-primary">
+<option>All Status</option>
+<option>Active</option>
+<option>Paused</option>
+<option>Draft</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<label class="text-label-sm text-outline font-bold uppercase tracking-wider">Providers</label>
+<select class="h-9 border border-outline-variant rounded bg-surface-container-lowest px-3 text-body-md focus:ring-0 focus:border-primary">
+<option>All Providers</option>
+<option>OpenAI GPT-4o</option>
+<option>Anthropic Claude 3.5</option>
+<option>Gemini Pro</option>
+</select>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="h-9 px-4 flex items-center gap-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors text-body-md">
+<span class="material-symbols-outlined">calendar_today</span>
+                    Recent
+                </button>
+<button class="h-9 w-9 flex items-center justify-center border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</section>
+<!-- Data Table Container -->
+<section class="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider">Prompt Title</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider">Category</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider">Visibility Score</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider text-center">Status</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider">Last Run</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-bold text-outline uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div>
+<p class="text-body-md font-bold text-on-surface">Global SaaS Market Penetration</p>
+<p class="text-[11px] text-outline">GPT-4o • 24 Variable Inputs</p>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-1 bg-secondary-container/10 text-secondary text-[10px] font-bold rounded uppercase tracking-tight border border-secondary-container/20">Market Intel</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="flex items-baseline gap-2">
+<span class="font-metric-lg text-metric-lg text-on-surface">84.2</span>
+<div class="flex items-center text-[11px] font-bold text-[#008378]">
+<span class="material-symbols-outlined text-xs">arrow_upward</span>
+                                            4.1%
+                                        </div>
+</div>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full mt-1">
+<div class="bg-primary-container h-full rounded-full" style="width: 84%"></div>
+</div>
+</td>
+<td class="px-table-cell-padding py-3 text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/10 text-primary text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="text-body-md text-on-surface-variant">2 mins ago</div>
+<div class="text-[10px] text-outline uppercase">Next: 14:00 UTC</div>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div>
+<p class="text-body-md font-bold text-on-surface">Cloud Security Sentiment Audit</p>
+<p class="text-[11px] text-outline">Claude 3.5 • 8 Variable Inputs</p>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-1 bg-tertiary-container/10 text-tertiary text-[10px] font-bold rounded uppercase tracking-tight border border-tertiary-container/20">Brand Research</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="flex items-baseline gap-2">
+<span class="font-metric-lg text-metric-lg text-on-surface">61.5</span>
+<div class="flex items-center text-[11px] font-bold text-error">
+<span class="material-symbols-outlined text-xs">arrow_downward</span>
+                                            1.8%
+                                        </div>
+</div>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full mt-1">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 61%"></div>
+</div>
+</td>
+<td class="px-table-cell-padding py-3 text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-outline-variant/20 text-on-surface-variant text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                        Paused
+                                    </span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="text-body-md text-on-surface-variant">4 hours ago</div>
+<div class="text-[10px] text-outline uppercase">Manual Trigger</div>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-primary hover:text-primary-container transition-colors rounded bg-primary/10">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div>
+<p class="text-body-md font-bold text-on-surface">Competitor Pricing Extraction</p>
+<p class="text-[11px] text-outline">Gemini Pro • 42 Variable Inputs</p>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-1 bg-primary-container/10 text-primary-container text-[10px] font-bold rounded uppercase tracking-tight border border-primary-container/20">Market Intel</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="flex items-baseline gap-2">
+<span class="font-metric-lg text-metric-lg text-on-surface">92.9</span>
+<div class="flex items-center text-[11px] font-bold text-[#008378]">
+<span class="material-symbols-outlined text-xs">arrow_upward</span>
+                                            0.5%
+                                        </div>
+</div>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full mt-1">
+<div class="bg-primary h-full rounded-full" style="width: 92%"></div>
+</div>
+</td>
+<td class="px-table-cell-padding py-3 text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/10 text-primary text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="text-body-md text-on-surface-variant">12 mins ago</div>
+<div class="text-[10px] text-outline uppercase">Next: 14:10 UTC</div>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div>
+<p class="text-body-md font-bold text-on-surface">Quarterly Earnings Synthesis</p>
+<p class="text-[11px] text-outline">GPT-4o • 105 Variable Inputs</p>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-1 bg-on-secondary-fixed-variant/10 text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase tracking-tight border border-on-secondary-fixed-variant/20">Strategy</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="flex items-baseline gap-2">
+<span class="font-metric-lg text-metric-lg text-on-surface">44.0</span>
+<div class="flex items-center text-[11px] font-bold text-outline">
+<span class="material-symbols-outlined text-xs">horizontal_rule</span>
+                                            0.0%
+                                        </div>
+</div>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full mt-1">
+<div class="bg-outline h-full rounded-full" style="width: 44%"></div>
+</div>
+</td>
+<td class="px-table-cell-padding py-3 text-center">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container/20 text-error text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Error
+                                    </span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="text-body-md text-error font-medium">Failed 1h ago</div>
+<div class="text-[10px] text-outline uppercase">API Timeout</div>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-primary hover:text-primary-container transition-colors rounded bg-primary/10">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-primary/10">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer -->
+<div class="bg-surface-container-low px-table-cell-padding py-3 flex items-center justify-between border-t border-outline-variant">
+<span class="text-label-sm text-outline">Showing 1 to 4 of 124 results</span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface text-outline disabled:opacity-40" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-on-primary text-label-sm font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface text-on-surface-variant text-label-sm hover:bg-surface-container-high transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface text-on-surface-variant text-label-sm hover:bg-surface-container-high transition-colors">3</button>
+<span class="px-2 text-outline">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface text-on-surface-variant text-label-sm hover:bg-surface-container-high transition-colors">31</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-surface text-outline hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Bottom Insight Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 24px;">bolt</span>
+</div>
+<div>
+<h4 class="text-label-sm font-bold text-on-surface uppercase tracking-wider">Inference Speed</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-metric-lg font-metric-lg">1.4s</span>
+<span class="text-[11px] text-[#008378] font-bold">-12% vs last week</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-size: 24px;">database</span>
+</div>
+<div>
+<h4 class="text-label-sm font-bold text-on-surface uppercase tracking-wider">Daily Token Usage</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-metric-lg font-metric-lg">2.8M</span>
+<span class="text-[11px] text-tertiary font-bold">+0.4% baseline</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-size: 24px;">verified_user</span>
+</div>
+<div>
+<h4 class="text-label-sm font-bold text-on-surface uppercase tracking-wider">Truth Accuracy</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-metric-lg font-metric-lg">99.8%</span>
+<span class="text-[11px] text-[#008378] font-bold">Institutional Grade</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface border-t border-outline-variant shadow-sm z-50">
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-semibold active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="text-label-sm font-label-sm">Workflow</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined">person_search</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</button>
+</nav>
+</body></html>

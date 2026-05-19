@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5faf8;
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #006a61;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#b05e3d",
+                      "secondary-fixed": "#dbe1ff",
+                      "primary-container": "#008378",
+                      "inverse-surface": "#2c3130",
+                      "secondary": "#0051d5",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#dee4e1",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-variant": "#dee4e1",
+                      "tertiary-fixed": "#ffdbce",
+                      "outline-variant": "#bcc9c6",
+                      "outline": "#6d7a77",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f0f5f2",
+                      "on-tertiary-container": "#fffbff",
+                      "on-secondary-container": "#fefcff",
+                      "tertiary": "#924628",
+                      "surface-bright": "#f5faf8",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "inverse-on-surface": "#edf2f0",
+                      "surface": "#f5faf8",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-background": "#171d1c",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#00174b",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "surface-container": "#eaefed",
+                      "on-surface": "#171d1c",
+                      "background": "#f5faf8",
+                      "inverse-primary": "#6bd8cb",
+                      "surface-dim": "#d6dbd9",
+                      "primary-fixed": "#89f5e7",
+                      "on-surface-variant": "#3d4947",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e4e9e7",
+                      "secondary-container": "#316bf3",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "on-primary-fixed": "#00201d",
+                      "surface-tint": "#006a61",
+                      "primary": "#00685f",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary-container": "#f4fffc",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb59a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "base": "4px",
+                      "table-cell-padding": "12px",
+                      "sidebar-width": "240px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "metric-sm": ["JetBrains Mono"],
+                      "metric-lg": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface">
+<div class="flex min-h-screen">
+<!-- NavigationDrawer -->
+<aside class="hidden md:flex flex-col w-sidebar-width h-screen sticky top-0 py-4 bg-surface border-r border-outline-variant z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-black text-primary">NEO GEO ANALYTICS</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="relative flex items-center px-6 py-3 text-primary bg-surface-container font-bold transition-all duration-200" href="#">
+<div class="sidebar-active-indicator"></div>
+<span class="material-symbols-outlined mr-3" data-icon="query_stats">query_stats</span>
+<span class="text-label-sm font-label-sm">Competitors</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="travel_explore">travel_explore</span>
+<span class="text-label-sm font-label-sm">Sources</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="description">description</span>
+<span class="text-label-sm font-label-sm">Company Bio</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="terminal">terminal</span>
+<span class="text-label-sm font-label-sm">Prompts</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="search_insight">search_insights</span>
+<span class="text-label-sm font-label-sm">Prompt Research</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="groups">groups</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+<div class="pt-4 mt-4 border-t border-outline-variant">
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="text-label-sm font-label-sm">Admin</span>
+</a>
+</div>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h2 class="text-headline-md font-headline-md font-bold tracking-tight text-primary">NEO GEO</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none text-body-md font-body-md focus:ring-0 p-0 w-64" placeholder="Global Analysis Search..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Compare Mode</span>
+<button class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary-container">
+<span class="inline-block h-4 w-4 transform rounded-full bg-white translate-x-6 transition"></span>
+</button>
+</div>
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-margin-desktop space-y-8 max-w-7xl mx-auto w-full">
+<!-- Page Title -->
+<div class="flex justify-between items-end">
+<div>
+<h3 class="text-display-lg font-display-lg text-on-surface">Competitor Intelligence</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Real-time Share of Voice monitoring across top-tier AI ecosystems.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container border border-outline-variant text-label-sm font-label-sm flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+                            Last 30 Days
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary text-label-sm font-label-sm flex items-center gap-2 hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                            Add Competitor
+                        </button>
+</div>
+</div>
+<!-- SOV Leaderboard Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Metric Card: Neo Geo -->
+<div class="bg-surface border border-outline-variant p-6 hover:shadow-sm transition-all border-l-4 border-l-primary">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">NEO GEO (Primary)</span>
+<span class="text-primary bg-primary-container px-2 py-0.5 rounded text-[10px] font-bold">LIVE</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">42.8%</span>
+<span class="text-metric-sm font-metric-sm text-primary">+3.2%</span>
+</div>
+<div class="h-12 w-full mt-4 flex items-end gap-[2px]">
+<!-- Sparkline Mockup -->
+<div class="flex-1 bg-primary/20 h-1/2"></div>
+<div class="flex-1 bg-primary/20 h-2/3"></div>
+<div class="flex-1 bg-primary/20 h-1/3"></div>
+<div class="flex-1 bg-primary/20 h-3/4"></div>
+<div class="flex-1 bg-primary/20 h-1/2"></div>
+<div class="flex-1 bg-primary/20 h-5/6"></div>
+<div class="flex-1 bg-primary/20 h-full bg-primary"></div>
+</div>
+<p class="text-[10px] text-outline mt-2">SOV Momentum: High</p>
+</div>
+<!-- Metric Card: QuantX -->
+<div class="bg-surface border border-outline-variant p-6 hover:shadow-sm transition-all">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">QuantX</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">28.5%</span>
+<span class="text-metric-sm font-metric-sm text-error">-1.4%</span>
+</div>
+<div class="h-12 w-full mt-4 flex items-end gap-[2px]">
+<div class="flex-1 bg-outline-variant/30 h-3/4"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/2"></div>
+<div class="flex-1 bg-outline-variant/30 h-2/3"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/2"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/3"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/4"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/2"></div>
+</div>
+<p class="text-[10px] text-outline mt-2">SOV Momentum: Declining</p>
+</div>
+<!-- Metric Card: Vortex AI -->
+<div class="bg-surface border border-outline-variant p-6 hover:shadow-sm transition-all">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Vortex AI</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">19.2%</span>
+<span class="text-metric-sm font-metric-sm text-primary">+5.8%</span>
+</div>
+<div class="h-12 w-full mt-4 flex items-end gap-[2px]">
+<div class="flex-1 bg-outline-variant/30 h-1/4"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/3"></div>
+<div class="flex-1 bg-outline-variant/30 h-1/2"></div>
+<div class="flex-1 bg-outline-variant/30 h-2/3"></div>
+<div class="flex-1 bg-outline-variant/30 h-3/4"></div>
+<div class="flex-1 bg-outline-variant/30 h-5/6"></div>
+<div class="flex-1 bg-outline-variant/30 h-full bg-secondary-container"></div>
+</div>
+<p class="text-[10px] text-outline mt-2">SOV Momentum: Accelerating</p>
+</div>
+</section>
+<!-- Main Competitors Table -->
+<section class="bg-surface border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<h4 class="text-headline-md font-headline-md text-on-surface">Competitor Market Analysis</h4>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant bg-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 border border-outline-variant bg-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant">
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase">Competitor Name</th>
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase">Domain</th>
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Share of Voice</th>
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase">7-Day Trend</th>
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase">Sentiment</th>
+<th class="p-table-cell-padding text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-table-cell-padding">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary/10 rounded flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="Logo" class="w-full h-full object-cover" data-alt="A minimalist tech corporate logo for a company named Neo Geo. The design features a stylized letter N in a deep teal color against a clean white background, reflecting a high-precision analytical brand identity. The lighting is crisp and the aesthetic is professional and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgrijxQ4mPK2OaXZk4o5WSjcrKglbR6T2YyGGAODyVbI13_gFUeejoVZi2gAQtoX0qv6Th25fC39oEA0pxHNSGIFmrFfb3zeZyIg8i7NqOJdQ70SfBcF1PjTbXFkJh2C20d3j2QdaaWSIXjBjKweZpO32el2n1ry6v8ytCZk7B2_pzW73H_BP53TEC3EpG_yM72Dxrtxul0_Q3_evAczi5o3rAFO89VI2JR9MQkApCU_xaIJfzh41aqorWVJIkRapA0l1eraw_J8Pu"/>
+</div>
+<span class="text-body-md font-body-md font-bold text-on-surface">Neo Geo</span>
+</div>
+</td>
+<td class="p-table-cell-padding text-body-md font-body-md text-on-surface-variant">neogeo.ai</td>
+<td class="p-table-cell-padding text-right">
+<div class="inline-flex flex-col items-end">
+<span class="text-metric-sm font-metric-sm text-on-surface">42.8%</span>
+<span class="text-[10px] text-primary font-bold">+3.2% ▲</span>
+</div>
+</td>
+<td class="p-table-cell-padding">
+<svg class="w-24 h-8 text-primary" fill="none" viewbox="0 0 100 30">
+<path d="M0 25C10 22 20 28 30 20C40 12 50 18 60 10C70 2 80 8 90 4L100 6" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</td>
+<td class="p-table-cell-padding">
+<span class="px-2 py-1 bg-primary-container/20 text-on-primary-fixed-variant text-[10px] font-bold uppercase rounded border border-primary-container">Positive</span>
+</td>
+<td class="p-table-cell-padding text-right">
+<a class="text-primary text-label-sm font-label-sm hover:underline" href="#">Details</a>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest/50">
+<td class="p-table-cell-padding">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-secondary/10 rounded flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="Logo" class="w-full h-full object-cover" data-alt="A minimalist logo for a company named QuantX. The logo features a sharp, geometric 'Q' in vibrant blue on a white background. It conveys a sense of speed, intelligence, and modern corporate aesthetics, fitting for a competitive analysis tool." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLtCQq8YIcjwV-puI1_S4QtsGi8cjfHeUrJ4v94q3pXenDUaUiQ5zctSgdjLniH1m5g4CTuFTJZYNGgFYDNW3jmtj4ixgt0O6tORcVba-UOqRMRqsSp_IgiqYc84b7eZ3B_Q-ut_Ly2XsMUH-rUAqiYfOuA8r8BvoqJ7d9HwnVOQ2RoREXymdeESzGqBCumC3Frh2OIQdV3SZiB6Ofs0sW9kO7D3cTA9w7BO1jEQuG82vXGUV-F5LWFdUaPQPnlz6wW6OX-fc4KFbD"/>
+</div>
+<span class="text-body-md font-body-md font-bold text-on-surface">QuantX</span>
+</div>
+</td>
+<td class="p-table-cell-padding text-body-md font-body-md text-on-surface-variant">quant-analytics.com</td>
+<td class="p-table-cell-padding text-right">
+<div class="inline-flex flex-col items-end">
+<span class="text-metric-sm font-metric-sm text-on-surface">28.5%</span>
+<span class="text-[10px] text-error font-bold">-1.4% ▼</span>
+</div>
+</td>
+<td class="p-table-cell-padding">
+<svg class="w-24 h-8 text-error" fill="none" viewbox="0 0 100 30">
+<path d="M0 5C10 8 20 4 30 12C40 20 50 15 60 22C70 28 80 24 100 28" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</td>
+<td class="p-table-cell-padding">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase rounded border border-outline-variant">Neutral</span>
+</td>
+<td class="p-table-cell-padding text-right">
+<a class="text-primary text-label-sm font-label-sm hover:underline" href="#">Details</a>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-table-cell-padding">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-tertiary/10 rounded flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="Logo" class="w-full h-full object-cover" data-alt="A minimalist logo for a company named Vortex AI. The logo shows a clean, abstract vortex shape in a deep burnt orange color. The design is modern and sophisticated, aimed at professional data analysts. The background is pure white to emphasize the bold icon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGPEJT8oKiA2zyDYESiXQwSZg-URvOdqlYRY7aX3knA3lmTdQs7wVAFu16Rbxv7H8-bfeA-cMdYKJvr4tbGSPpSOCKWu6yrV5jNnNOwthFzV2jWaHlzIUfoGHLTbFlosSkgSrXB8y5RvgCpZo8NDtnaIAoeZi7sEMpdaR04m18WmVXDP9AknIN07zYr_WphVzm630pLrOalOqYfT_eT6A3u_8qhTGNaYcmxOdzPSLeN-k1UGFJkz6pveSpC7zap-HMxz_voc8hpXO4"/>
+</div>
+<span class="text-body-md font-body-md font-bold text-on-surface">Vortex AI</span>
+</div>
+</td>
+<td class="p-table-cell-padding text-body-md font-body-md text-on-surface-variant">vortex.ai</td>
+<td class="p-table-cell-padding text-right">
+<div class="inline-flex flex-col items-end">
+<span class="text-metric-sm font-metric-sm text-on-surface">19.2%</span>
+<span class="text-[10px] text-primary font-bold">+5.8% ▲</span>
+</div>
+</td>
+<td class="p-table-cell-padding">
+<svg class="w-24 h-8 text-secondary" fill="none" viewbox="0 0 100 30">
+<path d="M0 28L10 24L20 25L30 20L40 18L60 12L80 10L100 2" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</td>
+<td class="p-table-cell-padding">
+<span class="px-2 py-1 bg-error-container/20 text-on-error-container text-[10px] font-bold uppercase rounded border border-error-container">Negative</span>
+</td>
+<td class="p-table-cell-padding text-right">
+<a class="text-primary text-label-sm font-label-sm hover:underline" href="#">Details</a>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest/50">
+<td class="p-table-cell-padding">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-outline-variant/20 rounded flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="Logo" class="w-full h-full object-cover" data-alt="A professional, minimalist logo for a company named Lucid Data. The design features a stylized 'L' and 'D' integrated into a single abstract mark in a neutral grey tone. The aesthetic is corporate and trustworthy, suitable for high-end data monitoring software." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALlVY3nm5f8FHzhb8c1PQsYgZ_2xsTb_OoIMY7zUktmbeQqRZz_WLEuEC2upjNdRR37bfR_SFozd-msRJr44zJxrZzT-TI-v5cyfSQICeiRYa-_fEQbxFWIy3NCkYRx1ILRPXf252cWR8hU6Z4pPSEGAkcVU7JrycBtJc8clBXHPbWBY2GAnDuUyAULfqwRvFQ2lZmlB45L1eC7DWw1Cn7PeuVTmfLqIhHh-ijLNOFBQPocMhSSeGlKmvuG-Ag110Cou2KAUXRvON6"/>
+</div>
+<span class="text-body-md font-body-md font-bold text-on-surface">Lucid Data</span>
+</div>
+</td>
+<td class="p-table-cell-padding text-body-md font-body-md text-on-surface-variant">lucid-systems.io</td>
+<td class="p-table-cell-padding text-right">
+<div class="inline-flex flex-col items-end">
+<span class="text-metric-sm font-metric-sm text-on-surface">9.5%</span>
+<span class="text-[10px] text-outline font-bold">0.0% —</span>
+</div>
+</td>
+<td class="p-table-cell-padding">
+<svg class="w-24 h-8 text-outline" fill="none" viewbox="0 0 100 30">
+<path d="M0 15H20L30 14L40 16L60 15L80 15H100" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</td>
+<td class="p-table-cell-padding">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase rounded border border-outline-variant">Neutral</span>
+</td>
+<td class="p-table-cell-padding text-right">
+<a class="text-primary text-label-sm font-label-sm hover:underline" href="#">Details</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface border-t border-outline-variant flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Showing 4 of 12 Competitors</span>
+<div class="flex gap-1">
+<button class="px-3 py-1 border border-outline-variant text-label-sm font-label-sm disabled:opacity-50">Previous</button>
+<button class="px-3 py-1 bg-primary text-on-primary border border-primary text-label-sm font-label-sm">1</button>
+<button class="px-3 py-1 border border-outline-variant text-label-sm font-label-sm">2</button>
+<button class="px-3 py-1 border border-outline-variant text-label-sm font-label-sm">3</button>
+<button class="px-3 py-1 border border-outline-variant text-label-sm font-label-sm">Next</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface border-t border-outline-variant z-50 shadow-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="text-label-sm font-label-sm">Workflow</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#dee4e1",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-primary": "#6bd8cb",
+                        "error": "#ba1a1a",
+                        "surface": "#f5faf8",
+                        "on-surface": "#171d1c",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "primary-container": "#008378",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary-fixed": "#ffdbce",
+                        "secondary": "#0051d5",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed": "#00174b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#924628",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00685f",
+                        "inverse-surface": "#2c3130",
+                        "surface-bright": "#f5faf8",
+                        "outline-variant": "#bcc9c6",
+                        "on-background": "#171d1c",
+                        "surface-container-low": "#f0f5f2",
+                        "outline": "#6d7a77",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#3d4947",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "inverse-on-surface": "#edf2f0",
+                        "on-error": "#ffffff",
+                        "background": "#f5faf8",
+                        "surface-container-highest": "#dee4e1",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-tint": "#006a61",
+                        "surface-container-high": "#e4e9e7",
+                        "on-secondary-container": "#fefcff",
+                        "surface-container": "#eaefed",
+                        "surface-dim": "#d6dbd9",
+                        "tertiary-container": "#b05e3d",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-container": "#316bf3",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f4fffc",
+                        "on-primary-fixed-variant": "#005049"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sidebar-width": "240px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "table-cell-padding": "12px"
+                    },
+                    "fontFamily": {
+                        "metric-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "metric-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f5faf8;
+            color: #171d1c;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center w-full px-margin-mobile h-16 sticky top-0 z-40 bg-surface dark:bg-on-background border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">menu</span>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-primary">NEO GEO</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">search</span>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-label-sm">JD</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="min-h-screen pb-24">
+<!-- Page Header Section -->
+<section class="px-margin-mobile pt-6 pb-4">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h1 class="text-display-lg font-display-lg text-on-surface tracking-tight">Prompts</h1>
+<p class="text-on-surface-variant text-body-md mt-1">Manage AI visibility monitoring instructions</p>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg flex items-center gap-2 text-label-sm font-label-sm hover:bg-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Create Prompt
+                </button>
+</div>
+<!-- Search & Filter Controls -->
+<div class="flex flex-col gap-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-3 text-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Search prompt titles..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm whitespace-nowrap">
+                        Status: All <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm whitespace-nowrap">
+                        Providers <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm whitespace-nowrap">
+                        Recent <span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Prompts List -->
+<section class="px-margin-mobile flex flex-col gap-3">
+<!-- Card 1: Enterprise Brand -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-widest">Brand Research</span>
+<h3 class="text-headline-md font-headline-md text-on-surface">Brand Comparison - Enterprise</h3>
+</div>
+<div class="px-2 py-0.5 bg-primary-container/10 text-primary border border-primary-container/20 rounded text-[10px] font-bold uppercase tracking-tighter">Active</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Visibility Score</span>
+<div class="flex items-baseline gap-1">
+<span class="text-metric-lg font-metric-lg text-primary">72%</span>
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-label-sm font-label-sm text-outline">Last Run</span>
+<span class="text-metric-sm font-metric-sm text-on-surface-variant">Oct 24, 14:02</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-outline-variant/30">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A small circular logo representing OpenAI, featuring its iconic minimalist geometric spiral design in clean black and white, professional and modern style for a technology dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARnnqOQSzwlo_nVIoVpTCvhyI7c9LfIsV2YsCos2StpistWgeh29ijnXja-AoAwQzBaQFlHlcx9eTXhFVAw96wOpcQDVbzsZJjp1o5qft6q3qFyB8sMPCAYqQIpBxQmvaDpNzU0NLj-UfqqGKakHFlgOL9BunRiHw5oVsefouK02ULfZLYNi11FpaajIjU4OOWVCinuOrId1TIFJAdnL64_UoEmGY4CJWbtZQ7gZAxmIItY6VLyuYLUgJKkrvCbPOR_ZpvYwBc6avV"/>
+</div>
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A small circular logo representing Google Gemini, with a sleek, multi-colored star-like gradient icon reflecting modern AI aesthetics on a pristine white background, designed for a technical UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgT25pL8QkPKB57vR9NCPRJoHD-QopxFrmUHfyy9YZTLNd9HrmrA3rxJkbHu248saW6PNbSMaBxgos5s6cFtW_xzOkW08KYP8drU7h0fBjKE7tpgQMl9_FIUNRI1tAzC-PPE5y5jC0Dy21UPCDgKiGRAVJYN-kig7ADnZ7tA6RJB5GOPyyVuYweNOTFrEAZRgi-I2ZetyzN_TsOPqxHxOvz7U8c11RphheG3UUWXAYfSj1TSAKz5aZiW3zVFsnUk1Q8Jpgpsbp6_s3"/>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer" title="Run Now">play_circle</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer" title="Edit Prompt">edit_square</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer" title="History">history</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Competitor Analysis -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline uppercase tracking-widest">Market Intel</span>
+<h3 class="text-headline-md font-headline-md text-on-surface">Competitor Semantic Gaps</h3>
+</div>
+<div class="px-2 py-0.5 bg-surface-container-highest text-outline border border-outline-variant rounded text-[10px] font-bold uppercase tracking-tighter">Paused</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Visibility Score</span>
+<div class="flex items-baseline gap-1">
+<span class="text-metric-lg font-metric-lg text-on-surface">48%</span>
+<span class="material-symbols-outlined text-[16px] text-error" style="font-variation-settings: 'FILL' 1;">trending_down</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-label-sm font-label-sm text-outline">Last Run</span>
+<span class="text-metric-sm font-metric-sm text-on-surface-variant">Oct 19, 09:45</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-outline-variant/30">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A small circular icon for Anthropic Claude, showing a simplified stylized hand or a lowercase letter-like mark in a deep graphite gray, professionally integrated into a data monitoring platform interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOl7y_Zi9lFjjYcpQPx8GgQXH8f8WdCvPWZ_ONZTojijGQy26TMb9Yt3SvOCAZKgF1PKgOFtGrgmIhVHV3tO9a8VkQiq3RU1wMg2JY7XBkpVyej7xsqTTHmw79LYSDIfFLO3bZe1xh1ZD7e3zf21Z1umWpd6iWOS5qwbyD_TwUbZDhCRx2VQNwnjk6vDhRwhAsSwMBb_JJEsjewGwyidKsBJhbiJ4FXPfO2lpAIJen-m_ZgwDB_-TnPZ3MBe-ay1F97R238lzVMh2W"/>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">play_circle</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">edit_square</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">history</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Feature Highlight -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-widest">Product Launch</span>
+<h3 class="text-headline-md font-headline-md text-on-surface">Cloud Security SEO Audit</h3>
+</div>
+<div class="px-2 py-0.5 bg-primary-container/10 text-primary border border-primary-container/20 rounded text-[10px] font-bold uppercase tracking-tighter">Active</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Visibility Score</span>
+<div class="flex items-baseline gap-1">
+<span class="text-metric-lg font-metric-lg text-primary">61%</span>
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-label-sm font-label-sm text-outline">Last Run</span>
+<span class="text-metric-sm font-metric-sm text-on-surface-variant">Oct 23, 22:15</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-outline-variant/30">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A tiny digital icon representing Microsoft Perplexity, with a complex geometric blue and teal interlocking pattern, displayed on a high-density analytics dashboard for specialized AI insights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzbOYkzmfvs9BHlyWXIbnXdwfvRJzfEB4Jj6RKVbFoa_j-FUshuetDptBoE3CAqbog4dYjCNprCGbpqnKT_58xoZolMXaYps2GjW-Z39bblDLn_DSDV0zncJx0DptNRdbZn8DPM-SdGbx2n2aArvRzLP_OPGnYohXZL59xUPNShVvnN0QAfnmEKXPgurptnNl_6COidWfVGlpUb86LaZbt2I2wzjwg3ojaqskUqugLHvHMzLwvsGD2euxN1nuD7GaC3SXlANk6tE4o"/>
+</div>
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A small circular logo representing OpenAI, featuring its iconic minimalist geometric spiral design in clean black and white, professional and modern style for a technology dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeo8uYJUMZpKug09Hry8cUAepqdwDHWDts94ouSn170odReeCnNx4LDRdiB2GMnGPMCEXBsWJhM35pUCmut8EvGNXVWPpaqLEaXW9wMaJKcy-i8nk_dlTOgOh_uL9wUFO1jMWMU5IkTJPo8WoulhU5f01tHxtk0JFvnLhmhVeHCuxvC_83o6e54Ff7xQhPQnoJMww3OT0wrj8mXPRgcWxrp7fKOHuEqRVVYkFH08fcI4GlrDbhEEI6gcBbPnZXXgv2hRaXfEC9t2nf"/>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">play_circle</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">edit_square</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">history</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Global Reach -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-widest">Localization</span>
+<h3 class="text-headline-md font-headline-md text-on-surface">APAC Regional Sentiment</h3>
+</div>
+<div class="px-2 py-0.5 bg-primary-container/10 text-primary border border-primary-container/20 rounded text-[10px] font-bold uppercase tracking-tighter">Active</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Visibility Score</span>
+<div class="flex items-baseline gap-1">
+<span class="text-metric-lg font-metric-lg text-primary">85%</span>
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-label-sm font-label-sm text-outline">Last Run</span>
+<span class="text-metric-sm font-metric-sm text-on-surface-variant">Oct 24, 02:00</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-outline-variant/30">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container flex items-center justify-center">
+<img class="w-4 h-4 rounded-full" data-alt="A small circular logo representing Google Gemini, with a sleek, multi-colored star-like gradient icon reflecting modern AI aesthetics on a pristine white background, designed for a technical UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDABYX7oUzFITMY1xBD4T1VYBs9GIe4sDFzV1yBDr_zEHNldGAL-l67euk4mDvXjwTPbJcP9UIm1gfBEtMPbPaITNuSMdZED5JR3GkLcdvFCfYoreHs0INLmoQZfj1NEkdN_7Ch4wweNr3UuaIVBFNaGfoQTMh7SeNTugsmj42KaGtFR0_RElQp6tTpUWAzGPX4GOoJLIzwmwZMt0ST5HE40mQ7KV6y5P_tFg953atgCK4-_jgiEKXWqHJJnL54PkuXtNciKWUpUptP"/>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">play_circle</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">edit_square</span>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer">history</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface dark:bg-on-background border-t border-outline-variant z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="text-label-sm font-label-sm">Workflow</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</nav>
+<!-- Contextual FAB - Only for top level main pages -->
+<div class="fixed bottom-20 right-6 z-50 md:hidden">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+</body></html>

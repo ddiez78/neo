@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "PASTE_GITHUB_TOKEN_HERE"
+      }
+    },
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp"

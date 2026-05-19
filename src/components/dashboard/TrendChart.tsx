@@ -19,24 +19,24 @@ export function TrendChart({ metrics }: { metrics: PromptMetrics[] }) {
 	}));
 
 	return (
-		<div className="h-72 rounded-md border border-slate-200 bg-white p-4">
+		<div className="neo-card h-72 p-4">
 			<div className="mb-4">
-				<h2 className="text-base font-semibold text-slate-950">
+				<h2 className="text-base font-semibold text-[var(--foreground)]">
 					Evolucion de visibilidad
 				</h2>
 				<p className="text-sm text-slate-500">Score y menciones por dia.</p>
 			</div>
 			<ResponsiveContainer height="78%" width="100%">
 				<AreaChart data={data}>
-					<CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
+					<CartesianGrid stroke="#d9e5e0" strokeDasharray="3 3" />
 					<XAxis dataKey="date" fontSize={12} tickLine={false} />
 					<YAxis fontSize={12} tickLine={false} />
 					<Tooltip />
 					<Area
 						dataKey="visibility"
-						fill="#22d3ee"
-						fillOpacity={0.18}
-						stroke="#0891b2"
+						fill="#0d9488"
+						fillOpacity={0.17}
+						stroke="#00685f"
 						strokeWidth={2}
 						type="monotone"
 					/>

@@ -1,5 +1,6 @@
 import {
 	createRecommendationAction,
+	createRecommendationTaskAction,
 	generateRecommendationsAction,
 	importRecommendationSourcesAction,
 	updateRecommendationStatusAction,
@@ -223,6 +224,12 @@ export default async function Page({
 								recommendation.id,
 								"dismissed",
 							);
+							const createTask = createRecommendationTaskAction.bind(
+								null,
+								workspace.id,
+								workspace.slug,
+								recommendation,
+							);
 
 							return (
 								<article
@@ -313,6 +320,14 @@ export default async function Page({
 												type="submit"
 											>
 												Dismiss
+											</button>
+										</form>
+										<form action={createTask}>
+											<button
+												className="rounded-md bg-cyan-700 px-3 py-2 text-sm font-medium text-white hover:bg-cyan-800"
+												type="submit"
+											>
+												Create task
 											</button>
 										</form>
 									</div>

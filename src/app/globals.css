@@ -1,8 +1,31 @@
 @import "tailwindcss";
 
 :root {
-	--background: #f6f8fb;
-	--foreground: #0f172a;
+	--background: #f4f8f6;
+	--foreground: #171d1c;
+	--surface: #ffffff;
+	--surface-subtle: #eef4f2;
+	--border: #d7e2de;
+	--sidebar: #0f1518;
+	--sidebar-border: #253038;
+	--sidebar-foreground: #d5e3de;
+	--brand: #0d9488;
+	--brand-deep: #00685f;
+	--brand-soft: #d8f5ef;
+}
+
+.dark {
+	--background: #0f1417;
+	--foreground: #e7f0ec;
+	--surface: #161d20;
+	--surface-subtle: #1f2a2e;
+	--border: #2b3a3f;
+	--sidebar: #0a0f12;
+	--sidebar-border: #26343a;
+	--sidebar-foreground: #c6d6d0;
+	--brand: #25b6aa;
+	--brand-deep: #119487;
+	--brand-soft: #163834;
 }
 
 @theme inline {
@@ -15,7 +38,11 @@
 body {
 	background: var(--background);
 	color: var(--foreground);
-	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+	font-family: var(--font-geist-sans), sans-serif;
+}
+
+.dark body {
+	color-scheme: dark;
 }
 
 input,
@@ -27,4 +54,37 @@ button {
 
 textarea {
 	resize: vertical;
+}
+
+.neo-card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+}
+
+.dark .bg-white {
+	background-color: var(--surface);
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+	background-color: var(--surface-subtle);
+}
+
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-300 {
+	border-color: var(--border);
+}
+
+.dark .text-slate-900,
+.dark .text-slate-950 {
+	color: var(--foreground);
+}
+
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-slate-500,
+.dark .text-slate-400 {
+	color: #b6c7c0;
 }

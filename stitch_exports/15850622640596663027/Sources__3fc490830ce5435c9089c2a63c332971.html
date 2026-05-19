@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Sources Intelligence | NEO GEO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-variant": "#dee4e1",
+                "on-primary-fixed": "#00201d",
+                "inverse-primary": "#6bd8cb",
+                "error": "#ba1a1a",
+                "surface": "#f5faf8",
+                "on-surface": "#171d1c",
+                "primary-fixed-dim": "#6bd8cb",
+                "primary-container": "#008378",
+                "primary-fixed": "#89f5e7",
+                "tertiary-fixed": "#ffdbce",
+                "secondary": "#0051d5",
+                "on-secondary-fixed-variant": "#003ea8",
+                "on-secondary-fixed": "#00174b",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#370e00",
+                "on-tertiary": "#ffffff",
+                "tertiary": "#924628",
+                "surface-container-lowest": "#ffffff",
+                "primary": "#00685f",
+                "inverse-surface": "#2c3130",
+                "surface-bright": "#f5faf8",
+                "outline-variant": "#bcc9c6",
+                "on-background": "#171d1c",
+                "surface-container-low": "#f0f5f2",
+                "outline": "#6d7a77",
+                "error-container": "#ffdad6",
+                "on-surface-variant": "#3d4947",
+                "secondary-fixed-dim": "#b4c5ff",
+                "inverse-on-surface": "#edf2f0",
+                "on-error": "#ffffff",
+                "background": "#f5faf8",
+                "surface-container-highest": "#dee4e1",
+                "secondary-fixed": "#dbe1ff",
+                "surface-tint": "#006a61",
+                "surface-container-high": "#e4e9e7",
+                "on-secondary-container": "#fefcff",
+                "surface-container": "#eaefed",
+                "surface-dim": "#d6dbd9",
+                "tertiary-container": "#b05e3d",
+                "tertiary-fixed-dim": "#ffb59a",
+                "on-tertiary-container": "#fffbff",
+                "secondary-container": "#316bf3",
+                "on-secondary": "#ffffff",
+                "on-primary-container": "#f4fffc",
+                "on-primary-fixed-variant": "#005049"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+              },
+              "spacing": {
+                "gutter": "16px",
+                "sidebar-width": "240px",
+                "margin-mobile": "16px",
+                "margin-desktop": "32px",
+                "base": "4px",
+                "table-cell-padding": "12px"
+              },
+              "fontFamily": {
+                "metric-lg": ["JetBrains Mono"],
+                "body-md": ["Inter"],
+                "label-sm": ["Inter"],
+                "metric-sm": ["JetBrains Mono"],
+                "headline-md": ["Inter"],
+                "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-surface dark:bg-on-background border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+<h1 class="text-headline-md font-headline-md font-bold tracking-tight text-primary dark:text-primary-fixed">NEO GEO</h1>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary" data-icon="search">search</span>
+</div>
+</header>
+<main class="pb-24">
+<!-- Dashboard Header Context -->
+<section class="px-margin-mobile pt-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Sources</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Domain intelligence and visibility tracking.</p>
+</section>
+<!-- KPI Metrics Grid -->
+<section class="grid grid-cols-2 gap-base px-margin-mobile mt-6">
+<div class="bg-surface-container-lowest border border-outline-variant p-4">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Total Domains</p>
+<p class="font-metric-lg text-metric-lg text-on-surface">2.4k</p>
+<div class="mt-2 h-1 bg-surface-container-highest w-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 65%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">New Sources</p>
+<p class="font-metric-lg text-metric-lg text-primary">12</p>
+<div class="mt-2 flex items-center gap-1 text-on-primary-fixed-variant">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm">+18% vs LW</span>
+</div>
+</div>
+</section>
+<!-- Filters Section -->
+<section class="px-margin-mobile mt-8 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h3 class="font-label-sm text-label-sm font-bold uppercase tracking-widest text-outline">Active Filters</h3>
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="filter_list">filter_list</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="bg-surface-container-high border border-outline-variant px-3 py-2 flex items-center gap-2 font-label-sm text-label-sm rounded-lg active:bg-surface-variant transition-colors">
+                    Authority: High (70+)
+                    <span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant px-3 py-2 flex items-center gap-2 font-label-sm text-label-sm rounded-lg active:bg-surface-variant transition-colors">
+                    Competitor Presence
+                    <span class="material-symbols-outlined text-[14px]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+</div>
+</section>
+<!-- Sources Stacked List -->
+<section class="px-margin-mobile mt-6 space-y-3">
+<!-- Source Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 hover:bg-surface-container-low transition-all">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">techcrunch.com</h4>
+<p class="font-label-sm text-label-sm text-outline mt-0.5">Technology &amp; Startups</p>
+</div>
+<div class="bg-primary-container text-on-primary-container px-2 py-1 flex items-center gap-1">
+<span class="font-metric-sm text-metric-sm">88</span>
+<span class="font-label-sm text-[10px] uppercase">AS</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-surface-container mt-4 pt-4">
+<div>
+<p class="font-label-sm text-label-sm text-outline mb-2">Mentions Mix</p>
+<div class="flex h-2 w-full gap-0.5">
+<div class="h-full bg-primary flex-1" style="flex-grow: 45;"></div>
+<div class="h-full bg-secondary flex-1" style="flex-grow: 55;"></div>
+</div>
+<div class="flex justify-between mt-1.5 font-label-sm text-[10px] text-on-surface-variant">
+<span>BRAND</span>
+<span>COMPETITOR</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-outline mb-1">Last Seen</p>
+<p class="font-body-md text-body-md text-on-surface">Oct 24, 2023</p>
+<p class="font-label-sm text-[10px] text-primary">2 hours ago</p>
+</div>
+</div>
+</div>
+<!-- Source Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 hover:bg-surface-container-low transition-all">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">theverge.com</h4>
+<p class="font-label-sm text-label-sm text-outline mt-0.5">Consumer Electronics</p>
+</div>
+<div class="bg-primary-container text-on-primary-container px-2 py-1 flex items-center gap-1">
+<span class="font-metric-sm text-metric-sm">92</span>
+<span class="font-label-sm text-[10px] uppercase">AS</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-surface-container mt-4 pt-4">
+<div>
+<p class="font-label-sm text-label-sm text-outline mb-2">Mentions Mix</p>
+<div class="flex h-2 w-full gap-0.5">
+<div class="h-full bg-primary flex-1" style="flex-grow: 15;"></div>
+<div class="h-full bg-secondary flex-1" style="flex-grow: 85;"></div>
+</div>
+<div class="flex justify-between mt-1.5 font-label-sm text-[10px] text-on-surface-variant">
+<span>BRAND</span>
+<span>COMPETITOR</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-outline mb-1">Last Seen</p>
+<p class="font-body-md text-body-md text-on-surface">Oct 23, 2023</p>
+<p class="font-label-sm text-[10px] text-outline">Yesterday</p>
+</div>
+</div>
+</div>
+<!-- Source Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 hover:bg-surface-container-low transition-all">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">venturebeat.com</h4>
+<p class="font-label-sm text-label-sm text-outline mt-0.5">Enterprise AI &amp; Tech</p>
+</div>
+<div class="bg-surface-container-highest text-on-surface-variant px-2 py-1 flex items-center gap-1 border border-outline-variant">
+<span class="font-metric-sm text-metric-sm">74</span>
+<span class="font-label-sm text-[10px] uppercase">AS</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-surface-container mt-4 pt-4">
+<div>
+<p class="font-label-sm text-label-sm text-outline mb-2">Mentions Mix</p>
+<div class="flex h-2 w-full gap-0.5">
+<div class="h-full bg-primary flex-1" style="flex-grow: 80;"></div>
+<div class="h-full bg-secondary flex-1" style="flex-grow: 20;"></div>
+</div>
+<div class="flex justify-between mt-1.5 font-label-sm text-[10px] text-on-surface-variant">
+<span>BRAND</span>
+<span>COMPETITOR</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-outline mb-1">Last Seen</p>
+<p class="font-body-md text-body-md text-on-surface">Oct 21, 2023</p>
+<p class="font-label-sm text-[10px] text-outline">3 days ago</p>
+</div>
+</div>
+</div>
+<!-- Source Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 hover:bg-surface-container-low transition-all">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">wired.com</h4>
+<p class="font-label-sm text-label-sm text-outline mt-0.5">Science &amp; Culture</p>
+</div>
+<div class="bg-primary-container text-on-primary-container px-2 py-1 flex items-center gap-1">
+<span class="font-metric-sm text-metric-sm">91</span>
+<span class="font-label-sm text-[10px] uppercase">AS</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-surface-container mt-4 pt-4">
+<div>
+<p class="font-label-sm text-label-sm text-outline mb-2">Mentions Mix</p>
+<div class="flex h-2 w-full gap-0.5">
+<div class="h-full bg-primary flex-1" style="flex-grow: 30;"></div>
+<div class="h-full bg-secondary flex-1" style="flex-grow: 70;"></div>
+</div>
+<div class="flex justify-between mt-1.5 font-label-sm text-[10px] text-on-surface-variant">
+<span>BRAND</span>
+<span>COMPETITOR</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-outline mb-1">Last Seen</p>
+<p class="font-body-md text-body-md text-on-surface">Oct 20, 2023</p>
+<p class="font-label-sm text-[10px] text-outline">4 days ago</p>
+</div>
+</div>
+</div>
+</section>
+<div class="px-margin-mobile mt-8">
+<button class="w-full bg-surface-container border border-outline-variant py-3 font-label-sm text-label-sm text-on-surface active:bg-surface-variant transition-all uppercase tracking-widest">
+                Load More Domains
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface dark:bg-on-background border-t border-outline-variant shadow-sm z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="text-label-sm font-label-sm">Workflow</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-semibold scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="travel_explore" style="font-variation-settings: 'FILL' 1;">travel_explore</span>
+<span class="text-label-sm font-label-sm">Sources</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</nav>
+</body></html>

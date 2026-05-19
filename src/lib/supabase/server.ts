@@ -12,7 +12,12 @@ export async function createClient() {
 				},
 				setAll(v) {
 					v.forEach(({ name, value, options }) => {
-						c.set(name, value, options);
+						try {
+							c.set(name, value, options);
+						} catch {
+							// Server Components cannot mutate cookies. Middleware/Route
+							// Handlers/Server Actions will persist refreshed auth cookies.
+						}
 					});
 				},
 			},

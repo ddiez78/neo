@@ -11,7 +11,9 @@ export default async function Page({
 	const { workspace: slug } = await params;
 	const status = await searchParams;
 	const workspace = await requireWorkspace(slug);
-	const { prompts, llmConfigs } = await getWorkspaceOverview(workspace.id);
+	const { prompts, llmConfigs, rankings } = await getWorkspaceOverview(
+		workspace.id,
+	);
 	const createAction = createPromptAction.bind(
 		null,
 		workspace.id,
@@ -113,6 +115,9 @@ export default async function Page({
 				</form>
 				<div className="grid gap-3">
 					{prompts.map((prompt) => {
+						const ranking = rankings.find(
+							(item) => item.prompt_id === prompt.id,
+						);
 						const runAction = runPromptAction.bind(
 							null,
 							workspace.id,
@@ -136,6 +141,23 @@ export default async function Page({
 											{prompt.status} · prioridad {prompt.priority} ·{" "}
 											{prompt.frequency}
 										</p>
+										<div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold uppercase">
+											<span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">
+												{ranking?.brand_mentioned
+													? "brand visible"
+													: "brand missing"}
+											</span>
+											<span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">
+												pos {ranking?.brand_position ?? "-"}
+											</span>
+											<span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">
+												score{" "}
+												{Number(ranking?.visibility_score ?? 0).toFixed(0)}
+											</span>
+											<span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">
+												{ranking?.sentiment ?? "no_data"}
+											</span>
+										</div>
 									</div>
 									<form action={runAction}>
 										<input

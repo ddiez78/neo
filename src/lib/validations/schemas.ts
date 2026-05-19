@@ -16,6 +16,7 @@ export const workspaceSchema = z.object({
 		.optional()
 		.or(z.literal("")),
 	industry: z.string().optional(),
+	country_code: z.string().min(2).max(2).default("ES"),
 	locale: z.string().default("es-ES"),
 	timezone: z.string().default("Europe/Madrid"),
 });

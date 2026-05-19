@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEO GEO | Sources Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#b05e3d",
+                        "secondary-fixed": "#dbe1ff",
+                        "primary-container": "#008378",
+                        "inverse-surface": "#2c3130",
+                        "secondary": "#0051d5",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#dee4e1",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#dee4e1",
+                        "tertiary-fixed": "#ffdbce",
+                        "outline-variant": "#bcc9c6",
+                        "outline": "#6d7a77",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f0f5f2",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary-container": "#fefcff",
+                        "tertiary": "#924628",
+                        "surface-bright": "#f5faf8",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "inverse-on-surface": "#edf2f0",
+                        "surface": "#f5faf8",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "on-background": "#171d1c",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "surface-container": "#eaefed",
+                        "on-surface": "#171d1c",
+                        "background": "#f5faf8",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-tint": "#006a61",
+                        "primary": "#00685f",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-primary-container": "#f4fffc",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "table-cell-padding": "12px",
+                        "sidebar-width": "240px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "metric-sm": ["JetBrains Mono"],
+                        "metric-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .zebra-table tr:nth-child(even) {
+            background-color: rgba(234, 239, 237, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md flex">
+<!-- NavigationDrawer (Sidebar) -->
+<aside class="hidden md:flex flex-col w-sidebar-width h-screen sticky top-0 py-4 bg-surface dark:bg-on-background border-r border-outline-variant transition-all duration-200 ease-in-out z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-black text-primary dark:text-primary-fixed uppercase tracking-wider">NEO GEO ANALYTICS</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="query_stats">query_stats</span>
+<span class="text-label-sm font-label-sm">Competitors</span>
+</a>
+<!-- Active State: Sources -->
+<a class="flex items-center px-6 py-3 text-primary dark:text-primary-fixed-dim bg-surface-container border-l-4 border-primary font-bold" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="travel_explore">travel_explore</span>
+<span class="text-label-sm font-label-sm">Sources</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="description">description</span>
+<span class="text-label-sm font-label-sm">Company Bio</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="terminal">terminal</span>
+<span class="text-label-sm font-label-sm">Prompts</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="search_insight">search_insights</span>
+<span class="text-label-sm font-label-sm">Prompt Research</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="groups">groups</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-4 space-y-1">
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-outline p-spacing-base hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="text-label-sm font-label-sm">Admin</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-h-screen min-w-0">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-surface dark:bg-on-background border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="text-headline-md font-headline-md font-bold tracking-tight text-primary dark:text-primary-fixed">NEO GEO</div>
+<div class="hidden md:flex ml-8 space-x-6 h-full items-center">
+<span class="text-label-sm font-label-sm text-primary dark:text-primary-fixed-dim border-b-2 border-primary py-5">Sources Intel</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant dark:text-surface-variant cursor-pointer hover:bg-surface-container-low transition-colors px-2 py-1">Network Map</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant dark:text-surface-variant cursor-pointer hover:bg-surface-container-low transition-colors px-2 py-1">Alerts</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<input class="bg-surface-container-low border border-outline-variant text-body-md px-4 py-1.5 pr-10 w-64 rounded-lg focus:outline-none focus:border-primary" placeholder="Search domains..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+</div>
+<button class="text-primary p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional portrait of a senior data analyst with a neutral expression, set against a blurred corporate office background. The lighting is soft and directional, emphasizing a professional and focused atmosphere. The visual style is clean and high-fidelity, matching a modern enterprise dashboard aesthetic with balanced tones of cool blue and neutral grey." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_n1uUaSB5b8ofBA6QNOrVnrcse-Ty86QYkvZHERaUNKE7F4W9zyK-vPIpTzDZcPR5uxqmwTFqLFaKUspAj0M-CfiWEjpKfr6xX4k507KpKSn-DDd0HrcwboFdmgT98cK9fLXgwj8HtnbNTu4rvl_lNm_GnvVM8uWf7NHklkKtfxfQyL8mUOEJvXFxVDzVBRjESlXNnJzJm38RqQ7b9t7fzDuuFIHutwfiJIpHZf52FC_mztEeOg5nJqggPFuifLxEOZo2Q2VTuL1v"/>
+</div>
+</div>
+</header>
+<!-- View Content -->
+<div class="p-margin-desktop space-y-6">
+<!-- Summary Stats -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Total Domains</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">2,418</span>
+<span class="text-label-sm font-label-sm text-primary">+4.2%</span>
+</div>
+<div class="w-full h-1 bg-surface-container mt-4 overflow-hidden">
+<div class="h-full bg-primary" style="width: 65%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">New Sources (24h)</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">12</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">/8 avg</span>
+</div>
+<div class="w-full h-1 bg-surface-container mt-4 overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 40%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Avg. Authority Score</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">64.8</span>
+<span class="material-symbols-outlined text-primary text-[14px]" data-icon="trending_up">trending_up</span>
+</div>
+<div class="w-full h-1 bg-surface-container mt-4 overflow-hidden">
+<div class="h-full bg-secondary-container" style="width: 78%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Data Refresh</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">Live</span>
+<span class="text-label-sm font-label-sm text-outline">04:12 PM</span>
+</div>
+<div class="w-full h-1 bg-surface-container mt-4 overflow-hidden">
+<div class="h-full bg-primary-container animate-pulse" style="width: 100%;"></div>
+</div>
+</div>
+</section>
+<!-- Active Filters -->
+<section class="bg-surface-container-low border border-outline-variant p-4 flex flex-wrap items-center gap-3">
+<span class="text-label-sm font-label-sm text-outline flex items-center mr-2">
+<span class="material-symbols-outlined mr-1 text-[16px]" data-icon="filter_list">filter_list</span>
+                    ACTIVE FILTERS:
+                </span>
+<div class="flex items-center bg-surface border border-outline-variant px-3 py-1 rounded-lg gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span>Category: Technology</span>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="flex items-center bg-surface border border-outline-variant px-3 py-1 rounded-lg gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span>AS Score: &gt;40</span>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="flex items-center bg-surface border border-outline-variant px-3 py-1 rounded-lg gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span>Mentions: High</span>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<button class="text-label-sm font-label-sm text-primary hover:underline ml-auto flex items-center">
+                    CLEAR ALL
+                </button>
+</section>
+<!-- Data Table -->
+<div class="bg-surface-container-lowest border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse zebra-table">
+<thead class="bg-surface-container-high border-b border-outline-variant sticky top-0">
+<tr>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Domain Name</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">AS Score</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Mentions Mix (B vs C)</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Last Seen</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-center">Action</th>
+</tr>
+</thead>
+<tbody class="text-body-md divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-surface-container flex items-center justify-center rounded">T</div>
+<span class="font-semibold text-primary">techcrunch.com</span>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant">Technology &amp; Startups</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="font-metric-sm text-metric-sm text-on-surface">92</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="w-full max-w-[120px] h-2 flex rounded-full overflow-hidden bg-surface-container">
+<div class="h-full bg-primary" style="width: 70%;"></div>
+<div class="h-full bg-secondary" style="width: 30%;"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 block">70% Brand</span>
+</td>
+<td class="px-table-cell-padding py-3 text-on-surface-variant">Oct 24, 2023</td>
+<td class="px-table-cell-padding py-3 text-center">
+<button class="text-outline group-hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-surface-container flex items-center justify-center rounded">V</div>
+<span class="font-semibold text-primary">theverge.com</span>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant">Consumer Tech</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="font-metric-sm text-metric-sm text-on-surface">88</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="w-full max-w-[120px] h-2 flex rounded-full overflow-hidden bg-surface-container">
+<div class="h-full bg-primary" style="width: 45%;"></div>
+<div class="h-full bg-secondary" style="width: 55%;"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 block">45% Brand</span>
+</td>
+<td class="px-table-cell-padding py-3 text-on-surface-variant">Oct 23, 2023</td>
+<td class="px-table-cell-padding py-3 text-center">
+<button class="text-outline group-hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-surface-container flex items-center justify-center rounded">B</div>
+<span class="font-semibold text-primary">bloomberg.com</span>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant">Business Finance</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="font-metric-sm text-metric-sm text-on-surface">96</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="w-full max-w-[120px] h-2 flex rounded-full overflow-hidden bg-surface-container">
+<div class="h-full bg-primary" style="width: 20%;"></div>
+<div class="h-full bg-secondary" style="width: 80%;"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 block">20% Brand</span>
+</td>
+<td class="px-table-cell-padding py-3 text-on-surface-variant">Oct 22, 2023</td>
+<td class="px-table-cell-padding py-3 text-center">
+<button class="text-outline group-hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-surface-container flex items-center justify-center rounded">N</div>
+<span class="font-semibold text-primary">nextweb.com</span>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant">Technology</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="font-metric-sm text-metric-sm text-on-surface">74</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="w-full max-w-[120px] h-2 flex rounded-full overflow-hidden bg-surface-container">
+<div class="h-full bg-primary" style="width: 60%;"></div>
+<div class="h-full bg-secondary" style="width: 40%;"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 block">60% Brand</span>
+</td>
+<td class="px-table-cell-padding py-3 text-on-surface-variant">Oct 21, 2023</td>
+<td class="px-table-cell-padding py-3 text-center">
+<button class="text-outline group-hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-table-cell-padding py-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-surface-container flex items-center justify-center rounded">A</div>
+<span class="font-semibold text-primary">arstechnica.com</span>
+</div>
+</td>
+<td class="px-table-cell-padding py-3">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant">Scientific Tech</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="font-metric-sm text-metric-sm text-on-surface">82</span>
+</td>
+<td class="px-table-cell-padding py-3">
+<div class="w-full max-w-[120px] h-2 flex rounded-full overflow-hidden bg-surface-container">
+<div class="h-full bg-primary" style="width: 15%;"></div>
+<div class="h-full bg-secondary" style="width: 85%;"></div>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 block">15% Brand</span>
+</td>
+<td class="px-table-cell-padding py-3 text-on-surface-variant">Oct 20, 2023</td>
+<td class="px-table-cell-padding py-3 text-center">
+<button class="text-outline group-hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant flex justify-center bg-surface-container-low">
+<button class="flex items-center gap-2 px-8 py-2 bg-primary text-on-primary font-label-sm text-label-sm rounded-lg hover:shadow-lg transition-all active:scale-95">
+                        LOAD MORE SOURCES
+                        <span class="material-symbols-outlined text-[16px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Bento Contextual Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-surface-container-lowest border border-outline-variant p-6 flex flex-col gap-4">
+<h3 class="text-headline-md font-headline-md font-bold text-on-surface">Geographic Concentration</h3>
+<div class="h-64 bg-surface-container flex items-center justify-center rounded-lg relative overflow-hidden">
+<img alt="Geo Distribution" class="w-full h-full object-cover opacity-80" data-alt="A stylized technical map of the world with glowing data nodes and interconnected lines showing global connectivity. The map uses a minimalist, blueprint-inspired aesthetic with a deep graphite background and neon teal highlights. It represents a sophisticated analytics platform's view of data source distribution across continents, illuminated by a futuristic, data-driven light source." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWOq3biFPaxMzEaXCMByCNNaOC8UEZOrk0w1nQ0bUa7bmrOEQrj-0XrQHZ2NjVWgoJT_mubf12P0vq26SWcEE98MDO63gCrc-Mg1UVMpJDBlYAVxLWm8UaN1O6BCFPKUr_lurnuPc0b1OUN2tpdLx-R3QcM5gASTfMfB3Fj39K9qXWmM4Y2zd4O5GHg6G-iYUN_fyHrZ302YR5lQNjcTeAOPH6y-8tcZXYPEygWIb0YaciXy0ZNt-XVhkdWYtswz7flzizEsHnYQPb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent flex items-end p-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Top region: North America (42%)</span>
+</div>
+</div>
+</div>
+<div class="bg-primary text-on-primary p-6 flex flex-col justify-between border border-primary">
+<div>
+<h3 class="text-headline-md font-headline-md font-black uppercase mb-4">Export Intelligence</h3>
+<p class="text-body-md font-body-md opacity-90 mb-6">Download detailed domain mapping and mentions trajectory for the current filter set. Available in JSON, CSV, and XLSX.</p>
+</div>
+<button class="w-full py-3 bg-on-primary text-primary font-bold text-label-sm rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-colors">
+                        GENERATE REPORT
+                        <span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+</section>
+</div>
+<footer class="mt-auto py-8 px-margin-desktop text-center border-t border-outline-variant bg-surface-container-low">
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-widest">NEO GEO ANALYTICS ENGINE — VER. 4.8.2 — © 2023</p>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface dark:bg-on-background border-t border-outline-variant z-50 shadow-sm">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-semibold active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+<span class="text-label-sm font-label-sm">Sources</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline active:bg-surface-variant transition-transform scale-98">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</div>
+</nav>
+</body></html>

@@ -173,14 +173,28 @@ export async function createRecommendationAction(
 }
 
 export async function createRecommendationTaskAction(
+	workspaceId: string,
 	workspaceSlug: string,
 	recommendation: Recommendation,
 ) {
 	const { supabase, user } = await requireUser();
 	const { error } = await supabase.from("recommendation_actions").insert({
+		workspace_id: workspaceId,
 		recommendation_id: recommendation.id,
+		source_recommendation_id: recommendation.id,
 		label: recommendation.title,
 		owner_id: user.id,
+		assigned_to: user.id,
+		priority: recommendation.priority,
+		type:
+			recommendation.category === "technical"
+				? "technical"
+				: recommendation.category === "sources" ||
+						recommendation.category === "authority"
+					? "source_review"
+					: recommendation.category === "competitors"
+						? "comparison"
+						: "content",
 		status: "pending",
 	});
 
@@ -191,4 +205,5 @@ export async function createRecommendationTaskAction(
 	}
 
 	revalidatePath(`/${workspaceSlug}/recommendations`);
+	revalidatePath(`/${workspaceSlug}/tasks`);
 }

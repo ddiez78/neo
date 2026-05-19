@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#dee4e1",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-primary": "#6bd8cb",
+                        "error": "#ba1a1a",
+                        "surface": "#f5faf8",
+                        "on-surface": "#171d1c",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "primary-container": "#008378",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary-fixed": "#ffdbce",
+                        "secondary": "#0051d5",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed": "#00174b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#924628",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00685f",
+                        "inverse-surface": "#2c3130",
+                        "surface-bright": "#f5faf8",
+                        "outline-variant": "#bcc9c6",
+                        "on-background": "#171d1c",
+                        "surface-container-low": "#f0f5f2",
+                        "outline": "#6d7a77",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#3d4947",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "inverse-on-surface": "#edf2f0",
+                        "on-error": "#ffffff",
+                        "background": "#f5faf8",
+                        "surface-container-highest": "#dee4e1",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-tint": "#006a61",
+                        "surface-container-high": "#e4e9e7",
+                        "on-secondary-container": "#fefcff",
+                        "surface-container": "#eaefed",
+                        "surface-dim": "#d6dbd9",
+                        "tertiary-container": "#b05e3d",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-container": "#316bf3",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f4fffc",
+                        "on-primary-fixed-variant": "#005049"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sidebar-width": "240px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "table-cell-padding": "12px"
+                    },
+                    "fontFamily": {
+                        "metric-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "metric-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "metric-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "metric-sm": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile h-16 sticky top-0 z-40 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu</span>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-primary">NEO GEO</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+                    Global Analytics <span class="material-symbols-outlined text-[12px]">expand_more</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full active:bg-surface-variant">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full active:bg-surface-variant">
+<span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
+</button>
+</div>
+</header>
+<main class="px-margin-mobile py-6 pb-24 space-y-6">
+<!-- Dashboard Header & Filters -->
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<h1 class="text-display-lg font-display-lg text-on-surface">Dashboard</h1>
+<div class="flex gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 border border-outline-variant bg-surface-container-lowest rounded-lg text-label-sm font-label-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                        Last 7 Days
+                    </button>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+<button class="flex-none flex items-center gap-1 px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-label-sm font-label-sm">
+                    AI Models: All
+                </button>
+<button class="flex-none flex items-center gap-1 px-3 py-1.5 border border-outline-variant bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm font-label-sm">
+                    Prompt Tags
+                    <span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+<button class="flex-none flex items-center gap-1 px-3 py-1.5 border border-outline-variant bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm font-label-sm">
+                    Workspace: NEO
+                </button>
+</div>
+</div>
+<!-- KPI Grid (2-column mobile) -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Visibility Score -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Visibility Score</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">68%</span>
+<span class="text-label-sm font-label-sm text-primary ml-1">+4%</span>
+</div>
+<div class="h-1 w-full bg-surface-container-high mt-3 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 68%"></div>
+</div>
+</div>
+<!-- AI Mentions -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg flex flex-col justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">AI Mentions</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">1.2k</span>
+<span class="text-label-sm font-label-sm text-primary ml-1">+12%</span>
+</div>
+<div class="mt-3 flex items-end gap-0.5 h-4">
+<div class="w-2 bg-primary-container h-2 rounded-t-[1px]"></div>
+<div class="w-2 bg-primary-container h-3 rounded-t-[1px]"></div>
+<div class="w-2 bg-primary-container h-2 rounded-t-[1px]"></div>
+<div class="w-2 bg-primary h-4 rounded-t-[1px]"></div>
+</div>
+</div>
+<!-- Share of Voice -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Share of Voice</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">18%</span>
+<span class="text-label-sm font-label-sm text-error ml-1">-2%</span>
+</div>
+</div>
+<!-- Positive Sentiment -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Positive Sentiment</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">82%</span>
+<span class="text-label-sm font-label-sm text-outline ml-1">Flat</span>
+</div>
+</div>
+<!-- Sources Found -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Sources Found</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">245</span>
+<span class="text-label-sm font-label-sm text-primary ml-1">+8</span>
+</div>
+</div>
+<!-- Estimated Cost -->
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Estimated Cost</span>
+<div class="mt-2">
+<span class="text-metric-lg font-metric-lg text-on-surface">$142.50</span>
+</div>
+</div>
+</div>
+<!-- Visibility Trend Chart -->
+<section class="space-y-3">
+<h2 class="text-headline-md font-headline-md text-on-surface">Visibility Trend</h2>
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg h-48 relative flex items-end justify-between overflow-hidden">
+<!-- Mock Area Chart -->
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container/10 to-transparent"></div>
+<svg class="absolute bottom-0 left-0 w-full h-32" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="text-primary/10" d="M0 100 V 80 Q 20 60 40 70 T 70 40 T 100 20 V 100 Z" fill="currentColor"></path>
+<path class="text-primary" d="M0 80 Q 20 60 40 70 T 70 40 T 100 20" fill="none" stroke="currentColor" stroke-width="2"></path>
+</svg>
+<div class="z-10 w-full flex justify-between px-2 pb-2 text-[10px] text-outline font-metric-sm">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+</section>
+<!-- Mentions by Model -->
+<section class="space-y-3">
+<h2 class="text-headline-md font-headline-md text-on-surface">Mentions by Model</h2>
+<div class="p-4 border border-outline-variant bg-surface-container-lowest rounded-lg space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface">GPT-4o</span>
+<span class="text-outline">642</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 85%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface">Claude 3.5</span>
+<span class="text-outline">428</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary" style="width: 60%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-on-surface">Gemini 1.5</span>
+<span class="text-outline">130</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 25%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Top Competitors Table -->
+<section class="space-y-3">
+<h2 class="text-headline-md font-headline-md text-on-surface">Top Competitors</h2>
+<div class="border border-outline-variant bg-surface-container-lowest rounded-lg overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-outline">Brand</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-outline text-right">SOV %</th>
+<th class="px-table-cell-padding py-3 text-label-sm font-label-sm text-outline text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-table-cell-padding py-3">
+<span class="text-body-md font-body-md text-on-surface">GeoData Pro</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="text-metric-sm font-metric-sm text-on-surface">32.4%</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="material-symbols-outlined text-primary text-[18px]">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-table-cell-padding py-3">
+<span class="text-body-md font-body-md text-on-surface">Mapping AI</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="text-metric-sm font-metric-sm text-on-surface">12.1%</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="material-symbols-outlined text-error text-[18px]">trending_down</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-table-cell-padding py-3">
+<span class="text-body-md font-body-md text-on-surface">LocateIQ</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="text-metric-sm font-metric-sm text-on-surface">9.5%</span>
+</td>
+<td class="px-table-cell-padding py-3 text-right">
+<span class="material-symbols-outlined text-outline text-[18px]">trending_flat</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Opportunities/Alerts -->
+<section class="space-y-3">
+<h2 class="text-headline-md font-headline-md text-on-surface">Opportunities</h2>
+<div class="p-4 bg-primary-container/10 border border-primary-container rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div class="space-y-1">
+<p class="text-body-md font-bold text-on-primary-fixed">Brand mention spike on Reddit</p>
+<p class="text-label-sm font-label-sm text-on-primary-fixed-variant">Detected 45 new mentions in r/MachineLearning. Consider active engagement to boost SOV.</p>
+</div>
+</div>
+<div class="p-4 bg-tertiary-fixed border border-tertiary-container/30 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">insights</span>
+<div class="space-y-1">
+<p class="text-body-md font-bold text-on-tertiary-fixed">New Source Authority</p>
+<p class="text-label-sm font-label-sm text-on-tertiary-fixed-variant">TechCrunch article is being cited by GPT-4o as a primary source for GeoData.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-surface border-t border-outline-variant z-50 shadow-sm">
+<a class="flex flex-col items-center justify-center text-primary font-semibold scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="text-label-sm font-label-sm">Workflow</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="text-label-sm font-label-sm">Team</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</nav>
+</body></html>

@@ -4,11 +4,17 @@ import type {
 	CompanyProfile,
 	Competitor,
 	LlmConfig,
+	MonthlyReport,
 	Prompt,
 	PromptMetrics,
+	PromptRanking,
 	PromptRun,
+	RecommendationAction,
+	ShareOfVoiceMetric,
 	Source,
+	WeeklyMetric,
 	Workspace,
+	WorkspaceInvite,
 	WorkspaceMember,
 } from "@/types";
 
@@ -74,6 +80,12 @@ export async function getWorkspaceOverview(workspaceId: string) {
 		metrics,
 		members,
 		llmConfigs,
+		rankings,
+		shareOfVoice,
+		weeklyMetrics,
+		reports,
+		tasks,
+		invites,
 	] = await Promise.all([
 		supabase
 			.from("company_profiles")
@@ -117,6 +129,40 @@ export async function getWorkspaceOverview(workspaceId: string) {
 			.select("*")
 			.eq("workspace_id", workspaceId)
 			.order("provider", { ascending: true }),
+		supabase
+			.from("prompt_rankings")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("priority", { ascending: false }),
+		supabase
+			.from("share_of_voice_metrics")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("metric_date", { ascending: true })
+			.limit(90),
+		supabase
+			.from("weekly_metrics")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("week_start", { ascending: true })
+			.limit(26),
+		supabase
+			.from("monthly_reports")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("report_month", { ascending: false })
+			.limit(12),
+		supabase
+			.from("recommendation_actions")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("created_at", { ascending: false }),
+		supabase
+			.from("workspace_invites")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.is("accepted_at", null)
+			.order("created_at", { ascending: false }),
 	]);
 
 	return {
@@ -132,6 +178,12 @@ export async function getWorkspaceOverview(workspaceId: string) {
 			full_name: member.profiles?.full_name,
 		})) as WorkspaceMember[],
 		llmConfigs: (llmConfigs.data ?? []) as LlmConfig[],
+		rankings: (rankings.data ?? []) as PromptRanking[],
+		shareOfVoice: (shareOfVoice.data ?? []) as ShareOfVoiceMetric[],
+		weeklyMetrics: (weeklyMetrics.data ?? []) as WeeklyMetric[],
+		reports: (reports.data ?? []) as MonthlyReport[],
+		tasks: (tasks.data ?? []) as RecommendationAction[],
+		invites: (invites.data ?? []) as WorkspaceInvite[],
 	};
 }
 
