@@ -2,12 +2,18 @@
 import Link from "next/link";
 import {
 	BrandVisibilityChart,
+	CompetitorPressurePanel,
 	CompetitorShareTrendChart,
+	DiagnosticGrid,
+	ExecutiveReadinessPanel,
 	LlmComparisonTable,
 	MarketShareDonut,
 	MentionContextBars,
 	OverviewKpiCard,
+	PromptOpportunityPanel,
 	SentimentTrendChart,
+	SourceIntelligencePanel,
+	StrategicActionsPanel,
 } from "@/components/dashboard/OverviewCharts";
 import { getOverviewAnalytics } from "@/lib/analytics/overview";
 import { requireWorkspace } from "@/lib/data/workspace";
@@ -59,7 +65,16 @@ export default async function Page({
 					</div>
 				</section>
 
-				<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+				<ExecutiveReadinessPanel
+					label={analytics.readinessLabel}
+					periodDays={analytics.periodDays}
+					score={analytics.readinessScore}
+					summary={analytics.executiveSummary}
+				/>
+
+				<DiagnosticGrid items={analytics.diagnostics} />
+
+				<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
 					{analytics.kpis.map((kpi) => (
 						<OverviewKpiCard key={kpi.key} kpi={kpi} />
 					))}
@@ -91,6 +106,32 @@ export default async function Page({
 					competitors={analytics.competitorShareTrend.competitors}
 					data={analytics.competitorShareTrend.data}
 				/>
+
+				<section>
+					<h2 className="mb-4 text-sm font-black uppercase tracking-[0.16em] text-[var(--muted)]">
+						Source & Competitive Intelligence
+					</h2>
+					<div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
+						<SourceIntelligencePanel
+							domains={analytics.sourceDomains}
+							mix={analytics.sourceMix}
+						/>
+						<CompetitorPressurePanel items={analytics.competitorPressure} />
+					</div>
+				</section>
+
+				<section>
+					<h2 className="mb-4 text-sm font-black uppercase tracking-[0.16em] text-[var(--muted)]">
+						Execution Priorities
+					</h2>
+					<div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_460px]">
+						<PromptOpportunityPanel items={analytics.promptOpportunities} />
+						<StrategicActionsPanel
+							items={analytics.strategicActions}
+							workspaceSlug={workspace.slug}
+						/>
+					</div>
+				</section>
 			</div>
 		</main>
 	);
