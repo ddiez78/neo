@@ -186,6 +186,10 @@ export default async function Page({
 						) : null}
 						{activeSection === "admin" ? (
 							<section className="grid gap-5">
+								<AppearanceSettingsPanel
+									locale={prefs.locale}
+									theme={prefs.theme}
+								/>
 								<div className="grid gap-4 md:grid-cols-3">
 									<div className="neo-card p-4">
 										<p className="text-sm text-slate-500">Runs fallidos</p>

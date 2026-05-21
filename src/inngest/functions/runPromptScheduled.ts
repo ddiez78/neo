@@ -46,19 +46,20 @@ export const runPromptScheduled = inngest.createFunction(
 							.eq("enabled", true),
 					]);
 
-				for (const config of configsResult.data ?? []) {
-					if (!prompt.providers?.includes(config.provider)) continue;
-					await executePromptRun({
-						supabase,
-						workspace,
-						company: companyResult.data,
-						competitors: competitorsResult.data ?? [],
-						promptId: prompt.id,
-						promptBody: prompt.body,
-						provider: config.provider as LlmProviderKey,
-						model: config.model,
-					});
-				}
+				await Promise.all(
+					(configsResult.data ?? []).map((config) =>
+						executePromptRun({
+							supabase,
+							workspace,
+							company: companyResult.data,
+							competitors: competitorsResult.data ?? [],
+							promptId: prompt.id,
+							promptBody: prompt.body,
+							provider: config.provider as LlmProviderKey,
+							model: config.model,
+						}),
+					),
+				);
 			}
 		});
 

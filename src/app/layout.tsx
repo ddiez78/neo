@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import { getUserPreferences } from "@/lib/preferences-server";
 import "./globals.css";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
+const inter = Inter({
+	variable: "--font-inter",
 	subsets: ["latin"],
 });
 
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "NEO GEO",
-	description: "LLM visibility monitoring for brands.",
+	title: "citame.ai",
+	description: "AI visibility and SEO intelligence for brands.",
 };
 
 export default function RootLayout({
@@ -41,9 +41,11 @@ async function RootLayoutInner({
 	return (
 		<html
 			lang={prefs.locale}
-			className={`${geistSans.variable} ${geistMono.variable} ${prefs.theme === "dark" ? "dark" : ""} h-full antialiased`}
+			className={`${inter.variable} ${geistMono.variable} ${prefs.theme === "dark" ? "dark" : ""} h-full antialiased`}
 		>
-			<body className="min-h-full flex flex-col">{children}</body>
+			<body className="min-h-full flex flex-col" suppressHydrationWarning>
+				{children}
+			</body>
 		</html>
 	);
 }

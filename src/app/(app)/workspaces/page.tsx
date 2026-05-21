@@ -15,7 +15,7 @@ export default async function Page() {
 				<div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-4 sm:px-5">
 					<div>
 						<p className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-700">
-							NEO GEO Intelligence
+							citame.ai Intelligence
 						</p>
 						<h1 className="mt-2 text-2xl font-semibold text-[var(--foreground)] sm:text-3xl">
 							Workspaces

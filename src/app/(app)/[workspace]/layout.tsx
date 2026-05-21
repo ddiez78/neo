@@ -18,7 +18,7 @@ export default async function Layout({
 	return (
 		<div className="flex min-h-screen bg-[var(--background)]">
 			<AppSidebar locale={prefs.locale} workspaceSlug={workspace.slug} />
-			<div className="flex min-w-0 flex-1 flex-col">
+			<div className="flex min-w-0 flex-1 flex-col lg:ml-64">
 				<TopBar
 					locale={prefs.locale}
 					theme={prefs.theme}

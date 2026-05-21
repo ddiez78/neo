@@ -9,6 +9,7 @@
 		"lint": "biome check src scripts supabase next.config.ts postcss.config.mjs eslint.config.mjs package.json tsconfig.json",
 		"lint:fix": "biome check --write src scripts supabase next.config.ts postcss.config.mjs eslint.config.mjs package.json tsconfig.json",
 		"migrate": "tsx scripts/migrate.ts",
+		"kb:index": "tsx scripts/index-knowledge.ts",
 		"seed": "tsx scripts/seed.ts",
 		"backfill": "tsx scripts/backfill-daily-metrics.ts",
 		"backfill-costs": "tsx scripts/backfill-costs.ts",

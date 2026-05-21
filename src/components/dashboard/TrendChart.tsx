@@ -19,24 +19,47 @@ export function TrendChart({ metrics }: { metrics: PromptMetrics[] }) {
 	}));
 
 	return (
-		<div className="neo-card h-72 p-4">
+		<div className="neo-card h-72 min-w-0 p-4">
 			<div className="mb-4">
 				<h2 className="text-base font-semibold text-[var(--foreground)]">
-					Evolucion de visibilidad
+					Visibility Trend
 				</h2>
-				<p className="text-sm text-slate-500">Score y menciones por dia.</p>
+				<p className="text-sm text-[var(--muted)]">
+					Share of Voice and mentions over time.
+				</p>
 			</div>
-			<ResponsiveContainer height="78%" width="100%">
+			<ResponsiveContainer height={205} minWidth={0} width="100%">
 				<AreaChart data={data}>
-					<CartesianGrid stroke="#d9e5e0" strokeDasharray="3 3" />
-					<XAxis dataKey="date" fontSize={12} tickLine={false} />
-					<YAxis fontSize={12} tickLine={false} />
-					<Tooltip />
+					<CartesianGrid
+						stroke="rgba(231,233,238,0.08)"
+						strokeDasharray="3 3"
+					/>
+					<XAxis
+						axisLine={false}
+						dataKey="date"
+						fontSize={12}
+						stroke="#9aa7ba"
+						tickLine={false}
+					/>
+					<YAxis
+						axisLine={false}
+						fontSize={12}
+						stroke="#9aa7ba"
+						tickLine={false}
+					/>
+					<Tooltip
+						contentStyle={{
+							background: "#0a192c",
+							border: "1px solid #1d2b40",
+							borderRadius: 8,
+							color: "#e7e9ee",
+						}}
+					/>
 					<Area
 						dataKey="visibility"
-						fill="#0d9488"
-						fillOpacity={0.17}
-						stroke="#00685f"
+						fill="#f49527"
+						fillOpacity={0.18}
+						stroke="#f49527"
 						strokeWidth={2}
 						type="monotone"
 					/>

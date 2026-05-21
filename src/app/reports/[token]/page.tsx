@@ -1,14 +1,14 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PrintReportButton } from "@/components/reports/PrintReportButton";
+import {
+	ReportBarChart,
+	ReportTrendChart,
+} from "@/components/reports/ReportCharts";
+import { ReportKpiCard } from "@/components/reports/ReportKpiCard";
+import { ReportRecommendations } from "@/components/reports/ReportRecommendations";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { MonthlyReport } from "@/types";
-
-interface ReportSection {
-	id: string;
-	title: string;
-	content: string;
-	sort_order: number;
-}
 
 interface SharedWorkspace {
 	name: string;
@@ -30,8 +30,14 @@ function metricValue(
 	return typeof value === "number" ? value : fallback;
 }
 
-function listValue(value: unknown[]) {
+function listValue(value: unknown) {
 	return Array.isArray(value) ? value : [];
+}
+
+function objectValue(value: unknown) {
+	return value && typeof value === "object"
+		? (value as Record<string, unknown>)
+		: {};
 }
 
 function textFromItem(item: unknown, key: string) {
@@ -52,10 +58,19 @@ function booleanFromItem(item: unknown, key: string) {
 	return typeof value === "boolean" ? value : false;
 }
 
-function itemKey(item: unknown, primaryKey: string, fallback: string) {
-	const primary = textFromItem(item, primaryKey);
-	if (primary) return primary;
-	return fallback;
+function deltaValue(kpis: Record<string, unknown>, key: string) {
+	const value = objectValue(kpis[key]);
+	const absolute = value.absolute;
+	return typeof absolute === "number" ? { absolute } : undefined;
+}
+
+function brandingText(
+	branding: Record<string, unknown>,
+	key: string,
+	fallback: string,
+) {
+	const value = branding[key];
+	return typeof value === "string" && value ? value : fallback;
 }
 
 export default async function Page({
@@ -75,18 +90,32 @@ export default async function Page({
 		notFound();
 	}
 
-	const { data: sections } = await supabase
-		.from("report_sections")
-		.select("*")
-		.eq("report_id", report.id)
-		.order("sort_order", { ascending: true });
-
 	const sharedReport = report as SharedReport;
 	const workspace = sharedReport.workspaces;
 	const topPrompts = listValue(sharedReport.top_prompts);
 	const risks = listValue(sharedReport.risks);
-	const actions = listValue(sharedReport.recommended_actions);
 	const competitors = listValue(sharedReport.competitors);
+	const charts = sharedReport.charts ?? {};
+	const kpis = sharedReport.kpi_summary ?? {};
+	const branding = sharedReport.branding_snapshot ?? {};
+	const primaryColor = brandingText(branding, "primary_color", "#00685f");
+	const accentColor = brandingText(branding, "accent_color", "#0d9488");
+	const agencyName = brandingText(
+		branding,
+		"agency_name",
+		"Agency visibility team",
+	);
+	const clientName = brandingText(
+		branding,
+		"client_name",
+		workspace?.name ?? "Client",
+	);
+	const logoUrl = brandingText(branding, "logo_url", "");
+	const footerNote = brandingText(
+		branding,
+		"footer_note",
+		"Prepared for client review.",
+	);
 	const promptedSources = topPrompts.reduce<number>(
 		(sum, prompt) => sum + numberFromItem(prompt, "source_count"),
 		0,
@@ -94,66 +123,53 @@ export default async function Page({
 	const promptedBrandMentions = topPrompts.filter((prompt) =>
 		booleanFromItem(prompt, "brand_mentioned"),
 	).length;
-	const metricCards = [
-		{
-			label: "Visibility score",
-			value: `${Number(sharedReport.visibility_score).toFixed(0)}%`,
-		},
-		{
-			label: "Share of Voice IA",
-			value: `${Number(sharedReport.share_of_voice).toFixed(0)}%`,
-		},
-		{
-			label: "Runs analysed",
-			value: metricValue(sharedReport.metrics, "total_runs", topPrompts.length),
-		},
-		{
-			label: "Brand mentions",
-			value: metricValue(
-				sharedReport.metrics,
-				"brand_mentions",
-				promptedBrandMentions,
-			),
-		},
-		{
-			label: "Sources detected",
-			value: metricValue(sharedReport.metrics, "source_count", promptedSources),
-		},
-		{
-			label: "Won / lost prompts",
-			value: `${metricValue(sharedReport.metrics, "won_prompts")} / ${metricValue(sharedReport.metrics, "lost_prompts")}`,
-		},
-		{
-			label: "Open tasks",
-			value: metricValue(sharedReport.metrics, "open_tasks", actions.length),
-		},
-		{
-			label: "Tracked competitors",
-			value: metricValue(
-				sharedReport.metrics,
-				"competitors_tracked",
-				competitors.length,
-			),
-		},
-	];
 
 	return (
-		<main className="min-h-screen bg-[var(--background)] px-4 py-8 text-[var(--foreground)] print:bg-white print:px-0 print:py-0">
-			<div className="mx-auto max-w-6xl rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_28px_80px_rgba(15,23,42,0.10)] print:border-0 print:shadow-none">
-				<header className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border)] pb-6">
-					<div>
-						<p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-700">
-							AI Search Visibility Report
-						</p>
-						<h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
-							{sharedReport.title}
+		<main
+			className="min-h-screen bg-[#f4f8f6] px-4 py-8 text-slate-950 print:bg-white print:px-0 print:py-0"
+			style={
+				{
+					"--report-primary": primaryColor,
+					"--report-accent": accentColor,
+				} as React.CSSProperties
+			}
+		>
+			<div className="mx-auto max-w-6xl rounded-md border border-slate-200 bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.10)] print:border-0 print:shadow-none">
+				<header className="flex flex-wrap items-start justify-between gap-6 border-b border-slate-200 pb-6">
+					<div className="min-w-0">
+						<div className="flex flex-wrap items-center gap-4">
+							{logoUrl ? (
+								<Image
+									alt={`${agencyName} logo`}
+									className="max-h-14 max-w-56 object-contain"
+									height={56}
+									src={logoUrl}
+									width={224}
+								/>
+							) : null}
+							<div>
+								<p
+									className="text-xs font-semibold uppercase tracking-[0.14em]"
+									style={{ color: primaryColor }}
+								>
+									White label GEO report
+								</p>
+								<p className="mt-1 text-sm text-slate-500">{agencyName}</p>
+							</div>
+						</div>
+						<h1 className="mt-6 max-w-4xl text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+							{clientName} GEO performance report
 						</h1>
 						<p className="mt-4 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
 							{sharedReport.executive_summary}
 						</p>
 						<div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-							<span>{workspace?.name ?? "Workspace"}</span>
-							<span>{sharedReport.report_month}</span>
+							<span>
+								{sharedReport.period_start ?? sharedReport.report_month}
+							</span>
+							<span>
+								{sharedReport.period_end ?? sharedReport.report_month}
+							</span>
 							{workspace?.country_code ? (
 								<span>{workspace.country_code}</span>
 							) : null}
@@ -163,35 +179,77 @@ export default async function Page({
 				</header>
 
 				<section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-					{metricCards.map((metric) => (
-						<div
-							className="rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-4"
-							key={metric.label}
-						>
-							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-								{metric.label}
-							</p>
-							<p className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
-								{metric.value}
-							</p>
-						</div>
-					))}
+					<ReportKpiCard
+						delta={deltaValue(kpis, "visibility")}
+						label="Visibility score"
+						suffix=" pp"
+						value={`${Number(sharedReport.visibility_score).toFixed(0)}%`}
+					/>
+					<ReportKpiCard
+						delta={deltaValue(kpis, "share_of_voice")}
+						label="Share of Voice"
+						suffix=" pp"
+						value={`${Number(sharedReport.share_of_voice).toFixed(0)}%`}
+					/>
+					<ReportKpiCard
+						delta={deltaValue(kpis, "mentions")}
+						label="Brand mentions"
+						value={metricValue(
+							sharedReport.metrics,
+							"brand_mentions",
+							promptedBrandMentions,
+						)}
+					/>
+					<ReportKpiCard
+						delta={deltaValue(kpis, "sources")}
+						label="Sources detected"
+						value={metricValue(
+							sharedReport.metrics,
+							"source_count",
+							promptedSources,
+						)}
+					/>
 				</section>
 
-				<section className="mt-8 grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-					<div className="rounded-2xl border border-[var(--border)] p-5">
+				<section className="mt-8 grid gap-4 xl:grid-cols-2">
+					<ReportTrendChart
+						color={primaryColor}
+						data={charts.visibility_trend}
+						dataKey="visibility"
+						label="Visibility trend"
+					/>
+					<ReportTrendChart
+						color={accentColor}
+						data={charts.sov_trend}
+						dataKey="share_of_voice"
+						label="Share of voice trend"
+					/>
+					<ReportBarChart
+						color={primaryColor}
+						data={charts.sentiment}
+						label="Mention sentiment"
+					/>
+					<ReportBarChart
+						color={accentColor}
+						data={charts.prompt_outcomes}
+						label="Prompt wins vs losses"
+					/>
+				</section>
+
+				<section className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+					<div className="rounded-md border border-slate-200 p-5">
 						<h2 className="text-lg font-semibold">Top prompts</h2>
 						<div className="mt-4 grid gap-3">
 							{topPrompts.map((prompt) => (
 								<div
-									className="rounded-xl bg-[var(--surface-subtle)] p-4"
-									key={itemKey(prompt, "title", "prompt")}
+									className="rounded-md bg-slate-50 p-4"
+									key={textFromItem(prompt, "title")}
 								>
 									<div className="flex flex-wrap items-center justify-between gap-3">
 										<p className="font-medium">
 											{textFromItem(prompt, "title") || "Prompt"}
 										</p>
-										<span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+										<span className="rounded-md bg-white px-3 py-1 text-xs font-semibold text-slate-700">
 											{numberFromItem(prompt, "visibility_score").toFixed(0)}%
 										</span>
 									</div>
@@ -209,25 +267,30 @@ export default async function Page({
 					</div>
 
 					<div className="grid gap-6">
-						<div className="rounded-2xl border border-[var(--border)] p-5">
+						<div className="rounded-md border border-slate-200 p-5">
 							<h2 className="text-lg font-semibold">Competitors</h2>
 							<div className="mt-4 flex flex-wrap gap-2">
 								{competitors.map((competitor) => (
 									<span
-										className="rounded-full bg-[var(--surface-subtle)] px-3 py-2 text-sm text-slate-600"
-										key={itemKey(competitor, "name", "competitor")}
+										className="rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-600"
+										key={textFromItem(competitor, "name")}
 									>
 										{textFromItem(competitor, "name") || "Competitor"}
 									</span>
 								))}
+								{competitors.length === 0 ? (
+									<p className="text-sm text-slate-500">
+										No competitors tracked yet.
+									</p>
+								) : null}
 							</div>
 						</div>
-						<div className="rounded-2xl border border-[var(--border)] p-5">
+						<div className="rounded-md border border-slate-200 p-5">
 							<h2 className="text-lg font-semibold">Risks</h2>
 							<ul className="mt-4 space-y-3 text-sm text-slate-600">
 								{risks.map((risk) => (
-									<li key={itemKey(risk, "prompt", "risk")}>
-										<strong className="text-[var(--foreground)]">
+									<li key={textFromItem(risk, "prompt")}>
+										<strong className="text-slate-950">
 											{textFromItem(risk, "prompt") || "Prompt"}
 										</strong>
 										: {textFromItem(risk, "reason") || "Needs attention"}
@@ -241,46 +304,26 @@ export default async function Page({
 					</div>
 				</section>
 
-				<section className="mt-8 rounded-2xl border border-[var(--border)] p-5">
-					<h2 className="text-lg font-semibold">Recommended actions</h2>
-					<div className="mt-4 grid gap-3 md:grid-cols-2">
-						{actions.map((action) => (
-							<div
-								className="rounded-xl bg-[var(--surface-subtle)] p-4"
-								key={itemKey(action, "label", "action")}
-							>
-								<p className="font-medium">
-									{textFromItem(action, "label") || "Action"}
-								</p>
-								<p className="mt-2 text-sm text-slate-500">
-									{textFromItem(action, "type") || "content"} · priority{" "}
-									{numberFromItem(action, "priority")}
-								</p>
-							</div>
-						))}
-						{actions.length === 0 ? (
-							<p className="text-sm text-slate-500">
-								No open recommended actions.
-							</p>
-						) : null}
-					</div>
+				<section className="mt-8">
+					<h2 className="mb-4 text-lg font-semibold">Recommended actions</h2>
+					<ReportRecommendations
+						recommendations={listValue(sharedReport.recommendations)}
+					/>
 				</section>
 
-				{(sections ?? []).length > 0 ? (
-					<section className="mt-8 grid gap-4">
-						{((sections ?? []) as ReportSection[]).map((section) => (
-							<article
-								className="rounded-2xl border border-[var(--border)] p-5"
-								key={section.id}
-							>
-								<h2 className="text-lg font-semibold">{section.title}</h2>
-								<p className="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600">
-									{section.content}
-								</p>
-							</article>
-						))}
-					</section>
-				) : null}
+				<section className="mt-8">
+					<ReportBarChart
+						color={primaryColor}
+						data={charts.source_rankings}
+						dataKey="count"
+						label="Top cited domains"
+						xKey="domain"
+					/>
+				</section>
+
+				<footer className="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
+					{footerNote}
+				</footer>
 			</div>
 		</main>
 	);

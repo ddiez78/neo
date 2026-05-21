@@ -28,4 +28,6 @@ export async function updateTaskStatusAction(
 
 	revalidatePath(`/${workspaceSlug}/tasks`);
 	revalidatePath(`/${workspaceSlug}/recommendations`);
+	revalidatePath(`/${workspaceSlug}/dashboard`);
+	redirect(`/${workspaceSlug}/tasks?updated=1`);
 }

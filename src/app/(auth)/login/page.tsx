@@ -16,7 +16,7 @@ export default async function Page({
 			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#c9f1ea_0,transparent_40%),radial-gradient(circle_at_80%_0%,#dce9ff_0,transparent_35%)]" />
 			<section className="neo-card relative w-full max-w-md p-6 shadow-[0_8px_24px_rgba(16,24,40,0.08)]">
 				<p className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-700">
-					NEO GEO Intelligence
+					citame.ai Intelligence
 				</p>
 				<h1 className="mt-2 text-2xl font-semibold text-[var(--foreground)]">
 					{isEn ? "Sign in" : "Entrar"}

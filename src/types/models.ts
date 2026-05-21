@@ -137,6 +137,36 @@ export interface PromptRun {
 	created_at: string;
 }
 
+export interface PromptGenerationBatch {
+	id: string;
+	workspace_id: string;
+	status: "pending" | "running" | "completed" | "failed";
+	requested_by?: string | null;
+	pipeline_version: string;
+	metadata: Record<string, unknown>;
+	error_message?: string | null;
+	created_at: string;
+	updated_at: string;
+	completed_at?: string | null;
+}
+
+export interface PromptCandidate {
+	id: string;
+	workspace_id: string;
+	batch_id: string;
+	title: string;
+	body: string;
+	intent: string;
+	funnel_stage: string;
+	category: string;
+	score: number;
+	rationale: string;
+	status: "pending" | "accepted" | "rejected" | "edited";
+	created_prompt_id?: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
 export interface Source {
 	id: string;
 	workspace_id: string;
@@ -242,6 +272,20 @@ export interface RecommendationAction {
 	updated_at: string;
 }
 
+export interface ReportBranding {
+	id: string;
+	workspace_id: string;
+	agency_name: string;
+	client_name: string;
+	logo_url?: string | null;
+	logo_path?: string | null;
+	primary_color: string;
+	accent_color: string;
+	footer_note: string;
+	created_at: string;
+	updated_at: string;
+}
+
 export interface PromptRanking {
 	workspace_id: string;
 	prompt_id: string;
@@ -291,11 +335,19 @@ export interface MonthlyReport {
 	executive_summary: string;
 	visibility_score: number;
 	share_of_voice: number;
+	period_start?: string | null;
+	period_end?: string | null;
+	previous_period_start?: string | null;
+	previous_period_end?: string | null;
 	metrics: Record<string, unknown>;
+	charts: Record<string, unknown>;
+	kpi_summary: Record<string, unknown>;
 	top_prompts: unknown[];
 	competitors: unknown[];
 	risks: unknown[];
 	recommended_actions: unknown[];
+	recommendations: unknown[];
+	branding_snapshot: Record<string, unknown>;
 	share_token: string;
 	created_at: string;
 	updated_at: string;

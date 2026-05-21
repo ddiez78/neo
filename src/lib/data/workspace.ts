@@ -6,10 +6,13 @@ import type {
 	LlmConfig,
 	MonthlyReport,
 	Prompt,
+	PromptCandidate,
+	PromptGenerationBatch,
 	PromptMetrics,
 	PromptRanking,
 	PromptRun,
 	RecommendationAction,
+	ReportBranding,
 	ShareOfVoiceMetric,
 	Source,
 	WeeklyMetric,
@@ -81,9 +84,12 @@ export async function getWorkspaceOverview(workspaceId: string) {
 		members,
 		llmConfigs,
 		rankings,
+		promptGenerationBatches,
+		promptCandidates,
 		shareOfVoice,
 		weeklyMetrics,
 		reports,
+		reportBranding,
 		tasks,
 		invites,
 	] = await Promise.all([
@@ -135,6 +141,18 @@ export async function getWorkspaceOverview(workspaceId: string) {
 			.eq("workspace_id", workspaceId)
 			.order("priority", { ascending: false }),
 		supabase
+			.from("prompt_generation_batches")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("created_at", { ascending: false })
+			.limit(5),
+		supabase
+			.from("prompt_candidates")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.order("score", { ascending: false })
+			.limit(30),
+		supabase
 			.from("share_of_voice_metrics")
 			.select("*")
 			.eq("workspace_id", workspaceId)
@@ -152,6 +170,11 @@ export async function getWorkspaceOverview(workspaceId: string) {
 			.eq("workspace_id", workspaceId)
 			.order("report_month", { ascending: false })
 			.limit(12),
+		supabase
+			.from("report_branding")
+			.select("*")
+			.eq("workspace_id", workspaceId)
+			.maybeSingle(),
 		supabase
 			.from("recommendation_actions")
 			.select("*")
@@ -179,9 +202,13 @@ export async function getWorkspaceOverview(workspaceId: string) {
 		})) as WorkspaceMember[],
 		llmConfigs: (llmConfigs.data ?? []) as LlmConfig[],
 		rankings: (rankings.data ?? []) as PromptRanking[],
+		promptGenerationBatches: (promptGenerationBatches.data ??
+			[]) as PromptGenerationBatch[],
+		promptCandidates: (promptCandidates.data ?? []) as PromptCandidate[],
 		shareOfVoice: (shareOfVoice.data ?? []) as ShareOfVoiceMetric[],
 		weeklyMetrics: (weeklyMetrics.data ?? []) as WeeklyMetric[],
 		reports: (reports.data ?? []) as MonthlyReport[],
+		reportBranding: reportBranding.data as ReportBranding | null,
 		tasks: (tasks.data ?? []) as RecommendationAction[],
 		invites: (invites.data ?? []) as WorkspaceInvite[],
 	};

@@ -2,7 +2,7 @@ export type AppLocale = "es" | "en";
 export type AppTheme = "light" | "dark";
 
 export const DEFAULT_LOCALE: AppLocale = "es";
-export const DEFAULT_THEME: AppTheme = "light";
+export const DEFAULT_THEME: AppTheme = "dark";
 
 export function normalizeLocale(value?: string | null): AppLocale {
 	return value === "en" ? "en" : "es";
