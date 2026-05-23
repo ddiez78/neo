@@ -107,6 +107,7 @@ export function analyzeMentions(input: {
 		input.company?.brand_name,
 		input.workspaceName,
 		input.company?.website ? domainFromUrl(input.company.website) : null,
+		...(input.company?.aliases ?? []),
 	]
 		.filter(Boolean)
 		.map(String);

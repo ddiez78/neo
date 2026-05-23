@@ -3,6 +3,7 @@
 import {
 	BarChart3,
 	Bot,
+	Building2,
 	ClipboardList,
 	FileText,
 	Gauge,
@@ -36,6 +37,12 @@ const navItems = [
 		labelEs: "Recomendaciones",
 		labelEn: "Recommendations",
 		icon: Lightbulb,
+	},
+	{
+		href: "company-bio",
+		labelEs: "Company Bio",
+		labelEn: "Company Bio",
+		icon: Building2,
 	},
 	{ href: "tasks", labelEs: "Tareas", labelEn: "Tasks", icon: SquareCheckBig },
 	{ href: "reports", labelEs: "Informes", labelEn: "Reports", icon: FileText },

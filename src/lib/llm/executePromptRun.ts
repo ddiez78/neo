@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { buildCompanyBioContext } from "@/lib/company-bio/context";
 import {
 	analyzeMentions,
 	calculateVisibilityScore,
@@ -32,8 +33,10 @@ async function generateResponse(input: {
 	const baseUrl =
 		process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
 	if (!apiKey) {
+		const companyContext = buildCompanyBioContext(input.company);
 		return [
 			`Simulated GEO answer for ${input.company?.brand_name ?? input.workspace.name}.`,
+			companyContext.verifiedFacts[0],
 			`${input.company?.brand_name ?? input.workspace.name} appears as a relevant option with neutral sentiment.`,
 			input.company?.website ? `Official source: ${input.company.website}` : "",
 			"Additional third-party validation should be strengthened with comparison pages and reviews.",

@@ -70,7 +70,7 @@ const severityConfigs: SeverityConfig[] = [
 	},
 	{
 		key: "complaint",
-		title: "Denuncias",
+		title: "Confianza y reseñas",
 		shortLabel: "Riesgo de percepción o confianza",
 		description:
 			"Alertas reputacionales: sentimiento negativo, fuentes problemáticas o mensajes que pueden dañar la confianza.",
@@ -220,6 +220,20 @@ function technicalReference(recommendation: Recommendation) {
 	return refs.join(" · ");
 }
 
+function simpleArea(category: RecommendationCategory) {
+	const labels: Record<RecommendationCategory, string> = {
+		entity: "Marca",
+		content: "Contenido",
+		sources: "Fuentes",
+		competitors: "Competidores",
+		prompts: "Preguntas",
+		technical: "Datos",
+		authority: "Fuentes",
+		sentiment: "Confianza y reseñas",
+	};
+	return labels[category];
+}
+
 function groupedRecommendations(recommendations: Recommendation[]) {
 	return severityConfigs.map((config) => ({
 		...config,
@@ -302,7 +316,7 @@ function RecommendationCard({
 							{config.shortLabel}
 						</span>
 						<span className="rounded-md bg-white/80 px-2 py-1 text-xs font-semibold uppercase text-slate-700">
-							{recommendation.category}
+							{simpleArea(recommendation.category)}
 						</span>
 						<span className="rounded-md bg-white/80 px-2 py-1 text-xs font-semibold uppercase text-slate-700">
 							P{recommendation.priority}
@@ -567,10 +581,10 @@ export default async function Page({
 				<div className="flex flex-wrap items-start justify-between gap-4">
 					<div>
 						<p className="text-sm font-semibold uppercase text-cyan-700">
-							AI SEO Recommendations
+							Plan de accion
 						</p>
 						<h1 className="mt-2 text-2xl font-semibold text-slate-950">
-							Recomendaciones por severidad
+							Que mejorar primero
 						</h1>
 						<p className="mt-2 max-w-3xl text-slate-600">
 							{isEn
@@ -654,7 +668,7 @@ export default async function Page({
 						</p>
 					</div>
 					<div className="rounded-md border border-rose-200 bg-rose-50 p-4">
-						<p className="text-sm text-rose-700">Denuncias</p>
+						<p className="text-sm text-rose-700">Confianza y reseñas</p>
 						<p className="mt-2 text-3xl font-semibold text-rose-950">
 							{reputationCount}
 						</p>

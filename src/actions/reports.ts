@@ -2,6 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+	buildCompanyBioContext,
+	scoreCompanyUnderstanding,
+} from "@/lib/company-bio/context";
 import { getWorkspaceOverview, requireUser } from "@/lib/data/workspace";
 import type { Recommendation } from "@/types";
 
@@ -403,6 +407,23 @@ export async function generateMonthlyReportAction(
 			overview.reports.at(0)?.title ||
 			"Client",
 	};
+	const entityUnderstanding = scoreCompanyUnderstanding({
+		company: overview.company,
+		runs: overview.runs,
+		rankings: overview.rankings,
+	});
+	const companyBioContext = buildCompanyBioContext(overview.company);
+	const entityState = {
+		score: entityUnderstanding.score,
+		status: entityUnderstanding.status,
+		completeness: entityUnderstanding.completeness,
+		verifiedCount: entityUnderstanding.verifiedCount,
+		totalVerificationFields: entityUnderstanding.totalVerificationFields,
+		verifiedFacts: companyBioContext.verifiedFacts.slice(0, 8),
+		misunderstoodFacts: entityUnderstanding.misunderstoodFacts,
+		entityGaps: entityUnderstanding.entityGaps,
+		nextAction: entityUnderstanding.nextAction,
+	};
 	const kpiSummary = {
 		visibility: delta(Number(currentVisibility.toFixed(2)), previousVisibility),
 		share_of_voice: delta(
@@ -489,6 +510,7 @@ export async function generateMonthlyReportAction(
 		risks,
 		recommended_actions: recommendedActions,
 		recommendations,
+		entity_state: entityState,
 		branding_snapshot: branding,
 		updated_at: new Date().toISOString(),
 	};
@@ -516,6 +538,17 @@ export async function generateMonthlyReportAction(
 		},
 		{
 			report_id: report.id,
+			section_key: "entity_state",
+			title: "Estado de Entidad",
+			content: [
+				`Score: ${entityState.score}/100`,
+				`Estado: ${entityState.status}`,
+				`Siguiente accion: ${entityState.nextAction}`,
+			].join("\n"),
+			sort_order: 2,
+		},
+		{
+			report_id: report.id,
 			section_key: "recommended_actions",
 			title: "Recommended actions",
 			content: recommendations
@@ -524,7 +557,7 @@ export async function generateMonthlyReportAction(
 						`${recommendation.group}: ${recommendation.title}`,
 				)
 				.join("\n"),
-			sort_order: 2,
+			sort_order: 3,
 		},
 	]);
 

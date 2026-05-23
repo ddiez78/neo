@@ -13,6 +13,7 @@ import {
 	retrieveRelevantKnowledge,
 } from "@/lib/geo/knowledgeRetrieval";
 import { getUserPreferences } from "@/lib/preferences-server";
+import { buildCompanyBioRecommendations } from "@/lib/recommendations/companyBioRecommendations";
 import { loadMarkdownRecommendationSources } from "@/lib/recommendations/markdownSources";
 import type {
 	Recommendation,
@@ -76,11 +77,18 @@ export async function generateRecommendationsAction(
 		);
 	}
 
-	const recommendations = await generateGeoRecommendations({
-		metrics,
-		chunks,
-		locale: prefs.locale,
-	});
+	const recommendations = [
+		...(await generateGeoRecommendations({
+			metrics,
+			chunks,
+			locale: prefs.locale,
+		})),
+		...buildCompanyBioRecommendations({
+			company: overview.company,
+			runs: overview.runs,
+			rankings: overview.rankings,
+		}),
+	].slice(0, 8);
 	const weakPromptIds = overview.rankings
 		.filter(
 			(ranking) =>

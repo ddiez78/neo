@@ -16,8 +16,72 @@ import {
 	StrategicActionsPanel,
 } from "@/components/dashboard/OverviewCharts";
 import { getOverviewAnalytics } from "@/lib/analytics/overview";
-import { requireWorkspace } from "@/lib/data/workspace";
+import { scoreCompanyUnderstanding } from "@/lib/company-bio/context";
+import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
 import { getUserPreferences } from "@/lib/preferences-server";
+
+function CompanyUnderstandingPanel({
+	score,
+	completeness,
+	verifiedCount,
+	totalVerificationFields,
+	status,
+	nextAction,
+	entityGaps,
+	workspaceSlug,
+}: ReturnType<typeof scoreCompanyUnderstanding> & { workspaceSlug: string }) {
+	return (
+		<section className="neo-card p-5">
+			<div className="flex flex-wrap items-start justify-between gap-4">
+				<div>
+					<p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--brand)]">
+						Company Understanding
+					</p>
+					<h2 className="mt-2 text-xl font-black text-[var(--foreground)]">
+						La IA entiende la empresa al {score}%
+					</h2>
+					<p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--muted)]">
+						Perfil {status.toLowerCase()}: {completeness}% completo y{" "}
+						{verifiedCount} de {totalVerificationFields} campos verificados.
+						Siguiente accion: {nextAction}
+					</p>
+				</div>
+				<a
+					className="rounded-lg bg-[var(--brand)] px-4 py-2 text-sm font-black text-[#1b1000] transition hover:brightness-110"
+					href={`/${workspaceSlug}/company-bio`}
+				>
+					Actualizar Company Bio
+				</a>
+			</div>
+			<div className="mt-4 grid gap-3 md:grid-cols-3">
+				<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+					<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+						Score
+					</p>
+					<p className="mt-1 text-3xl font-black text-[var(--brand)]">
+						{score}/100
+					</p>
+				</div>
+				<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+					<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+						Verificados
+					</p>
+					<p className="mt-1 text-3xl font-black text-[var(--foreground)]">
+						{verifiedCount}
+					</p>
+				</div>
+				<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+					<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+						Top entity gaps
+					</p>
+					<p className="mt-1 text-sm font-bold text-[var(--foreground)]">
+						{entityGaps[0] ?? "Sin gaps urgentes."}
+					</p>
+				</div>
+			</div>
+		</section>
+	);
+}
 
 export default async function Page({
 	params,
@@ -28,7 +92,15 @@ export default async function Page({
 	const workspace = await requireWorkspace(slug);
 	const { locale } = await getUserPreferences();
 	const isEn = locale === "en";
-	const analytics = await getOverviewAnalytics(workspace.id, 30);
+	const [analytics, overview] = await Promise.all([
+		getOverviewAnalytics(workspace.id, 30),
+		getWorkspaceOverview(workspace.id),
+	]);
+	const companyUnderstanding = scoreCompanyUnderstanding({
+		company: overview.company,
+		runs: overview.runs,
+		rankings: overview.rankings,
+	});
 
 	return (
 		<main className="flex-1 overflow-auto p-4 pb-24 lg:p-6 lg:pb-8">
@@ -70,6 +142,11 @@ export default async function Page({
 					periodDays={analytics.periodDays}
 					score={analytics.readinessScore}
 					summary={analytics.executiveSummary}
+				/>
+
+				<CompanyUnderstandingPanel
+					{...companyUnderstanding}
+					workspaceSlug={workspace.slug}
 				/>
 
 				<DiagnosticGrid items={analytics.diagnostics} />

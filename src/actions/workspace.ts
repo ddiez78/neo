@@ -10,6 +10,33 @@ import {
 } from "@/lib/validations/schemas";
 import type { ActionResult } from "@/types";
 
+const companyVerificationFields = [
+	"brand_name",
+	"website",
+	"description",
+	"business_type",
+	"country",
+	"market",
+	"language",
+	"locations",
+	"categories",
+	"subcategories",
+	"value_proposition",
+	"target_audience",
+	"products_services",
+	"key_features",
+	"pricing_strategy",
+	"revenue_streams",
+	"partnerships",
+	"social_proof",
+	"aliases",
+	"approved_claims",
+	"prohibited_claims",
+	"legal_notes",
+	"misunderstood_facts",
+	"entity_gaps",
+] as const;
+
 export async function placeholderAction(): Promise<ActionResult> {
 	return { success: true };
 }
@@ -115,17 +142,77 @@ export async function upsertCompanyProfileAction(
 	}
 
 	const values = parsed.data;
+	const products = csvToArray(values.products);
+	const productsServices = csvToArray(values.products_services);
+	const markets = csvToArray(values.markets);
+	const primaryMarket = values.market ? [values.market] : [];
+	const fieldVerification = Object.fromEntries(
+		companyVerificationFields.map((field) => [
+			field,
+			formData.get(`verified_${field}`) === "on",
+		]),
+	);
+	const verifiedProfile = {
+		brand_name: values.brand_name,
+		website: values.website || null,
+		description: values.description,
+		business_type: values.business_type,
+		country: values.country || null,
+		market: values.market || null,
+		language: values.language,
+		locations: csvToArray(values.locations),
+		categories: csvToArray(values.categories),
+		subcategories: csvToArray(values.subcategories),
+		value_proposition: values.value_proposition || null,
+		target_audience: values.target_audience || null,
+		products_services: productsServices,
+		key_features: csvToArray(values.key_features),
+		pricing_strategy: values.pricing_strategy || null,
+		revenue_streams: csvToArray(values.revenue_streams),
+		partnerships: csvToArray(values.partnerships),
+		social_proof: csvToArray(values.social_proof),
+		aliases: csvToArray(values.aliases),
+		approved_claims: csvToArray(values.approved_claims),
+		prohibited_claims: csvToArray(values.prohibited_claims),
+		legal_notes: values.legal_notes || null,
+		misunderstood_facts: csvToArray(values.misunderstood_facts),
+		entity_gaps: csvToArray(values.entity_gaps),
+	};
 	const { error } = await supabase.from("company_profiles").upsert(
 		{
 			workspace_id: workspaceId,
 			brand_name: values.brand_name,
 			website: values.website || null,
 			description: values.description,
-			products: csvToArray(values.products),
+			products: products.length ? products : productsServices,
 			keywords: csvToArray(values.keywords),
-			markets: csvToArray(values.markets),
+			markets: markets.length ? markets : primaryMarket,
 			tone: values.tone || null,
 			official_urls: csvToArray(values.official_urls),
+			verified_profile: verifiedProfile,
+			field_verification: fieldVerification,
+			business_type: values.business_type,
+			country: values.country || null,
+			market: values.market || null,
+			language: values.language,
+			locations: csvToArray(values.locations),
+			categories: csvToArray(values.categories),
+			subcategories: csvToArray(values.subcategories),
+			value_proposition: values.value_proposition || null,
+			target_audience: values.target_audience || null,
+			products_services: productsServices,
+			key_features: csvToArray(values.key_features),
+			pricing_strategy: values.pricing_strategy || null,
+			revenue_streams: csvToArray(values.revenue_streams),
+			partnerships: csvToArray(values.partnerships),
+			social_proof: csvToArray(values.social_proof),
+			aliases: csvToArray(values.aliases),
+			approved_claims: csvToArray(values.approved_claims),
+			prohibited_claims: csvToArray(values.prohibited_claims),
+			legal_notes: values.legal_notes || null,
+			misunderstood_facts: csvToArray(values.misunderstood_facts),
+			entity_gaps: csvToArray(values.entity_gaps),
+			updated_at: new Date().toISOString(),
 		},
 		{ onConflict: "workspace_id" },
 	);

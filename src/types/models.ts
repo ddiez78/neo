@@ -74,6 +74,30 @@ export interface CompanyProfile {
 	markets: string[];
 	tone?: string | null;
 	official_urls: string[];
+	ai_extracted_profile?: Record<string, unknown>;
+	verified_profile?: Record<string, unknown>;
+	field_verification?: Record<string, boolean>;
+	business_type?: string;
+	country?: string | null;
+	market?: string | null;
+	language?: string;
+	locations?: string[];
+	categories?: string[];
+	subcategories?: string[];
+	value_proposition?: string | null;
+	target_audience?: string | null;
+	products_services?: string[];
+	key_features?: string[];
+	pricing_strategy?: string | null;
+	revenue_streams?: string[];
+	partnerships?: string[];
+	social_proof?: string[];
+	aliases?: string[];
+	approved_claims?: string[];
+	prohibited_claims?: string[];
+	legal_notes?: string | null;
+	misunderstood_facts?: string[];
+	entity_gaps?: string[];
 	updated_at: string;
 }
 
@@ -347,6 +371,7 @@ export interface MonthlyReport {
 	risks: unknown[];
 	recommended_actions: unknown[];
 	recommendations: unknown[];
+	entity_state?: Record<string, unknown>;
 	branding_snapshot: Record<string, unknown>;
 	share_token: string;
 	created_at: string;

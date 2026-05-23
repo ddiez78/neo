@@ -32,6 +32,10 @@ function arrayValue(value: unknown) {
 	return Array.isArray(value) ? value : [];
 }
 
+function stringList(value: unknown) {
+	return Array.isArray(value) ? value.map(String).filter(Boolean) : [];
+}
+
 function deltaValue(kpis: Record<string, unknown>, key: string) {
 	const value = objectValue(kpis[key]);
 	const absolute = value.absolute;
@@ -271,6 +275,7 @@ export default async function Page({
 								value={metricValue(latestReport.metrics, "source_count")}
 							/>
 						</div>
+						<EntityStatePanel entityState={latestReport.entity_state} />
 						<div className="grid gap-4 xl:grid-cols-2">
 							<ReportTrendChart
 								color={branding.primary_color}
@@ -364,5 +369,76 @@ export default async function Page({
 				</section>
 			</div>
 		</main>
+	);
+}
+
+function EntityStatePanel({
+	entityState,
+}: {
+	entityState?: Record<string, unknown>;
+}) {
+	const state = objectValue(entityState);
+	if (!Object.keys(state).length) {
+		return null;
+	}
+	const score = Number(state.score ?? 0);
+	const facts = stringList(state.verifiedFacts).slice(0, 5);
+	const gaps = stringList(state.entityGaps).slice(0, 4);
+	const misunderstood = stringList(state.misunderstoodFacts).slice(0, 4);
+
+	return (
+		<section className="neo-card p-5">
+			<div className="flex flex-wrap items-start justify-between gap-4">
+				<div>
+					<p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--brand)]">
+						Estado de Entidad
+					</p>
+					<h2 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
+						Company Bio entendida al {score}/100
+					</h2>
+					<p className="mt-2 text-sm text-slate-500">
+						{String(state.status ?? "Sin estado")} - completitud{" "}
+						{String(state.completeness ?? 0)}% - siguiente accion:{" "}
+						{String(state.nextAction ?? "Actualizar Company Bio")}
+					</p>
+				</div>
+				<div className="rounded-md bg-[var(--brand-soft)] px-4 py-3 text-center">
+					<p className="text-xs font-semibold uppercase text-[var(--brand)]">
+						Score
+					</p>
+					<p className="text-3xl font-black text-[var(--brand)]">{score}</p>
+				</div>
+			</div>
+			<div className="mt-4 grid gap-3 md:grid-cols-3">
+				<ReportEntityList title="Campos verificados" items={facts} />
+				<ReportEntityList title="Prompts donde falla" items={misunderstood} />
+				<ReportEntityList title="Gaps principales" items={gaps} />
+			</div>
+		</section>
+	);
+}
+
+function ReportEntityList({
+	title,
+	items,
+}: {
+	title: string;
+	items: string[];
+}) {
+	return (
+		<div className="rounded-md border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+			<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+				{title}
+			</p>
+			{items.length ? (
+				<ul className="mt-2 grid gap-1 text-sm text-slate-600">
+					{items.map((item) => (
+						<li key={item}>{item}</li>
+					))}
+				</ul>
+			) : (
+				<p className="mt-2 text-sm text-slate-500">Sin datos todavia.</p>
+			)}
+		</div>
 	);
 }
