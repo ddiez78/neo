@@ -1,6 +1,12 @@
 import { inngest } from "@/inngest/client";
 import { executePromptRun } from "@/lib/llm/executePromptRun";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+	BACKGROUND_PLAN_FALLBACK,
+	checkQuota,
+	emitQuotaExhaustedAlert,
+	incrementUsage,
+} from "@/lib/usage/quota";
 import type { LlmProviderKey, Workspace } from "@/types";
 
 export const runPromptManual = inngest.createFunction(
@@ -13,6 +19,12 @@ export const runPromptManual = inngest.createFunction(
 			provider: LlmProviderKey;
 			model: string;
 		};
+
+		const quota = await checkQuota(workspaceId, BACKGROUND_PLAN_FALLBACK, 1);
+		if (!quota.ok) {
+			await emitQuotaExhaustedAlert(workspaceId, BACKGROUND_PLAN_FALLBACK);
+			return { skipped: true, reason: "quota_exhausted", quota };
+		}
 
 		const [workspaceResult, promptResult, companyResult, competitorsResult] =
 			await Promise.all([
@@ -33,7 +45,7 @@ export const runPromptManual = inngest.createFunction(
 			throw new Error("Missing workspace or prompt for manual run.");
 		}
 
-		return executePromptRun({
+		const result = await executePromptRun({
 			supabase,
 			workspace: workspaceResult.data as Workspace,
 			company: companyResult.data,
@@ -43,5 +55,8 @@ export const runPromptManual = inngest.createFunction(
 			provider,
 			model,
 		});
+
+		await incrementUsage(workspaceId, BACKGROUND_PLAN_FALLBACK, 1);
+		return result;
 	},
 );

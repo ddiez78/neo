@@ -79,15 +79,20 @@ export function SimpleRecommendationsHeader({
 			</div>
 
 			<div className="flex items-center gap-2">
-				<form action={regenerateAction}>
-					<button
-						className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-violet-700"
-						type="submit"
-					>
-						<RotateCw aria-hidden="true" className="size-4" />
-						{isEn ? "Regenerate" : "Regenerar"}
-					</button>
-				</form>
+				<div className="flex flex-col items-end gap-0.5">
+					<form action={regenerateAction}>
+						<button
+							className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-violet-700"
+							type="submit"
+						>
+							<RotateCw aria-hidden="true" className="size-4" />
+							{isEn ? "Regenerate" : "Regenerar"}
+						</button>
+					</form>
+					<span className="text-[10px] text-slate-400">
+						{isEn ? "Uses 2 AI executions" : "Usará 2 ejecuciones IA"}
+					</span>
+				</div>
 
 				<details className="relative">
 					<summary

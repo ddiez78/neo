@@ -26,7 +26,7 @@ export async function createCompetitorAction(
 		.eq("workspace_id", workspaceId);
 	if ((existingCount ?? 0) >= limit) {
 		redirect(
-			`/${workspaceSlug}/competitors?error=${encodeURIComponent(`Tu plan permite ${limit === Number.POSITIVE_INFINITY ? "ilimitados" : limit} competidores. Sube de plan para añadir más.`)}`,
+			`/${workspaceSlug}/competitors?error=${encodeURIComponent(`Tu plan permite ${limit} competidores. Sube de plan para añadir más.`)}`,
 		);
 	}
 

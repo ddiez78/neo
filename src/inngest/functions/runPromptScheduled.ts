@@ -1,6 +1,12 @@
 import { inngest } from "@/inngest/client";
 import { executePromptRun } from "@/lib/llm/executePromptRun";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+	BACKGROUND_PLAN_FALLBACK,
+	checkQuota,
+	emitQuotaExhaustedAlert,
+	incrementUsage,
+} from "@/lib/usage/quota";
 import type { LlmProviderKey, Workspace } from "@/types";
 
 function shouldRun(frequency: string, now = new Date()) {
@@ -24,9 +30,35 @@ export const runPromptScheduled = inngest.createFunction(
 		);
 
 		await step.run("execute-active-prompts", async () => {
+			// Cache quota check + emitted alert per workspace within this run.
+			const quotaCacheByWs = new Map<string, boolean>();
+			const alertedWs = new Set<string>();
+			let totalIncrements = 0;
+
 			for (const prompt of runnable) {
 				const workspace = prompt.workspaces as Workspace | null;
 				if (!workspace) continue;
+
+				let hasQuota = quotaCacheByWs.get(workspace.id);
+				if (hasQuota === undefined) {
+					const quota = await checkQuota(
+						workspace.id,
+						BACKGROUND_PLAN_FALLBACK,
+						1,
+					);
+					hasQuota = quota.ok;
+					quotaCacheByWs.set(workspace.id, hasQuota);
+				}
+				if (!hasQuota) {
+					if (!alertedWs.has(workspace.id)) {
+						await emitQuotaExhaustedAlert(
+							workspace.id,
+							BACKGROUND_PLAN_FALLBACK,
+						);
+						alertedWs.add(workspace.id);
+					}
+					continue;
+				}
 
 				const [companyResult, competitorsResult, configsResult] =
 					await Promise.all([
@@ -60,13 +92,27 @@ export const runPromptScheduled = inngest.createFunction(
 						}),
 					),
 				);
+				const completed = results.filter(
+					(r) => r.status === "fulfilled",
+				).length;
 				const failed = results.filter((r) => r.status === "rejected").length;
+
+				if (completed > 0) {
+					await incrementUsage(
+						workspace.id,
+						BACKGROUND_PLAN_FALLBACK,
+						completed,
+					);
+					totalIncrements += completed;
+				}
 				if (failed > 0) {
 					console.error(
 						`${failed} prompt run(s) failed for prompt ${prompt.id}`,
 					);
 				}
 			}
+
+			return { totalIncrements };
 		});
 
 		return { prompts: runnable.length };

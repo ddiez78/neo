@@ -2,6 +2,7 @@ import {
 	AlertTriangle,
 	Bell,
 	CheckCircle2,
+	Gauge,
 	Info,
 	Lightbulb,
 	TrendingDown,
@@ -24,6 +25,8 @@ const KIND_ICONS: Record<AlertKind, typeof AlertTriangle> = {
 	critical_recommendation: Lightbulb,
 	cost_spike: AlertTriangle,
 	run_complete: CheckCircle2,
+	usage_warning: Gauge,
+	usage_limit_reached: Gauge,
 };
 
 const KIND_LABELS_ES: Record<AlertKind, string> = {
@@ -34,6 +37,8 @@ const KIND_LABELS_ES: Record<AlertKind, string> = {
 	critical_recommendation: "Recomendacion critica",
 	cost_spike: "Pico de coste",
 	run_complete: "Ejecucion completada",
+	usage_warning: "Aviso de uso",
+	usage_limit_reached: "Cupo agotado",
 };
 
 const KIND_LABELS_EN: Record<AlertKind, string> = {
@@ -44,6 +49,8 @@ const KIND_LABELS_EN: Record<AlertKind, string> = {
 	critical_recommendation: "Critical recommendation",
 	cost_spike: "Cost spike",
 	run_complete: "Run complete",
+	usage_warning: "Usage warning",
+	usage_limit_reached: "Usage limit reached",
 };
 
 export default async function Page({

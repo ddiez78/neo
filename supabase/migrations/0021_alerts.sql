@@ -9,7 +9,9 @@ create table if not exists public.alerts (
 			'prompt_failed',
 			'critical_recommendation',
 			'cost_spike',
-			'run_complete'
+			'run_complete',
+			'usage_warning',
+			'usage_limit_reached'
 		)
 	),
 	severity text not null default 'info' check (

@@ -4,6 +4,7 @@ import {
 	AlertTriangle,
 	Bell,
 	CheckCircle2,
+	Gauge,
 	Info,
 	Lightbulb,
 	TrendingDown,
@@ -23,6 +24,8 @@ const KIND_ICONS: Record<AlertKind, typeof AlertTriangle> = {
 	critical_recommendation: Lightbulb,
 	cost_spike: AlertTriangle,
 	run_complete: CheckCircle2,
+	usage_warning: Gauge,
+	usage_limit_reached: Gauge,
 };
 
 function timeAgo(iso: string, isEn: boolean): string {

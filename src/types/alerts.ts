@@ -5,7 +5,9 @@ export type AlertKind =
 	| "prompt_failed"
 	| "critical_recommendation"
 	| "cost_spike"
-	| "run_complete";
+	| "run_complete"
+	| "usage_warning"
+	| "usage_limit_reached";
 
 export type AlertSeverity = "info" | "warning" | "critical";
 

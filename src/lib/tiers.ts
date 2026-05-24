@@ -46,19 +46,19 @@ export function hasAccess(mode: AppMode, feature: TierFeature): boolean {
 export const WORKSPACE_LIMIT: Record<AppMode, number> = {
 	sme: 1,
 	pro: 1,
-	agency: 10,
+	agency: 5,
 };
 
 export const PROMPT_LIMIT: Record<AppMode, number> = {
-	sme: 20,
+	sme: 25,
 	pro: 100,
-	agency: Number.POSITIVE_INFINITY,
+	agency: 500,
 };
 
 export const COMPETITOR_LIMIT: Record<AppMode, number> = {
 	sme: 3,
 	pro: 10,
-	agency: Number.POSITIVE_INFINITY,
+	agency: 50,
 };
 
 export const TEAM_LIMIT: Record<AppMode, number> = {
@@ -69,18 +69,24 @@ export const TEAM_LIMIT: Record<AppMode, number> = {
 
 export const LLM_LIMIT: Record<AppMode, number> = {
 	sme: 2,
-	pro: 5,
+	pro: 4,
 	agency: 5,
 };
 
 export const HISTORY_DAYS: Record<AppMode, number> = {
 	sme: 30,
 	pro: 90,
-	agency: 365 * 5,
+	agency: 365,
+};
+
+export const MONTHLY_EXECUTION_LIMIT: Record<AppMode, number> = {
+	sme: 300,
+	pro: 1500,
+	agency: 6000,
 };
 
 export function formatLimit(n: number): string {
-	return n === Number.POSITIVE_INFINITY ? "∞" : String(n);
+	return String(n);
 }
 
 export function minTierFor(feature: TierFeature): AppMode {

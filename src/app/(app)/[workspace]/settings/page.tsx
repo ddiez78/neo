@@ -4,11 +4,14 @@ import { AdminLogsTable } from "@/components/admin/AdminLogsTable";
 import { CostDashboard } from "@/components/admin/CostDashboard";
 import { AppearanceSettingsPanel } from "@/components/settings/AppearanceSettingsPanel";
 import { ExperienceModePanel } from "@/components/settings/ExperienceModePanel";
+import { UsageMeter } from "@/components/usage/UsageMeter";
 import { LlmConfigPanel } from "@/components/workspace/LlmConfigPanel";
 import { TeamManagementPanel } from "@/components/workspace/TeamManagementPanel";
 import { getCostSummary } from "@/lib/analytics/cost";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
 import { getUserPreferences } from "@/lib/preferences-server";
+import { MONTHLY_EXECUTION_LIMIT } from "@/lib/tiers";
+import { getCurrentMonthUsage } from "@/lib/usage/quota";
 
 const sections = [
 	{ id: "general", label: "General", description: "Workspace, pais e idioma" },
@@ -50,6 +53,8 @@ export default async function Page({
 	const prefs = await getUserPreferences();
 	const overview = await getWorkspaceOverview(workspace.id);
 	const costSummary = await getCostSummary(workspace.id);
+	const usageUsed = await getCurrentMonthUsage(workspace.id).catch(() => 0);
+	const usageLimit = MONTHLY_EXECUTION_LIMIT[prefs.mode];
 	const activeSection: SettingsSection = isSettingsSection(status.section)
 		? status.section
 		: "general";
@@ -90,6 +95,27 @@ export default async function Page({
 						Cambios guardados.
 					</p>
 				) : null}
+				<div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-center">
+					<UsageMeter
+						limit={usageLimit}
+						locale={prefs.locale}
+						used={usageUsed}
+					/>
+					<div className="flex flex-wrap items-center gap-2 text-xs">
+						<a
+							className="rounded-md border border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2 font-medium text-[var(--foreground)] hover:border-[var(--brand)]"
+							href="mailto:hello@neo-geo.app?subject=Comprar%20pack%20extra%20de%20ejecuciones%20IA"
+						>
+							{prefs.locale === "en" ? "Buy extra pack" : "Comprar pack extra"}
+						</a>
+						<a
+							className="rounded-md px-3 py-2 font-medium text-[var(--muted)] hover:text-[var(--brand)]"
+							href="mailto:hello@neo-geo.app?subject=Plan%20a%20medida"
+						>
+							{prefs.locale === "en" ? "Custom plan" : "Plan a medida"} →
+						</a>
+					</div>
+				</div>
 				<div className="grid gap-5 xl:grid-cols-[280px_1fr]">
 					<aside className="neo-card h-fit p-2">
 						<nav className="grid gap-1">

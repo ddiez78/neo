@@ -15,6 +15,7 @@ import {
 import { getUserPreferences } from "@/lib/preferences-server";
 import { buildCompanyBioRecommendations } from "@/lib/recommendations/companyBioRecommendations";
 import { loadMarkdownRecommendationSources } from "@/lib/recommendations/markdownSources";
+import { checkQuota, incrementUsage } from "@/lib/usage/quota";
 import type {
 	Recommendation,
 	RecommendationCategory,
@@ -56,6 +57,15 @@ export async function generateRecommendationsAction(
 ) {
 	const { supabase } = await requireUser();
 	const prefs = await getUserPreferences();
+
+	const quota = await checkQuota(workspaceId, prefs.mode, 2);
+	if (!quota.ok) {
+		const message = `Cupo mensual de ejecuciones IA agotado (${quota.used}/${quota.limit}). Sube de plan o espera al próximo ciclo.`;
+		redirect(
+			`/${workspaceSlug}/recommendations?error=${encodeURIComponent(message)}`,
+		);
+	}
+
 	const overview = await getWorkspaceOverview(workspaceId);
 	const metrics = buildGeoKpiSnapshot(overview);
 	const queries = buildRetrievalQueries(metrics);
@@ -131,6 +141,8 @@ export async function generateRecommendationsAction(
 			`/${workspaceSlug}/recommendations?error=${encodeURIComponent(error.message)}`,
 		);
 	}
+
+	await incrementUsage(workspaceId, prefs.mode, 2);
 
 	revalidatePath(`/${workspaceSlug}/recommendations`);
 	redirect(

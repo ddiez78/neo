@@ -1,6 +1,12 @@
 import { inngest } from "@/inngest/client";
 import { generatePromptCandidates } from "@/lib/prompts/generationPipeline";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+	BACKGROUND_PLAN_FALLBACK,
+	checkQuota,
+	emitQuotaExhaustedAlert,
+	incrementUsage,
+} from "@/lib/usage/quota";
 
 export const generatePromptCandidatesInngest = inngest.createFunction(
 	{
@@ -13,6 +19,21 @@ export const generatePromptCandidatesInngest = inngest.createFunction(
 			workspaceId: string;
 			batchId: string;
 		};
+
+		const quota = await checkQuota(workspaceId, BACKGROUND_PLAN_FALLBACK, 1);
+		if (!quota.ok) {
+			await emitQuotaExhaustedAlert(workspaceId, BACKGROUND_PLAN_FALLBACK);
+			await supabase
+				.from("prompt_generation_batches")
+				.update({
+					status: "failed",
+					completed_at: new Date().toISOString(),
+					updated_at: new Date().toISOString(),
+					metadata: { error: "quota_exhausted", quota },
+				})
+				.eq("id", batchId);
+			return { skipped: true, reason: "quota_exhausted" };
+		}
 
 		const context = await step.run("context-builder", async () => {
 			const [workspace, company, competitors, prompts] = await Promise.all([
@@ -65,6 +86,7 @@ export const generatePromptCandidatesInngest = inngest.createFunction(
 				.eq("id", batchId);
 		});
 
+		await incrementUsage(workspaceId, BACKGROUND_PLAN_FALLBACK, 1);
 		return { candidates: candidates.length };
 	},
 );

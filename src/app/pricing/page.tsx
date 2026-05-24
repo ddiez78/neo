@@ -337,12 +337,13 @@ const TIERS_ES: Tier[] = [
 	{
 		id: "starter",
 		name: "Starter",
-		priceMonth: 19,
-		priceLabel: "19€/mes",
+		priceMonth: 29,
+		priceLabel: "29€/mes",
 		tagline: "Para dueños de pyme y negocios locales",
 		features: [
 			{ text: "1 workspace", included: true },
-			{ text: "Hasta 20 prompts activos", included: true },
+			{ text: "25 prompts activos", included: true },
+			{ text: "300 ejecuciones IA/mes", included: true },
 			{ text: "Hasta 3 competidores", included: true },
 			{ text: "2 LLMs (ChatGPT + 1)", included: true },
 			{ text: "Dashboard de visibilidad GEO", included: true },
@@ -357,15 +358,16 @@ const TIERS_ES: Tier[] = [
 	{
 		id: "pro",
 		name: "Pro",
-		priceMonth: 49,
-		priceLabel: "49€/mes",
+		priceMonth: 79,
+		priceLabel: "79€/mes",
 		tagline: "Freelancers SEO y agencias pequeñas",
 		highlighted: true,
 		features: [
 			{ text: "1 workspace", included: true },
 			{ text: "100 prompts activos", included: true },
+			{ text: "1.500 ejecuciones IA/mes", included: true },
 			{ text: "Hasta 10 competidores", included: true },
-			{ text: "5 LLMs (todos disponibles)", included: true },
+			{ text: "4 LLMs", included: true },
 			{ text: "Todo lo de Starter", included: true },
 			{ text: "Informes PDF estandar", included: true },
 			{ text: "ROI: acciones → resultados", included: true },
@@ -381,13 +383,14 @@ const TIERS_ES: Tier[] = [
 	{
 		id: "agency",
 		name: "Agency",
-		priceMonth: 99,
-		priceLabel: "99€/mes",
+		priceMonth: 249,
+		priceLabel: "249€/mes",
 		tagline: "Agencias y profesionales SEO multi-cliente",
 		features: [
-			{ text: "10 workspaces (multi-cliente)", included: true },
-			{ text: "Prompts ilimitados", included: true },
-			{ text: "Competidores ilimitados", included: true },
+			{ text: "5 workspaces (multi-cliente)", included: true },
+			{ text: "500 prompts activos total", included: true },
+			{ text: "6.000 ejecuciones IA/mes", included: true },
+			{ text: "50 competidores total", included: true },
 			{ text: "5 LLMs (todos)", included: true },
 			{ text: "Todo lo de Pro", included: true },
 			{ text: "Informes white-label personalizados", included: true },
@@ -398,7 +401,7 @@ const TIERS_ES: Tier[] = [
 			{ text: "Company Bio avanzado", included: true },
 			{ text: "Benchmarks de industria", included: true },
 			{ text: "Mention context viewer", included: true },
-			{ text: "Historico ilimitado", included: true },
+			{ text: "12 meses de historico", included: true },
 			{ text: "Soporte prioritario", included: true },
 		],
 		cta: "Contactar",
@@ -428,19 +431,23 @@ const TIERS_EN: Tier[] = TIERS_ES.map((t) => ({
 function translateFeature(es: string): string {
 	const map: Record<string, string> = {
 		"1 workspace": "1 workspace",
-		"Hasta 20 prompts activos": "Up to 20 active prompts",
+		"25 prompts activos": "25 active prompts",
 		"100 prompts activos": "100 active prompts",
+		"500 prompts activos total": "500 active prompts total",
+		"300 ejecuciones IA/mes": "300 AI executions/month",
+		"1.500 ejecuciones IA/mes": "1,500 AI executions/month",
+		"6.000 ejecuciones IA/mes": "6,000 AI executions/month",
 		"Hasta 3 competidores": "Up to 3 competitors",
 		"Hasta 10 competidores": "Up to 10 competitors",
-		"Competidores ilimitados": "Unlimited competitors",
+		"50 competidores total": "50 competitors total",
 		"2 LLMs (ChatGPT + 1)": "2 LLMs (ChatGPT + 1)",
-		"5 LLMs (todos disponibles)": "5 LLMs (all available)",
+		"4 LLMs": "4 LLMs",
 		"5 LLMs (todos)": "5 LLMs (all)",
 		"Dashboard de visibilidad GEO": "GEO visibility dashboard",
 		"Recomendaciones criticas": "Critical recommendations",
 		"Historico 30 dias": "30-day history",
 		"Historico 90 dias": "90-day history",
-		"Historico ilimitado": "Unlimited history",
+		"12 meses de historico": "12 months of history",
 		"Soporte por email": "Email support",
 		"Informes PDF": "PDF reports",
 		"ROI, Tareas y Plantillas": "ROI, Tasks and Templates",
@@ -452,8 +459,7 @@ function translateFeature(es: string): string {
 		"Alertas in-app completas": "Full in-app alerts",
 		"Forecast 30/60/90 dias": "30/60/90 day forecast",
 		"Auto-refresh cada 6h": "Auto-refresh every 6h",
-		"10 workspaces (multi-cliente)": "10 workspaces (multi-client)",
-		"Prompts ilimitados": "Unlimited prompts",
+		"5 workspaces (multi-cliente)": "5 workspaces (multi-client)",
 		"Todo lo de Pro": "Everything in Pro",
 		"Informes white-label personalizados": "Custom white-label reports",
 		"Envio automatico por email programado":
@@ -590,10 +596,26 @@ async function PricingContent({
 									{tier.cta}
 									<ArrowRight className="size-4" />
 								</Link>
+								{tier.id === "agency" ? (
+									<Link
+										className="text-center text-xs text-[var(--muted)] underline-offset-2 hover:text-[var(--brand)] hover:underline"
+										href="mailto:hello@neo-geo.app?subject=Plan%20a%20medida"
+									>
+										{isEn
+											? "Need more volume? Custom plans available →"
+											: "¿Necesitas más volumen? Hacemos planes a medida →"}
+									</Link>
+								) : null}
 							</article>
 						);
 					})}
 				</section>
+
+				<p className="mx-auto mt-6 max-w-2xl text-center text-xs text-[var(--muted)]">
+					{isEn
+						? "One question executed on one model = 1 AI execution. The monthly quota resets at the start of each month."
+						: "Una pregunta ejecutada en un modelo = 1 ejecución IA. El cupo mensual se reinicia al comenzar cada mes."}
+				</p>
 
 				<section className="mt-16 grid gap-6 md:grid-cols-3">
 					<div>

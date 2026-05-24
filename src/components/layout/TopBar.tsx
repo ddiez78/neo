@@ -1,7 +1,10 @@
 import { Settings2 } from "lucide-react";
 import Link from "next/link";
+import { UsageMeter } from "@/components/usage/UsageMeter";
 import { getAlerts } from "@/lib/data/alerts";
 import type { AppLocale, AppMode, AppTheme } from "@/lib/preferences";
+import { MONTHLY_EXECUTION_LIMIT } from "@/lib/tiers";
+import { getCurrentMonthUsage } from "@/lib/usage/quota";
 import type { Workspace } from "@/types";
 import { AlertsDropdown } from "./AlertsDropdown";
 import { GlobalSearch } from "./GlobalSearch";
@@ -22,8 +25,12 @@ export async function TopBar({
 	mode: AppMode;
 }) {
 	const isEn = locale === "en";
-	const alerts = await getAlerts(workspace.id, 20).catch(() => []);
+	const [alerts, usageUsed] = await Promise.all([
+		getAlerts(workspace.id, 20).catch(() => []),
+		getCurrentMonthUsage(workspace.id).catch(() => 0),
+	]);
 	const unseenCount = alerts.filter((a) => a.seen_at === null).length;
+	const usageLimit = MONTHLY_EXECUTION_LIMIT[mode];
 
 	return (
 		<header className="sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-[var(--border)] bg-[rgba(10,25,44,0.92)] px-4 text-[var(--foreground)] backdrop-blur-xl lg:px-6">
@@ -39,6 +46,15 @@ export async function TopBar({
 				<GlobalSearch isEn={isEn} workspaceId={workspace.id} />
 			</div>
 			<div className="flex items-center gap-2 md:gap-3">
+				<div className="hidden lg:block">
+					<UsageMeter
+						compact
+						href={`/${workspace.slug}/settings`}
+						limit={usageLimit}
+						locale={isEn ? "en" : "es"}
+						used={usageUsed}
+					/>
+				</div>
 				<WorkspaceSwitcher
 					currentSlug={workspace.slug}
 					locale={locale}

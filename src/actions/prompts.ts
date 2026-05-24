@@ -297,7 +297,7 @@ export async function createPromptAction(
 		.eq("workspace_id", workspaceId);
 	if ((existingCount ?? 0) >= limit) {
 		redirect(
-			`/${workspaceSlug}/prompts?error=${encodeURIComponent(`Tu plan permite ${limit === Number.POSITIVE_INFINITY ? "ilimitados" : limit} prompts. Sube de plan para crear más.`)}`,
+			`/${workspaceSlug}/prompts?error=${encodeURIComponent(`Tu plan permite ${limit} prompts. Sube de plan para crear más.`)}`,
 		);
 	}
 
