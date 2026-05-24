@@ -1,5 +1,6 @@
 ﻿import { Activity, Download } from "lucide-react";
 import Link from "next/link";
+import { ForecastPanel } from "@/components/dashboard/ForecastPanel";
 import {
 	BrandVisibilityChart,
 	CompetitorPressurePanel,
@@ -15,6 +16,13 @@ import {
 	SourceIntelligencePanel,
 	StrategicActionsPanel,
 } from "@/components/dashboard/OverviewCharts";
+import { ProDashboard } from "@/components/dashboard/ProDashboard";
+import type { SetupChecklistStatus } from "@/components/dashboard/SetupChecklist";
+import { SetupChecklist } from "@/components/dashboard/SetupChecklist";
+import { SmeDashboard } from "@/components/dashboard/SmeDashboard";
+import { WeeklyActivityFeed } from "@/components/dashboard/WeeklyActivityFeed";
+import { getWeeklyActivity } from "@/lib/analytics/activity";
+import { computeForecast } from "@/lib/analytics/forecast";
 import { getOverviewAnalytics } from "@/lib/analytics/overview";
 import { scoreCompanyUnderstanding } from "@/lib/company-bio/context";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
@@ -90,12 +98,51 @@ export default async function Page({
 }) {
 	const { workspace: slug } = await params;
 	const workspace = await requireWorkspace(slug);
-	const { locale } = await getUserPreferences();
+	const { locale, mode } = await getUserPreferences();
 	const isEn = locale === "en";
-	const [analytics, overview] = await Promise.all([
+	const [analytics, overview, weeklyActivity] = await Promise.all([
 		getOverviewAnalytics(workspace.id, 30),
 		getWorkspaceOverview(workspace.id),
+		getWeeklyActivity(workspace.id, 7),
 	]);
+
+	const setupStatus: SetupChecklistStatus = {
+		companyConfigured: Boolean(overview.company?.brand_name),
+		competitorsAdded: overview.competitors.length > 0,
+		llmsActive: overview.llmConfigs.some((c) => c.enabled),
+		promptsCreated: overview.prompts.length > 0,
+		runsExecuted: overview.runs.length > 0,
+	};
+
+	const forecast = computeForecast(
+		analytics.visibilityTrend.map((p) => p.visibility),
+	);
+
+	if (mode === "sme") {
+		return (
+			<SmeDashboard
+				analytics={analytics}
+				isEn={isEn}
+				setupStatus={setupStatus}
+				weeklyActivity={weeklyActivity}
+				workspaceSlug={workspace.slug}
+			/>
+		);
+	}
+
+	if (mode === "pro") {
+		return (
+			<ProDashboard
+				analytics={analytics}
+				forecast={forecast}
+				isEn={isEn}
+				setupStatus={setupStatus}
+				weeklyActivity={weeklyActivity}
+				workspaceSlug={workspace.slug}
+			/>
+		);
+	}
+
 	const companyUnderstanding = scoreCompanyUnderstanding({
 		company: overview.company,
 		runs: overview.runs,
@@ -105,6 +152,17 @@ export default async function Page({
 	return (
 		<main className="flex-1 overflow-auto p-4 pb-24 lg:p-6 lg:pb-8">
 			<div className="mx-auto grid max-w-[1440px] gap-6">
+				<SetupChecklist
+					isEn={isEn}
+					status={setupStatus}
+					workspaceSlug={workspace.slug}
+				/>
+				<WeeklyActivityFeed
+					activity={weeklyActivity}
+					isEn={isEn}
+					workspaceSlug={workspace.slug}
+				/>
+				<ForecastPanel forecast={forecast} isEn={isEn} />
 				<section className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
 					<div>
 						<p className="text-xs font-black uppercase tracking-[0.2em] text-[var(--brand)]">
@@ -153,7 +211,7 @@ export default async function Page({
 
 				<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
 					{analytics.kpis.map((kpi) => (
-						<OverviewKpiCard key={kpi.key} kpi={kpi} />
+						<OverviewKpiCard isEn={isEn} key={kpi.key} kpi={kpi} />
 					))}
 				</section>
 

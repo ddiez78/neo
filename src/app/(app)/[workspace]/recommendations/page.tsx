@@ -6,7 +6,6 @@ import {
 	ShieldAlert,
 } from "lucide-react";
 import {
-	createRecommendationAction,
 	createRecommendationTaskAction,
 	generateRecommendationsAction,
 	importRecommendationSourcesAction,
@@ -14,12 +13,16 @@ import {
 	translateRecommendationsAction,
 	updateRecommendationStatusAction,
 } from "@/actions/recommendations";
+import {
+	type PriorityTone,
+	SimpleRecommendationCard,
+} from "@/components/recommendations/SimpleRecommendationCard";
+import { SimpleRecommendationsHeader } from "@/components/recommendations/SimpleRecommendationsHeader";
 import { requireUser, requireWorkspace } from "@/lib/data/workspace";
 import { getUserPreferences } from "@/lib/preferences-server";
 import type {
 	Recommendation,
 	RecommendationCategory,
-	RecommendationSource,
 	RecommendationStatus,
 } from "@/types";
 
@@ -195,6 +198,18 @@ function sortRecommendations(items: Recommendation[]) {
 	});
 }
 
+function getPriorityTone(recommendation: Recommendation): PriorityTone {
+	if (recommendation.priority >= 4) return "high";
+	if (recommendation.priority === 3) return "medium";
+	return "low";
+}
+
+function getPriorityLabel(tone: PriorityTone, isEn: boolean): string {
+	if (tone === "high") return isEn ? "High priority" : "Alta prioridad";
+	if (tone === "medium") return isEn ? "Medium priority" : "Prioridad media";
+	return isEn ? "Low priority" : "Prioridad baja";
+}
+
 function plainMeaning(recommendation: Recommendation) {
 	const severity = getRecommendationSeverity(recommendation);
 	if (severity === "complaint") {
@@ -244,6 +259,175 @@ function groupedRecommendations(recommendations: Recommendation[]) {
 			),
 		),
 	}));
+}
+
+type SmeSection = {
+	key: "thisweek" | "upcoming" | "watching";
+	title: string;
+	description: string;
+	empty: string;
+	icon: LucideIcon;
+	card: string;
+	chip: string;
+};
+
+const smeSections: SmeSection[] = [
+	{
+		key: "thisweek",
+		title: "Esta semana",
+		description:
+			"Acciones urgentes para mejorar tu visibilidad en IA de inmediato.",
+		empty: "Todo en orden. Ninguna accion urgente.",
+		icon: AlertTriangle,
+		card: "border-red-200 bg-red-50/55",
+		chip: "border-red-200 bg-red-100 text-red-800",
+	},
+	{
+		key: "upcoming",
+		title: "Proximamente",
+		description:
+			"Mejoras importantes que puedes planificar para las proximas semanas.",
+		empty: "No hay mejoras planificadas pendientes.",
+		icon: Clock3,
+		card: "border-amber-200 bg-amber-50/60",
+		chip: "border-amber-200 bg-amber-100 text-amber-800",
+	},
+	{
+		key: "watching",
+		title: "En observacion",
+		description: "Acciones en progreso o ya completadas.",
+		empty: "Nada en observacion aun.",
+		icon: CheckCircle2,
+		card: "border-emerald-200 bg-emerald-50/60",
+		chip: "border-emerald-200 bg-emerald-100 text-emerald-800",
+	},
+];
+
+function smeGroupRecommendations(recommendations: Recommendation[]) {
+	return smeSections.map((section) => {
+		let items: Recommendation[];
+		if (section.key === "thisweek") {
+			items = recommendations.filter((r) => {
+				const sev = getRecommendationSeverity(r);
+				return (
+					(sev === "critical" || sev === "complaint") && r.status === "pending"
+				);
+			});
+		} else if (section.key === "upcoming") {
+			items = recommendations.filter((r) => {
+				const sev = getRecommendationSeverity(r);
+				return (sev === "medium" || sev === "low") && r.status === "pending";
+			});
+		} else {
+			items = recommendations.filter(
+				(r) => r.status === "in_progress" || r.status === "done",
+			);
+		}
+		return { ...section, items: sortRecommendations(items) };
+	});
+}
+
+function SmeRecommendationCard({
+	recommendation,
+	section,
+	workspaceId,
+	workspaceSlug,
+}: {
+	recommendation: Recommendation;
+	section: SmeSection;
+	workspaceId: string;
+	workspaceSlug: string;
+}) {
+	const actionItems = stringArrayFromEvidence(
+		recommendation.evidence,
+		"actionItems",
+	);
+	const markInProgress = startRecommendationTaskAction.bind(
+		null,
+		workspaceId,
+		workspaceSlug,
+		recommendation,
+	);
+	const markDone = updateRecommendationStatusAction.bind(
+		null,
+		workspaceSlug,
+		recommendation.id,
+		"done",
+	);
+	const dismiss = updateRecommendationStatusAction.bind(
+		null,
+		workspaceSlug,
+		recommendation.id,
+		"dismissed",
+	);
+
+	return (
+		<article className={`rounded-md border p-4 ${section.card}`}>
+			<div className="flex flex-wrap items-start gap-2">
+				<span
+					className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${section.chip}`}
+				>
+					{simpleArea(recommendation.category)}
+				</span>
+				<span className="rounded-md bg-white/90 px-2 py-0.5 text-xs font-semibold text-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
+					{statusLabels[recommendation.status]}
+				</span>
+			</div>
+			<h3 className="mt-2 text-base font-semibold text-slate-950">
+				{recommendation.title}
+			</h3>
+			<p className="mt-1 text-sm leading-6 text-slate-600">
+				{recommendation.description}
+			</p>
+			{actionItems.length > 0 ? (
+				<div className="mt-3 rounded-md bg-white/90 p-3 dark:bg-slate-900/40">
+					<p className="text-xs font-semibold uppercase tracking-[0.06em] text-slate-600 dark:text-slate-400">
+						Que hacer:
+					</p>
+					<ol className="mt-2 grid gap-1.5 text-sm text-slate-800 dark:text-slate-200">
+						{actionItems.slice(0, 3).map((item, i) => (
+							<li className="flex gap-2" key={item}>
+								<span
+									className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${section.chip}`}
+								>
+									{i + 1}
+								</span>
+								<span>{item}</span>
+							</li>
+						))}
+					</ol>
+				</div>
+			) : null}
+			<div className="mt-3 flex flex-wrap gap-2">
+				{recommendation.status === "pending" ? (
+					<form action={markInProgress}>
+						<button
+							className="rounded-md bg-slate-950 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
+							type="submit"
+						>
+							Empezar esta semana
+						</button>
+					</form>
+				) : null}
+				<form action={markDone}>
+					<button
+						className="rounded-md bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800"
+						type="submit"
+					>
+						Marcar como hecho
+					</button>
+				</form>
+				<form action={dismiss}>
+					<button
+						className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+						type="submit"
+					>
+						Dejar para despues
+					</button>
+				</form>
+			</div>
+		</article>
+	);
 }
 
 function ScoreBadge({ label, value }: { label: string; value: number }) {
@@ -441,63 +625,6 @@ function RecommendationCard({
 	);
 }
 
-function RecommendationSeveritySection({
-	config,
-	items,
-	workspaceId,
-	workspaceSlug,
-}: {
-	config: SeverityConfig;
-	items: Recommendation[];
-	workspaceId: string;
-	workspaceSlug: string;
-}) {
-	const Icon = config.icon;
-
-	return (
-		<section className="grid gap-3">
-			<div className="flex flex-wrap items-start justify-between gap-3">
-				<div className="flex items-start gap-3">
-					<div
-						className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-md border ${config.chip}`}
-					>
-						<Icon aria-hidden="true" className="h-5 w-5" />
-					</div>
-					<div>
-						<h2 className={`text-lg font-semibold ${config.tone}`}>
-							{config.title}
-						</h2>
-						<p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
-							{config.description}
-						</p>
-					</div>
-				</div>
-				<span className={`rounded-md border px-3 py-1 text-sm ${config.chip}`}>
-					{items.length}
-				</span>
-			</div>
-
-			{items.length === 0 ? (
-				<div className="rounded-md border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-500">
-					{config.empty}
-				</div>
-			) : (
-				<div className="grid gap-3">
-					{items.map((recommendation) => (
-						<RecommendationCard
-							config={config}
-							key={recommendation.id}
-							recommendation={recommendation}
-							workspaceId={workspaceId}
-							workspaceSlug={workspaceSlug}
-						/>
-					))}
-				</div>
-			)}
-		</section>
-	);
-}
-
 export default async function Page({
 	params,
 	searchParams,
@@ -517,31 +644,92 @@ export default async function Page({
 	const { supabase } = await requireUser();
 	const prefs = await getUserPreferences();
 	const isEn = prefs.locale === "en";
+	const isSme = prefs.mode === "sme";
+	const isPro = prefs.mode === "pro";
 
-	const [recommendationsResult, sourcesResult, actionsResult] =
-		await Promise.all([
-			supabase
-				.from("recommendations")
-				.select("*")
-				.eq("workspace_id", workspace.id)
-				.order("priority", { ascending: false })
-				.order("impact_score", { ascending: false }),
-			supabase
-				.from("recommendation_sources")
-				.select("*")
-				.eq("workspace_id", workspace.id)
-				.order("category", { ascending: true }),
-			supabase
-				.from("recommendation_actions")
-				.select("*, recommendations!inner(workspace_id)")
-				.eq("recommendations.workspace_id", workspace.id),
-		]);
+	const recommendationsResult = await supabase
+		.from("recommendations")
+		.select("*")
+		.eq("workspace_id", workspace.id)
+		.order("priority", { ascending: false })
+		.order("impact_score", { ascending: false });
 
 	const recommendations = (recommendationsResult.data ??
 		[]) as Recommendation[];
-	const sources = (sourcesResult.data ?? []) as RecommendationSource[];
-	const actions = actionsResult.data ?? [];
 	const grouped = groupedRecommendations(recommendations);
+	const smeGrouped = smeGroupRecommendations(recommendations);
+
+	if (isSme) {
+		const smePendingCount = recommendations.filter(
+			(r) => r.status === "pending",
+		).length;
+		return (
+			<main className="flex-1 overflow-auto bg-slate-50 p-4 lg:p-6">
+				<div className="mx-auto grid max-w-3xl gap-6">
+					<div>
+						<p className="text-sm font-semibold uppercase text-cyan-700">
+							Plan de accion
+						</p>
+						<h1 className="mt-2 text-2xl font-semibold text-slate-950">
+							{smePendingCount > 0
+								? `Tienes ${smePendingCount} accion${smePendingCount > 1 ? "es" : ""} pendiente${smePendingCount > 1 ? "s" : ""}`
+								: "Todo al dia"}
+						</h1>
+						<p className="mt-2 text-slate-600">
+							Acciones concretas para mejorar como apareces cuando los clientes
+							preguntan a la IA.
+						</p>
+					</div>
+
+					{smeGrouped.map((section) => {
+						const Icon = section.icon;
+						return (
+							<section key={section.key} className="grid gap-3">
+								<div className="flex items-center gap-3">
+									<div
+										className={`flex size-9 shrink-0 items-center justify-center rounded-md border ${section.chip}`}
+									>
+										<Icon className="size-4" />
+									</div>
+									<div>
+										<h2 className="font-semibold text-slate-950">
+											{section.title}
+										</h2>
+										<p className="text-xs text-slate-500">
+											{section.description}
+										</p>
+									</div>
+									<span
+										className={`ml-auto rounded-md border px-2.5 py-0.5 text-sm font-semibold ${section.chip}`}
+									>
+										{section.items.length}
+									</span>
+								</div>
+								{section.items.length === 0 ? (
+									<div className="rounded-md border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-500">
+										{section.empty}
+									</div>
+								) : (
+									<div className="grid gap-3">
+										{section.items.map((recommendation) => (
+											<SmeRecommendationCard
+												key={recommendation.id}
+												recommendation={recommendation}
+												section={section}
+												workspaceId={workspace.id}
+												workspaceSlug={workspace.slug}
+											/>
+										))}
+									</div>
+								)}
+							</section>
+						);
+					})}
+				</div>
+			</main>
+		);
+	}
+
 	const pendingCount = recommendations.filter(
 		(item) => item.status === "pending",
 	).length;
@@ -553,6 +741,152 @@ export default async function Page({
 	).length;
 	const reputationCount =
 		grouped.find((group) => group.key === "complaint")?.items.length ?? 0;
+
+	if (isPro) {
+		const generateAction = generateRecommendationsAction.bind(
+			null,
+			workspace.id,
+			workspace.slug,
+		);
+		const categoryGroups = categories
+			.map((cat) => ({
+				category: cat,
+				label: simpleArea(cat),
+				items: sortRecommendations(
+					recommendations.filter((r) => r.category === cat),
+				),
+			}))
+			.filter((group) => group.items.length > 0);
+
+		const proConfig: SeverityConfig = {
+			key: "medium",
+			title: "",
+			shortLabel: "",
+			description: "",
+			empty: "Sin recomendaciones en esta categoria.",
+			tone: "text-slate-800",
+			card: "border-slate-200 bg-white",
+			chip: "border-slate-200 bg-slate-100 text-slate-700",
+			icon: Clock3,
+		};
+
+		return (
+			<main className="flex-1 overflow-auto bg-slate-50 p-4 lg:p-6">
+				<div className="grid gap-6">
+					<div className="flex flex-wrap items-start justify-between gap-4">
+						<div>
+							<p className="text-sm font-semibold uppercase text-cyan-700">
+								Pro
+							</p>
+							<h1 className="mt-2 text-2xl font-semibold text-slate-950">
+								{isEn ? "Recommendations" : "Recomendaciones"}
+							</h1>
+							<p className="mt-2 max-w-3xl text-slate-600">
+								{isEn
+									? "Prioritized actions grouped by area. Fix critical issues first."
+									: "Acciones priorizadas agrupadas por area. Empieza por lo mas critico."}
+							</p>
+						</div>
+						<form action={generateAction}>
+							<button
+								className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+								type="submit"
+							>
+								{isEn ? "Generate recommendations" : "Generar recomendaciones"}
+							</button>
+						</form>
+					</div>
+
+					{status.error ? (
+						<p className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+							{status.error}
+						</p>
+					) : null}
+					{status.generated ? (
+						<p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
+							{isEn
+								? `Generated ${status.generated} recommendations.`
+								: `Generadas ${status.generated} recomendaciones.`}
+						</p>
+					) : null}
+
+					<section className="grid gap-3 md:grid-cols-4">
+						<div className="rounded-md border border-slate-200 bg-white p-4">
+							<p className="text-sm text-slate-500">
+								{isEn ? "Active" : "Activas"}
+							</p>
+							<p className="mt-2 text-3xl font-semibold text-slate-950">
+								{activeCount}
+							</p>
+						</div>
+						<div className="rounded-md border border-slate-200 bg-white p-4">
+							<p className="text-sm text-slate-500">
+								{isEn ? "Pending" : "Pendientes"}
+							</p>
+							<p className="mt-2 text-3xl font-semibold text-slate-950">
+								{pendingCount}
+							</p>
+						</div>
+						<div className="rounded-md border border-red-200 bg-red-50 p-4">
+							<p className="text-sm text-red-700">
+								{isEn ? "High impact" : "Alto impacto"}
+							</p>
+							<p className="mt-2 text-3xl font-semibold text-red-950">
+								{highImpactCount}
+							</p>
+						</div>
+						<div className="rounded-md border border-rose-200 bg-rose-50 p-4">
+							<p className="text-sm text-rose-700">
+								{isEn ? "Reputation" : "Reputacion"}
+							</p>
+							<p className="mt-2 text-3xl font-semibold text-rose-950">
+								{reputationCount}
+							</p>
+						</div>
+					</section>
+
+					{recommendations.length === 0 ? (
+						<div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center">
+							<h2 className="text-lg font-semibold text-slate-950">
+								{isEn
+									? "No recommendations yet"
+									: "Sin recomendaciones todavia"}
+							</h2>
+							<p className="mt-2 text-sm text-slate-500">
+								{isEn
+									? "Generate recommendations to get started."
+									: "Genera recomendaciones para empezar."}
+							</p>
+						</div>
+					) : null}
+
+					{categoryGroups.map((group) => (
+						<section className="grid gap-3" key={group.category}>
+							<div className="flex items-center justify-between">
+								<h2 className="text-base font-semibold text-slate-950">
+									{group.label}
+								</h2>
+								<span className="rounded-md border border-slate-200 bg-white px-2.5 py-0.5 text-sm font-semibold text-slate-700">
+									{group.items.length}
+								</span>
+							</div>
+							<div className="grid gap-3">
+								{group.items.map((recommendation) => (
+									<RecommendationCard
+										config={proConfig}
+										key={recommendation.id}
+										recommendation={recommendation}
+										workspaceId={workspace.id}
+										workspaceSlug={workspace.slug}
+									/>
+								))}
+							</div>
+						</section>
+					))}
+				</div>
+			</main>
+		);
+	}
 
 	const importAction = importRecommendationSourcesAction.bind(
 		null,
@@ -569,56 +903,34 @@ export default async function Page({
 		workspace.id,
 		workspace.slug,
 	);
-	const createAction = createRecommendationAction.bind(
-		null,
-		workspace.id,
-		workspace.slug,
-	);
+
+	const activeRecs = recommendations
+		.filter(
+			(item) => item.status === "pending" || item.status === "in_progress",
+		)
+		.sort((a, b) => {
+			if (b.priority !== a.priority) return b.priority - a.priority;
+			return Number(b.impact_score) - Number(a.impact_score);
+		});
+
+	const highPriorityCount = activeRecs.filter((r) => r.priority >= 4).length;
+	const mediumPriorityCount = activeRecs.filter((r) => r.priority === 3).length;
+	const lowPriorityCount = activeRecs.filter((r) => r.priority <= 2).length;
+	const brandName = workspace.name;
 
 	return (
 		<main className="flex-1 overflow-auto bg-slate-50 p-4 lg:p-6">
-			<div className="grid gap-6">
-				<div className="flex flex-wrap items-start justify-between gap-4">
-					<div>
-						<p className="text-sm font-semibold uppercase text-cyan-700">
-							Plan de accion
-						</p>
-						<h1 className="mt-2 text-2xl font-semibold text-slate-950">
-							Que mejorar primero
-						</h1>
-						<p className="mt-2 max-w-3xl text-slate-600">
-							{isEn
-								? "Prioritized actions from the RAG algorithm, explained for marketing teams, SEO teams, and clients who need to know what to do first."
-								: "Acciones priorizadas a partir del algoritmo RAG, explicadas para equipos de marketing, SEO y clientes que necesitan saber que hacer primero."}
-						</p>
-					</div>
-					<div className="flex flex-wrap gap-2">
-						<form action={importAction}>
-							<button
-								className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-								type="submit"
-							>
-								{isEn ? "Import MD sources" : "Importar fuentes MD"}
-							</button>
-						</form>
-						<form action={translateAction}>
-							<button
-								className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-								type="submit"
-							>
-								{isEn ? "Translate to English" : "Traducir a espanol"}
-							</button>
-						</form>
-						<form action={generateAction}>
-							<button
-								className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-								type="submit"
-							>
-								{isEn ? "Generate recommendations" : "Generar recomendaciones"}
-							</button>
-						</form>
-					</div>
-				</div>
+			<div className="mx-auto grid max-w-4xl gap-4">
+				<header>
+					<h1 className="text-2xl font-semibold text-slate-950">
+						{isEn ? "GEO Recommendations" : "Recomendaciones GEO"}
+					</h1>
+					<p className="mt-1 text-sm text-slate-500">
+						{isEn
+							? `Actions to improve ${brandName}'s visibility in AI search engines.`
+							: `Acciones para mejorar la visibilidad de ${brandName} en motores de búsqueda de IA.`}
+					</p>
+				</header>
 
 				{status.error ? (
 					<p className="rounded-md bg-red-50 p-3 text-sm text-red-700">
@@ -627,12 +939,16 @@ export default async function Page({
 				) : null}
 				{status.imported ? (
 					<p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
-						Metodología markdown importada.
+						{isEn
+							? "Markdown methodology imported."
+							: "Metodología markdown importada."}
 					</p>
 				) : null}
 				{status.generated ? (
 					<p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
-						Generadas {status.generated} recomendaciones.
+						{isEn
+							? `Generated ${status.generated} recommendations.`
+							: `Generadas ${status.generated} recomendaciones.`}
 					</p>
 				) : null}
 				{status.translated ? (
@@ -644,154 +960,77 @@ export default async function Page({
 				) : null}
 				{status.created ? (
 					<p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
-						Recomendación creada.
+						{isEn ? "Recommendation created." : "Recomendación creada."}
 					</p>
 				) : null}
 
-				<section className="grid gap-3 md:grid-cols-5">
-					<div className="rounded-md border border-slate-200 bg-white p-4">
-						<p className="text-sm text-slate-500">Activas</p>
-						<p className="mt-2 text-3xl font-semibold text-slate-950">
-							{activeCount}
+				<SimpleRecommendationsHeader
+					activeCount={activeRecs.length}
+					highPriorityCount={highPriorityCount}
+					mediumPriorityCount={mediumPriorityCount}
+					lowPriorityCount={lowPriorityCount}
+					regenerateAction={generateAction}
+					importAction={importAction}
+					translateAction={translateAction}
+					locale={isEn ? "en" : "es"}
+				/>
+
+				{activeRecs.length === 0 ? (
+					<div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center">
+						<h2 className="text-lg font-semibold text-slate-950">
+							{isEn
+								? "No active recommendations yet"
+								: "Sin recomendaciones activas"}
+						</h2>
+						<p className="mt-2 text-sm text-slate-500">
+							{isEn
+								? "Click Regenerate to create the first batch."
+								: "Pulsa Regenerar para crear el primer lote."}
 						</p>
 					</div>
-					<div className="rounded-md border border-slate-200 bg-white p-4">
-						<p className="text-sm text-slate-500">Pendientes</p>
-						<p className="mt-2 text-3xl font-semibold text-slate-950">
-							{pendingCount}
-						</p>
-					</div>
-					<div className="rounded-md border border-red-200 bg-red-50 p-4">
-						<p className="text-sm text-red-700">Alto impacto</p>
-						<p className="mt-2 text-3xl font-semibold text-red-950">
-							{highImpactCount}
-						</p>
-					</div>
-					<div className="rounded-md border border-rose-200 bg-rose-50 p-4">
-						<p className="text-sm text-rose-700">Confianza y reseñas</p>
-						<p className="mt-2 text-3xl font-semibold text-rose-950">
-							{reputationCount}
-						</p>
-					</div>
-					<div className="rounded-md border border-slate-200 bg-white p-4">
-						<p className="text-sm text-slate-500">Fuentes MD</p>
-						<p className="mt-2 text-3xl font-semibold text-slate-950">
-							{sources.length}
-						</p>
-					</div>
-				</section>
-
-				<section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-					<div className="grid gap-8">
-						{recommendations.length === 0 ? (
-							<div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center">
-								<h2 className="text-lg font-semibold text-slate-950">
-									No hay recomendaciones todavía
-								</h2>
-								<p className="mt-2 text-sm text-slate-500">
-									Importa la metodologÃ­a markdown y genera las primeras
-									recomendaciones para este workspace.
-								</p>
-							</div>
-						) : null}
-
-						{grouped.map((group) => (
-							<RecommendationSeveritySection
-								config={group}
-								items={group.items}
-								key={group.key}
-								workspaceId={workspace.id}
-								workspaceSlug={workspace.slug}
-							/>
-						))}
-					</div>
-
-					<aside className="grid h-fit gap-4">
-						<form
-							action={createAction}
-							className="grid gap-3 rounded-md border border-slate-200 bg-white p-4"
-						>
-							<h2 className="font-semibold text-slate-950">
-								AÃ±adir recomendación manual
-							</h2>
-							<input
-								className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-								name="title"
-								placeholder="TÃ­tulo de la recomendación"
-								required
-							/>
-							<textarea
-								className="min-h-24 rounded-md border border-slate-300 px-3 py-2 text-sm"
-								name="description"
-								placeholder="¿Qué debería hacer el equipo?"
-								required
-							/>
-							<div className="grid grid-cols-2 gap-2">
-								<select
-									className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-									name="category"
-								>
-									{categories.map((category) => (
-										<option key={category} value={category}>
-											{category}
-										</option>
-									))}
-								</select>
-								<input
-									className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-									defaultValue="3"
-									max="5"
-									min="1"
-									name="priority"
-									type="number"
-								/>
-							</div>
-							<button
-								className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
-								type="submit"
-							>
-								Crear
-							</button>
-						</form>
-
-						<section className="rounded-md border border-slate-200 bg-white p-4">
-							<h2 className="font-semibold text-slate-950">
-								Archivos de metodologÃ­a
-							</h2>
-							<div className="mt-3 grid gap-2">
-								{sources.length === 0 ? (
-									<p className="text-sm text-slate-500">
-										Todavía no hay fuentes markdown importadas.
-									</p>
-								) : null}
-								{sources.map((source) => (
-									<div
-										className="rounded-md border border-slate-100 bg-slate-50 p-3"
-										key={source.id}
-									>
-										<p className="text-sm font-medium text-slate-950">
-											{source.title}
-										</p>
-										<p className="mt-1 text-xs uppercase text-slate-500">
-											{source.category} · {source.version}
-										</p>
-									</div>
-								))}
-							</div>
-						</section>
-
-						<section className="rounded-md border border-slate-200 bg-white p-4">
-							<h2 className="font-semibold text-slate-950">Tareas creadas</h2>
-							<p className="mt-2 text-3xl font-semibold text-slate-950">
-								{actions.length}
-							</p>
-							<p className="mt-1 text-sm text-slate-500">
-								Las recomendaciones pueden convertirse en tareas para asignar
-								responsable y seguimiento.
-							</p>
-						</section>
-					</aside>
-				</section>
+				) : (
+					<ul className="grid gap-3">
+						{activeRecs.map((recommendation, index) => {
+							const tone = getPriorityTone(recommendation);
+							return (
+								<li key={recommendation.id}>
+									<SimpleRecommendationCard
+										categoryLabel={simpleArea(recommendation.category)}
+										createTaskAction={createRecommendationTaskAction.bind(
+											null,
+											workspace.id,
+											workspace.slug,
+											recommendation,
+										)}
+										defaultExpanded={index === 0}
+										dismissAction={updateRecommendationStatusAction.bind(
+											null,
+											workspace.slug,
+											recommendation.id,
+											"dismissed",
+										)}
+										locale={isEn ? "en" : "es"}
+										markDoneAction={updateRecommendationStatusAction.bind(
+											null,
+											workspace.slug,
+											recommendation.id,
+											"done",
+										)}
+										markInProgressAction={startRecommendationTaskAction.bind(
+											null,
+											workspace.id,
+											workspace.slug,
+											recommendation,
+										)}
+										priorityLabel={getPriorityLabel(tone, isEn)}
+										priorityTone={tone}
+										recommendation={recommendation}
+									/>
+								</li>
+							);
+						})}
+					</ul>
+				)}
 			</div>
 		</main>
 	);

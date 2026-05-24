@@ -1,15 +1,23 @@
 import Link from "next/link";
 import { inviteWorkspaceMemberAction } from "@/actions/team";
 import { AdminLogsTable } from "@/components/admin/AdminLogsTable";
+import { CostDashboard } from "@/components/admin/CostDashboard";
 import { AppearanceSettingsPanel } from "@/components/settings/AppearanceSettingsPanel";
+import { ExperienceModePanel } from "@/components/settings/ExperienceModePanel";
 import { LlmConfigPanel } from "@/components/workspace/LlmConfigPanel";
 import { TeamManagementPanel } from "@/components/workspace/TeamManagementPanel";
+import { getCostSummary } from "@/lib/analytics/cost";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
 import { getUserPreferences } from "@/lib/preferences-server";
 
 const sections = [
 	{ id: "general", label: "General", description: "Workspace, pais e idioma" },
 	{ id: "appearance", label: "Apariencia", description: "Tema e idioma UI" },
+	{
+		id: "experience",
+		label: "Experiencia",
+		description: "Modo pyme o agencia",
+	},
 	{ id: "team", label: "Equipo", description: "Usuarios y roles" },
 	{
 		id: "providers",
@@ -41,16 +49,13 @@ export default async function Page({
 	const workspace = await requireWorkspace(slug);
 	const prefs = await getUserPreferences();
 	const overview = await getWorkspaceOverview(workspace.id);
+	const costSummary = await getCostSummary(workspace.id);
 	const activeSection: SettingsSection = isSettingsSection(status.section)
 		? status.section
 		: "general";
 	const failedRuns = overview.runs.filter(
 		(run) => run.status === "failed",
 	).length;
-	const totalCost = overview.runs.reduce(
-		(sum, run) => sum + Number(run.total_cost),
-		0,
-	);
 	const activeProviders = overview.llmConfigs.filter(
 		(config) => config.enabled,
 	).length;
@@ -165,6 +170,12 @@ export default async function Page({
 								theme={prefs.theme}
 							/>
 						) : null}
+						{activeSection === "experience" ? (
+							<ExperienceModePanel
+								currentMode={prefs.mode}
+								isEn={prefs.locale === "en"}
+							/>
+						) : null}
 						{activeSection === "team" ? (
 							<TeamManagementPanel
 								action={inviteAction}
@@ -186,29 +197,27 @@ export default async function Page({
 						) : null}
 						{activeSection === "admin" ? (
 							<section className="grid gap-5">
-								<AppearanceSettingsPanel
-									locale={prefs.locale}
-									theme={prefs.theme}
+								<CostDashboard
+									isEn={prefs.locale === "en"}
+									summary={costSummary}
 								/>
-								<div className="grid gap-4 md:grid-cols-3">
+								<div className="grid gap-4 md:grid-cols-2">
 									<div className="neo-card p-4">
-										<p className="text-sm text-slate-500">Runs fallidos</p>
+										<p className="text-sm text-slate-500">
+											{prefs.locale === "en" ? "Failed runs" : "Runs fallidos"}
+										</p>
 										<p className="mt-2 text-3xl font-semibold text-[var(--foreground)]">
 											{failedRuns}
 										</p>
 									</div>
 									<div className="neo-card p-4">
 										<p className="text-sm text-slate-500">
-											Proveedores activos
+											{prefs.locale === "en"
+												? "Active providers"
+												: "Proveedores activos"}
 										</p>
 										<p className="mt-2 text-3xl font-semibold text-[var(--foreground)]">
 											{activeProviders}
-										</p>
-									</div>
-									<div className="neo-card p-4">
-										<p className="text-sm text-slate-500">Coste reciente</p>
-										<p className="mt-2 text-3xl font-semibold text-[var(--foreground)]">
-											{totalCost.toFixed(4)}
 										</p>
 									</div>
 								</div>

@@ -1,0 +1,29 @@
+Today we showed you our next generation models, Gemini 3.5 and Omni, new coding capabilities in Antigravity 2.0, agents in Search and Gemini Spark and so much more. It's great to see Gemini transforming so many Google products used by billions of people every day. All of these advances show the staggering pace of AI progress. 
+
+It's incredible, even for those of us who have spent our entire lives working on this. AGI is now on the horizon and it will be the most profound and impactful technology ever invented. If built right, it could propel human progress and flourishing beyond our imaginations. 
+
+We're in a moment of immense promise but also enormous responsibility. It's important that we are clear-eyed about the potential challenges and use all the tools at our disposal to ensure the safety of our agentic systems and ultimately AGI itself. One area of risk that has gained a lot of attention recently is cybersecurity. 
+
+Google has invested in this area for decades and we're bringing our frontier capabilities and deep expertise to help secure the world's codebases. We have tools like our code security agent, CodeMender, which automatically finds and fixes critical software vulnerabilities. Today we're inviting a select group of experts to test a new CodeMender API and we'll be launching it more broadly soon. 
+
+Stepping back, the whole reason I've worked on AI my entire career was because I saw it as the ultimate tool to advance science and our understanding of the world. It's awesome to see those dreams become a reality, with AI beginning to help scientists in almost every field. Building on this momentum, I'm excited to announce Gemini for Science, which brings together a number of powerful AI tools to help accelerate research. 
+
+Gemini can already assist in solving complex problems, but our new labs prototypes streamline daily scientific tasks, whether it's staying on top of newly published papers, transforming research goals into usable code, or generating new hypotheses. Another powerful tool for science is simulation. AI simulations are going to be critical for understanding and predicting dynamic systems that are simply too complex to model directly today. 
+
+An amazing example of this is Alpha Earth Foundations. It's the closest thing we have to a digital twin of the planet that could help address problems like deforestation and food security. Simulations are already proving extremely useful. 
+
+Our state-of-the-art WeatherNext models can predict hurricane paths faster and more accurately than traditional systems. Let's take a look at how WeatherNext helped during last year's hurricane season. Tropical storms and hurricanes can change very quickly, which makes them more challenging to predict than other types of weather systems. 
+
+At Google, we developed WeatherNext, a global weather forecasting AI model that is also able to predict where hurricanes are going to go and how strong they're going to become. In 2025, WeatherNext predicted a Category 5 hurricane striking Jamaica three days early with greater accuracy than previous models. It's going to cause catastrophic, life-threatening damage. 
+
+Because of that early warning, we were able to give that advance notice to the public to say move from certain areas. So it saved their lives. WeatherNext was a really valuable tool in helping us make these more accurate and aggressive forecasts for Melissa. 
+
+And I think going forward, WeatherNext and other AI models will become part of our routine forecast toolkit here at the Hurricane Center. In the future, we will be able to simulate even more complex emergent systems, perhaps even virtual cells. Our biological models like AlphaFold and AlphaGenome have already become standard research tools used by millions of scientists around the world to make important advances in their fields. 
+
+I like to call this science at digital speed, both in terms of the speed of the solution and its dissemination to the researchers who can make use of it. I've always believed the number one application of AI should be to improve human health. At Isomorphic Labs, we're modeling molecular interactions to massively accelerate the development of new medicines, supported by leading industry partners. 
+
+We're now in preclinical stage with multiple projects, including potential treatments for immune disorders and cancer. Our mission is to reimagine the drug discovery process with the goal of one day solving all disease, something that would have seemed impossible just a few years ago, but I truly believe is now within reach. Google's cutting-edge research and products will help unlock AGI's incredible potential for the benefit of the entire world. 
+
+When we look back at this time, I think we will realize that we were standing in the foothills of the singularity. It will be a profound moment for humanity. This technology will be a force multiplier for human ingenuity and usher in a new golden age of scientific discovery and progress, improving the lives of everyone, everywhere. 
+
+We look forward to building the future with all of you.

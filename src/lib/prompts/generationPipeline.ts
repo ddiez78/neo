@@ -17,6 +17,22 @@ type PipelineInput = {
 	company: CompanyProfile | null;
 	competitors: Competitor[];
 	existingPrompts: Prompt[];
+	context?: {
+		brandName?: string;
+		website?: string;
+		description?: string;
+		country?: string;
+		market?: string;
+		segment?: string;
+		services?: string;
+		audience?: string;
+		differentiators?: string;
+		competitors?: string[];
+		language?: string;
+		promptCount?: number;
+		intents?: string[];
+		specificity?: string;
+	};
 };
 
 const intents = [
@@ -59,30 +75,73 @@ const intents = [
 ] as const;
 
 function brandName(input: PipelineInput) {
-	return input.company?.brand_name ?? input.workspaceName;
+	return (
+		input.context?.brandName || input.company?.brand_name || input.workspaceName
+	);
 }
 
 function marketLabel(input: PipelineInput) {
-	return input.company?.markets?.[0] ?? "su mercado";
+	return input.context?.market || input.company?.markets?.[0] || "su mercado";
 }
 
 function fallbackCandidates(input: PipelineInput): PromptCandidateDraft[] {
 	const brand = brandName(input);
-	const competitors = input.competitors
-		.slice(0, 3)
-		.map((competitor) => competitor.name)
-		.join(", ");
+	const desiredCount = Math.max(
+		6,
+		Math.min(60, input.context?.promptCount ?? 12),
+	);
+	const competitors = (
+		input.context?.competitors?.length
+			? input.context.competitors
+			: input.competitors.map((competitor) => competitor.name)
+	).slice(0, 8);
+	const services = (
+		input.context?.services || input.company?.products?.join(", ")
+	)
+		?.split(",")
+		.map((item) => item.trim())
+		.filter(Boolean);
+	const topics = services?.length ? services : [marketLabel(input)];
+	const templates = [
+		"Que mejores opciones existen para {topic} en {market}?",
+		"Que alternativa a {competitor} deberia evaluar una empresa para {topic}?",
+		"Compara {brand} con {competitor} para {topic}.",
+		"Que proveedor recomiendan los expertos para {topic} en {market}?",
+		"Cuanto cuesta resolver {topic} y que marcas destacan?",
+		"Que riesgos deberia revisar antes de elegir una solucion de {topic}?",
+		"Que empresa es mejor para {audience} que busca {topic}?",
+		"Que fuentes fiables recomiendan herramientas de {topic}?",
+	];
 
-	return intents.map((item) => ({
-		title: `${brand} - ${item.category}`,
-		body: `Que opciones deberia evaluar una empresa que busca ${item.category} en ${marketLabel(input)}? Incluye ${brand}${competitors ? ` y compara con ${competitors}` : ""} cuando sea relevante.`,
-		intent: item.intent,
-		funnel_stage: item.funnel_stage,
-		category: item.category,
-		score: item.score,
-		rationale:
-			"Candidato generado por el pipeline propietario para cubrir una intencion GEO con potencial de visibilidad y comparacion competitiva.",
-	}));
+	const candidates: PromptCandidateDraft[] = [];
+	for (let index = 0; candidates.length < desiredCount; index++) {
+		const item = intents[index % intents.length];
+		const topic = topics[index % topics.length] ?? marketLabel(input);
+		const competitor =
+			competitors[index % Math.max(1, competitors.length)] ??
+			"competidores principales";
+		const template = templates[index % templates.length];
+		const body = template
+			.replaceAll("{brand}", brand)
+			.replaceAll("{competitor}", competitor)
+			.replaceAll("{topic}", topic)
+			.replaceAll("{market}", marketLabel(input))
+			.replaceAll(
+				"{audience}",
+				input.context?.audience || "clientes potenciales",
+			);
+		candidates.push({
+			title: `${brand} - ${item.category} ${Math.floor(index / intents.length) + 1}`,
+			body,
+			intent: item.intent,
+			funnel_stage: item.funnel_stage,
+			category: item.category,
+			score: Math.max(55, item.score - Math.floor(index / intents.length) * 3),
+			rationale:
+				"Candidato generado por el pipeline propietario para cubrir una intencion GEO con potencial de visibilidad, fuentes y comparacion competitiva.",
+		});
+	}
+	return candidates;
 }
 
 function buildPrompt(input: PipelineInput) {
@@ -93,6 +152,7 @@ ${JSON.stringify(
 	{
 		workspace: input.workspaceName,
 		company: input.company,
+		contextoEditable: input.context,
 		competitors: input.competitors.map((competitor) => ({
 			name: competitor.name,
 			domain: competitor.domain,
@@ -109,10 +169,13 @@ ${JSON.stringify(
 )}
 
 Reglas:
-- Devuelve entre 8 y 12 candidatos.
+- Devuelve exactamente ${Math.max(6, Math.min(60, input.context?.promptCount ?? 12))} candidatos.
 - Evita duplicados claros con prompts existentes.
 - Mezcla awareness, consideration y decision.
+- Cubre estas intenciones si se indican: ${(input.context?.intents ?? []).join(", ") || "awareness, comparacion, alternativas, precio, riesgos, local y decision"}.
 - Cada prompt debe sonar como una pregunta real de usuario a un LLM.
+- Usa idioma ${input.context?.language ?? "es"}.
+- Nivel de especificidad: ${input.context?.specificity ?? "medio"}.
 - No reveles nombres de modelos internos ni del pipeline.
 - Devuelve solo JSON valido.`;
 }
@@ -133,7 +196,6 @@ function normalizeCandidates(value: unknown): PromptCandidateDraft[] {
 	return value
 		.map((item) => item as Record<string, unknown>)
 		.filter((item) => item.title && item.body)
-		.slice(0, 12)
 		.map((item) => ({
 			title: String(item.title),
 			body: String(item.body),

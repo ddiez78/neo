@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser, slugify } from "@/lib/data/workspace";
+import { getUserPreferences } from "@/lib/preferences-server";
+import { WORKSPACE_LIMIT } from "@/lib/tiers";
 import {
 	companyProfileSchema,
 	csvToArray,
@@ -45,6 +47,20 @@ export async function createWorkspaceAction(
 	formData: FormData,
 ): Promise<ActionResult<{ slug: string }>> {
 	const { supabase, user } = await requireUser();
+	const prefs = await getUserPreferences();
+
+	const { count: existingCount } = await supabase
+		.from("workspace_members")
+		.select("workspace_id", { count: "exact", head: true })
+		.eq("user_id", user.id);
+	const limit = WORKSPACE_LIMIT[prefs.mode];
+	if ((existingCount ?? 0) >= limit) {
+		return {
+			success: false,
+			error: `Tu plan (${prefs.mode}) permite ${limit} workspace${limit === 1 ? "" : "s"}. Cambia a un plan superior para crear más.`,
+		};
+	}
+
 	const parsed = workspaceSchema.safeParse(Object.fromEntries(formData));
 	if (!parsed.success) {
 		return { success: false, error: parsed.error.issues[0]?.message };
@@ -85,32 +101,32 @@ export async function createWorkspaceAction(
 		{
 			workspace_id: workspace.id,
 			provider: "chatgpt",
-			model: "gpt-4o-mini",
+			model: "openai/gpt-4o-mini",
 			enabled: true,
 		},
 		{
 			workspace_id: workspace.id,
 			provider: "claude",
-			model: "claude-3-5-sonnet",
-			enabled: false,
+			model: "anthropic/claude-3-5-haiku",
+			enabled: true,
 		},
 		{
 			workspace_id: workspace.id,
 			provider: "gemini",
-			model: "gemini-1.5-pro",
-			enabled: false,
+			model: "google/gemini-2.0-flash",
+			enabled: true,
 		},
 		{
 			workspace_id: workspace.id,
 			provider: "perplexity",
-			model: "sonar",
-			enabled: false,
+			model: "perplexity/sonar",
+			enabled: true,
 		},
 		{
 			workspace_id: workspace.id,
 			provider: "deepseek",
-			model: "deepseek-chat",
-			enabled: false,
+			model: "deepseek/deepseek-chat",
+			enabled: true,
 		},
 	]);
 
@@ -133,7 +149,18 @@ export async function upsertCompanyProfileAction(
 	workspaceSlug: string,
 	formData: FormData,
 ) {
-	const { supabase } = await requireUser();
+	const { supabase, user } = await requireUser();
+
+	const { data: member } = await supabase
+		.from("workspace_members")
+		.select("role")
+		.eq("workspace_id", workspaceId)
+		.eq("user_id", user.id)
+		.maybeSingle();
+	if (!member) {
+		redirect(`/${workspaceSlug}/company-bio?error=Sin+acceso`);
+	}
+
 	const parsed = companyProfileSchema.safeParse(Object.fromEntries(formData));
 	if (!parsed.success) {
 		redirect(

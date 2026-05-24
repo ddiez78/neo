@@ -1,9 +1,17 @@
 "use client";
 
-import { ChevronDown, Moon, Settings, Sun, UserCircle2 } from "lucide-react";
+import {
+	ChevronDown,
+	LogOut,
+	Moon,
+	Settings,
+	Sun,
+	UserCircle2,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { AppLocale, AppTheme } from "@/lib/preferences";
+import { signOutAction } from "@/actions/auth";
+import type { AppLocale, AppMode, AppTheme } from "@/lib/preferences";
 import { savePreferences } from "@/lib/preferences-client";
 
 type Labels = {
@@ -12,17 +20,24 @@ type Labels = {
 	theme: string;
 	light: string;
 	dark: string;
+	mode: string;
+	modeSme: string;
+	modePro: string;
+	modeAgency: string;
+	logout: string;
 };
 
 export function UserSettingsMenu({
 	workspaceSlug,
 	locale,
 	theme,
+	mode,
 	labels,
 }: {
 	workspaceSlug: string;
 	locale: AppLocale;
 	theme: AppTheme;
+	mode: AppMode;
 	labels: Labels;
 }) {
 	const [open, setOpen] = useState(false);
@@ -47,6 +62,11 @@ export function UserSettingsMenu({
 	async function setTheme(next: AppTheme) {
 		await savePreferences({ theme: next });
 		document.documentElement.classList.toggle("dark", next === "dark");
+		window.location.reload();
+	}
+
+	async function setMode(next: AppMode) {
+		await savePreferences({ mode: next });
 		window.location.reload();
 	}
 
@@ -92,7 +112,7 @@ export function UserSettingsMenu({
 					<div className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
 						{labels.theme}
 					</div>
-					<div className="grid grid-cols-2 gap-2">
+					<div className="mb-3 grid grid-cols-2 gap-2">
 						<button
 							className={`inline-flex items-center justify-center gap-1 rounded-md border px-2 py-1.5 text-sm ${theme === "light" ? "border-teal-600 bg-teal-50 text-teal-700" : "border-[var(--border)] text-slate-700"}`}
 							onClick={() => setTheme("light")}
@@ -109,6 +129,43 @@ export function UserSettingsMenu({
 							<Moon className="size-3.5" />
 							{labels.dark}
 						</button>
+					</div>
+					<div className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+						{labels.mode}
+					</div>
+					<div className="grid grid-cols-3 gap-1.5">
+						<button
+							className={`rounded-md border px-1.5 py-1.5 text-xs ${mode === "sme" ? "border-teal-600 bg-teal-50 text-teal-700" : "border-[var(--border)] text-slate-700"}`}
+							onClick={() => setMode("sme")}
+							type="button"
+						>
+							{labels.modeSme}
+						</button>
+						<button
+							className={`rounded-md border px-1.5 py-1.5 text-xs ${mode === "pro" ? "border-indigo-600 bg-indigo-50 text-indigo-700" : "border-[var(--border)] text-slate-700"}`}
+							onClick={() => setMode("pro")}
+							type="button"
+						>
+							{labels.modePro}
+						</button>
+						<button
+							className={`rounded-md border px-1.5 py-1.5 text-xs ${mode === "agency" ? "border-teal-600 bg-teal-50 text-teal-700" : "border-[var(--border)] text-slate-700"}`}
+							onClick={() => setMode("agency")}
+							type="button"
+						>
+							{labels.modeAgency}
+						</button>
+					</div>
+					<div className="mt-3 border-t border-[var(--border)] pt-2">
+						<form action={signOutAction}>
+							<button
+								className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-[var(--danger)] transition hover:bg-[var(--surface-subtle)]"
+								type="submit"
+							>
+								<LogOut className="size-4" />
+								{labels.logout}
+							</button>
+						</form>
 					</div>
 				</div>
 			) : null}

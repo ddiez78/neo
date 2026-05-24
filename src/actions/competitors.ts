@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/data/workspace";
+import { getUserPreferences } from "@/lib/preferences-server";
+import { COMPETITOR_LIMIT } from "@/lib/tiers";
 import { competitorSchema, csvToArray } from "@/lib/validations/schemas";
 import type { ActionResult } from "@/types";
 
@@ -16,6 +18,18 @@ export async function createCompetitorAction(
 	formData: FormData,
 ) {
 	const { supabase } = await requireUser();
+	const prefs = await getUserPreferences();
+	const limit = COMPETITOR_LIMIT[prefs.mode];
+	const { count: existingCount } = await supabase
+		.from("competitors")
+		.select("id", { count: "exact", head: true })
+		.eq("workspace_id", workspaceId);
+	if ((existingCount ?? 0) >= limit) {
+		redirect(
+			`/${workspaceSlug}/competitors?error=${encodeURIComponent(`Tu plan permite ${limit === Number.POSITIVE_INFINITY ? "ilimitados" : limit} competidores. Sube de plan para añadir más.`)}`,
+		);
+	}
+
 	const parsed = competitorSchema.safeParse(Object.fromEntries(formData));
 	if (!parsed.success) {
 		redirect(

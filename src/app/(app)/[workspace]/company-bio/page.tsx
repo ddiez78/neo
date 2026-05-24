@@ -1,8 +1,11 @@
 import { CheckCircle2, ClipboardCheck, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import { upsertCompanyProfileAction } from "@/actions/workspace";
+import { LockedFeature } from "@/components/ui/LockedFeature";
 import { scoreCompanyUnderstanding } from "@/lib/company-bio/context";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
+import { getUserPreferences } from "@/lib/preferences-server";
+import { hasAccess } from "@/lib/tiers";
 
 const businessTypes = [
 	{ value: "local", label: "Pyme local" },
@@ -77,6 +80,12 @@ export default async function Page({
 	const { workspace: slug } = await params;
 	const status = await searchParams;
 	const workspace = await requireWorkspace(slug);
+	const prefs = await getUserPreferences();
+
+	if (!hasAccess(prefs.mode, "company-bio")) {
+		return <LockedFeature feature="company-bio" isEn={prefs.locale === "en"} />;
+	}
+
 	const { company, runs, rankings } = await getWorkspaceOverview(workspace.id);
 	const understanding = scoreCompanyUnderstanding({ company, runs, rankings });
 	const verification = company?.field_verification;

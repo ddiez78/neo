@@ -958,7 +958,12 @@ export async function getOverviewAnalytics(
 	const readinessScore = Math.round(
 		clamp(currentVisibility) * 0.24 +
 			clamp(brandSov) * 0.2 +
-			clamp(avgPosition ? 100 - (avgPosition - 1) * 16 : 0) * 0.18 +
+			clamp(
+				avgPosition && Number.isFinite(avgPosition) && avgPosition > 0
+					? 100 - (avgPosition - 1) * 16
+					: 0,
+			) *
+				0.18 +
 			clamp((sentiment + 1) * 50) * 0.16 +
 			clamp(uniqueSourceCount * 7) * 0.12 +
 			clamp(100 - bestCompetitorShare) * 0.1,

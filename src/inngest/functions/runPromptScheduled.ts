@@ -46,7 +46,7 @@ export const runPromptScheduled = inngest.createFunction(
 							.eq("enabled", true),
 					]);
 
-				await Promise.all(
+				const results = await Promise.allSettled(
 					(configsResult.data ?? []).map((config) =>
 						executePromptRun({
 							supabase,
@@ -60,6 +60,12 @@ export const runPromptScheduled = inngest.createFunction(
 						}),
 					),
 				);
+				const failed = results.filter((r) => r.status === "rejected").length;
+				if (failed > 0) {
+					console.error(
+						`${failed} prompt run(s) failed for prompt ${prompt.id}`,
+					);
+				}
 			}
 		});
 

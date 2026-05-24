@@ -6,7 +6,10 @@
 	XCircle,
 } from "lucide-react";
 import { updateTaskStatusAction } from "@/actions/tasks";
+import { LockedFeature } from "@/components/ui/LockedFeature";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
+import { getUserPreferences } from "@/lib/preferences-server";
+import { hasAccess } from "@/lib/tiers";
 import type { RecommendationAction, RecommendationStatus } from "@/types";
 
 type StatusConfig = {
@@ -145,7 +148,15 @@ export default async function Page({
 }) {
 	const { workspace: slug } = await params;
 	const status = await searchParams;
-	const workspace = await requireWorkspace(slug);
+	const [workspace, prefs] = await Promise.all([
+		requireWorkspace(slug),
+		getUserPreferences(),
+	]);
+
+	if (!hasAccess(prefs.mode, "tasks")) {
+		return <LockedFeature feature="tasks" isEn={prefs.locale === "en"} />;
+	}
+
 	const { tasks } = await getWorkspaceOverview(workspace.id);
 	const allTasks = sortedTasks(tasks);
 	const pending = allTasks.filter((task) => task.status === "pending");

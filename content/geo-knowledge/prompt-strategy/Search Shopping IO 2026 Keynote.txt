@@ -1,0 +1,143 @@
+People bring billions of questions to search every day. Now sometimes the whole world is searching for the same thing, but more often your questions are just as unique as you are. That's why we set out to make it possible to ask whatever is really on your mind. 
+
+Now to unlock this we've been on a journey to bring together the best of a search engine with the best of AI, and we started this transformation with AI overviews, and if you can believe it, it was just last year on the stage that we launched AI mode. Now it's our most powerful AI search, bringing in our most advanced Gemini models, and as of today we're upgrading it on Gemini 3.5. Now as Sundar mentioned, AI mode has surpassed more than 1 billion monthly users, and we're seeing phenomenal growth with AI mode queries more than doubling every quarter since launch. As people have learned how much more search can do, they've started bringing more questions, so much so that last quarter we saw search queries reach an all-time high, but what's even more remarkable, you're asking your real questions in all their super specific and detailed glory, knowing search can really tackle them. 
+
+You're having real conversations with search, going back and forth and deeper, so you're not just asking nearby hikes, you're asking can you build an itinerary for a hiking day trip near me with great views and dog-friendly trails and a lunch spot with convenient parking, and now we're entering the next chapter of Google Search, where incredible AI features aren't just in search, Google Search is AI search through and through. Now it's an AI search that brings together our most advanced Gemini models, our newest agentic capabilities, and the full breadth of the world's information, with over a billion facts updated a minute, billions of new web pages indexed every day, and connections to an infinite range of human perspectives. So whatever is on your mind, you can come to Google and truly ask anything. 
+
+Now to start, I'm excited to announce we're launching a brand new intelligent search box. Before, the search box was a contained space, but now it's totally reimagined with AI. It expands with your curiosity, and as you ask, search helps you formulate your questions with AI-powered suggestions.
+
+This goes beyond autocomplete. It offers nuances that you might not have even thought to add, helping you take the exact question on your mind and ask it with ease. This new search box puts our most powerful AI tools right at your fingertips, and you can ask across modalities with text, images, files, videos, and search reasons across them all. 
+
+Now this is the biggest upgrade to our iconic search box since its debut over 25 years ago, and it's starting to roll out today. Next, we're making it even easier to continue the conversation with search, bringing AI overviews and AI mode into one seamless AI search experience. So you can flow effortlessly from your question to your response on the main search results page to follow-ups in AI mode, and your context stays with you.
+
+And as your conversation gets deeper, your links and your sources get even more relevant to what you might want to explore. So you continue to get the best of AI and the best of the web. And I'm excited to share this new seamless AI search experience live today across desktop and mobile worldwide.
+
+Next, you just heard Sundar and Josh share our approach to agents and the potential that this can open up. Now we're taking an exciting step toward this vision. We will be able to create and manage multiple AI agents for your many tasks right in search. 
+
+We're entering the era of search agents. Now to start, you can set information agents to work for you 24-7 in the background. They can find you exactly what you need, exactly when you need it, and help you take action. 
+
+You can spin up multiple agents in search simultaneously to get updated and make progress on all those things that matter to you. And these will work with and alongside Gemini Spark to help you get more done. So let's put a few to work. 
+
+Say you're really into finance and you want to know more about big biotech stocks, but you want to know with PEs under 15, positive cash flows, and low debt, right when it matters. Now you can just ask all that and your agent is off. It'll take your super complex question and map out a plan. 
+
+It determines the urgency, getting that you really need in the moment intel. And it sets triggers to look out for information as it changes and picks the tools and data hooks it needs for the job. It connects directly to our real-time finance data, so you get up to the second updates on stock prices.
+
+And insights on the market, the moment it moves. Now when it does, your agent sends you an intelligent and synthesized update. It helps you understand what's going on, so you can separate the signal from the noise. 
+
+And it points you to hyper relevant content, like this crowdsource research platform, news sites, and social. This helps websites and creators get fresh content discovered by people who really care about it, when it matters most to them. Now let's say you're apartment hunting. 
+
+You can do a total brain dump of what you're looking for, with all your criteria, like location and natural light and availability. And your agent will continuously scan the entire web across sites, social, and forums. Or if you're a sneaker man, you can just ask to be updated when any of your favorite athletes announced sneaker collabs or backdrops. 
+
+And it monitors everything, from blogs to our shopping graph, so you don't miss out. Now you'll be able to put information agents to work for you this summer. Just ask search to keep you updated on whatever you want to know. 
+
+Now information agents are among the first of many agents we're introducing in search to make it more helpful for you. So whether you want to find it, check it, book it, buy it, or more, search will be able to get it done. Now we're also bringing agentic coding to search, so it can build you custom experiences just for your questions. 
+
+To show you how this works, here's Robbie. We believe the best version of search is one created just for you. It's a search that gives you information in the most helpful format for your question. 
+
+And we've spent years perfecting this. So if you're shopping, we give you products. Asking about data, you see charts. 
+
+Looking for inspiration, you get beautiful visuals. Now we're taking this to a whole new level. We're bringing anti-gravity and the agentic coding capabilities of Gemini 3.5 Flash right in to search. 
+
+So search can build you the ideal format exactly for your question, completely custom, on the fly. We're talking dynamic layouts, interactive widgets, entire experiences, all created just for you. This is agentic coding at the scale of search. 
+
+Let me give you an example. Say I'm a college student trying to wrap my mind around astrophysics. I can go to search now and just ask, how do black holes affect space-time? And check this out. 
+
+I get this interactive visual right in the AI overview. Search now gets for a concept this complex, I need to interact with it to really understand it. But this is still kind of 101. 
+
+So I'm gonna follow up and say, now show me how two orbiting objects, like binary black holes, create gravitational waves. Search dynamically builds a brand new interactive visual in real time, completely custom for my specific question. And now I can play with the parameters like orbital separation and mass ratio. 
+
+It's so cool. I can see how wave patterns have changed, and now the smaller black hole spirals around the bigger one. And now that I get the basics, I can dive into these resources here and read things like the LIGO discovery papers to learn more. 
+
+Now, you might be wondering, how can search actually build custom UI like this for billions of unique questions? With Gemini 3.5 Flash, search plans the ideal response from scratch. It designs the layout, decides what custom components to build, fans out to do the research, and then finally deploys the code. To build custom components like these in the response, search invokes an agentic coding harness powered by anti-gravity. 
+
+So it can read and write files and execute code in a secure containerized environment. This is the same tech you saw Varun build whole OS with, and we're bringing that power right in to search. Generative UI with anti-gravity is rolling out to search this summer for everyone, free of charge. 
+
+So whatever it is you want to understand, whether you're wondering how your watch actually works, analyzing the cost of a new commute, or so much more, you'll get responses as unique as your questions. Now, let's take this a step further. Some projects aren't one-off questions, they're ongoing tasks. 
+
+So search now has the ability to help you create entire custom stateful experiences. Tools, trackers, dashboards. I think of these sort of like building my own little mini apps with search, and I've been making a ton of them. 
+
+And they're especially awesome for those long-running tasks where you want to keep coming back, like planning a wedding or managing your home move. So what do you think? Should we build one together? Yeah? All right. Let's do a demo. 
+
+So I'm constantly trying to figure out on Thursday what it is I should do with my family every weekend. And so here's a search I actually just did about fun things to do with my family this weekend. And of course you get great, great response here from AI mode. 
+
+But here's something new. Search proactively offers to build a weekend planner for me. And similar to how you just saw search create these generative UI and interactive visuals completely from scratch, search can code this up right now. 
+
+Let's do it. All right. So for the sake of today's demo, we thought you might want to see a peek under the hood. 
+
+So as this builds, you're gonna see real-time thinking steps and code generation flowing in. And here search is thinking about the right components to build. Not just what information to fetch, but the best way to present it. 
+
+And I've chosen to securely connect Gmail, photos, and calendar. So it's using personal intelligence to make my suggestions even more helpful. That means referencing Gmail receipts, calendar, and much more to personalize. 
+
+And boom. Here it is. Looks like it's ready.
+
+All right. Got a beautiful planner. Already taken to account driving times and weather. 
+
+And search knows that I have two kids. And that they love animals. And that my oldest is learning to play chess. 
+
+So actually the second one here is kind of awesome for my oldest. So I'm gonna go ahead and heart that. But, you know, two kids. 
+
+Got to make them both happy. So I'm gonna lock in the Happy Hollow Park and Zoo right there. And because this syncs with my calendar, you can see it's already blocked off my afternoon to meet a friend to watch this game down here.
+
+And below, it's got all of these cool restaurant reservations and beautifully laid out on maps. Now, having seen this a little bit, I kind of want the map to be higher up. And also my wife and I try to do Friday date nights. 
+
+So I'm gonna keep customizing this. And just for the sake of speed, I'm gonna paste in here one more question to add Friday night date each week and move it to the top. And just like before, it's thinking through what's needed to adjust the planner. 
+
+Looking up real-time information. Even checking my preferences again. Wow, it was so fast.
+
+So it's able to use all kinds of information from Google to build this on the fly. And now you can see the map right at the top and Friday date night tab right here. So I can scroll down. 
+
+I can see all of these really great places after the babysitter arrives. Here's some awesome restaurants. I'll go ahead and select it. 
+
+And we're ready to go. Now, a weekend plan is not complete until I get my wife Danielle's seal of approval. So I can share this app with her, which I'm gonna do right here. 
+
+And copy it. Okay. And now I'm actually gonna pull it up on a phone. 
+
+So when I send this to her, this is exactly what she's gonna see on her phone. All right. So Danielle is in, but it also looks like she might have some feedback for me when I get home. 
+
+But we're gonna deal with that kind of a little bit later. So all I have to do is say, okay, add this to my calendar. Search will add it to all of our family calendars, and we're ready to go. 
+
+And next weekend I'll be able to come back and plan a whole new weekend with my family just like this. So we're bringing anti-gravity into Search so you'll get generative UI this summer. Starting with subscribers, you'll be able to custom build experiences just like this in the coming months. 
+
+From search agents to agentic coding, this is an AI search that does more for you whatever your question. Agentic capabilities are going to transform all the ways you use Search, including how you shop. To tell you more, here's Vidya.
+
+With the incredible advancements in AI, we are entering a whole new era. We've been building the foundation for agent e-commerce, and now we are bringing that future right to you. People shop across Google over a billion times a day. 
+
+And for years, we've connected you with brands and retailers to help you get exactly what you're looking for. It starts with our shopping graph, the world's most comprehensive catalog of products. It now has over 60 billion listings, and they're constantly updated. 
+
+Combine the scale of the shopping graph with our advanced Gemini models, and you get entirely new ways to shop. It's more powerful, more intelligent, and more fun. Now, when it comes to agent e-commerce, we are focused on delivering three key building blocks to make this future a reality. 
+
+First, the Universal Commerce Protocol, or UCP for short. UCP does for agent e-commerce what HTTP did for the web. It gives agents and systems a common language. 
+
+It's an open-source standard that allows all the key players to work across the entire shopping journey. That means it makes everything from product research to checkout to shipment tracking totally seamless. And we've been thrilled to see the entire industry rally behind it. 
+
+We co-developed and launched UCP with an incredible group of founding partners and recently welcomed Amazon, Meta, Microsoft, Salesforce, and Stripe. They're going to help steer this as the open standard. It may very well be the first time we've all agreed on something. 
+
+And now, we are bringing UCP to even more verticals like hotels and local food delivery providers, and to YouTube and more products. We're also expanding UCP powered experiences on Google products to more regions like Canada, Australia, and the UK in the coming months. That brings us to our second building block, the Agent Payments Protocol, or AP2. 
+
+So when it comes to agentic payments, the number one question we hear is, how do I know it just won't go off and buy something I don't want? Motorcycle anyone? It's a fair question, and it's why we created AP2. It's designed so your AI agent can securely make payments on your behalf, but always under your control. For us, it comes down to two things, setting boundaries and ensuring accountability. 
+
+First, let's talk about boundaries. We are now making it easy to set strict guardrails. Just tell your agent the specific brands and products that you want and how much you want to spend. 
+
+It automatically makes a purchase if the criteria are met. But boundaries only work if there's accountability. AP2 creates a transparent, verifiable link between you, the merchant, and all the payment processors. 
+
+It uses privacy-preserving technology to keep your data safe. And with tamper-proof digital mandates, AP2 ensures the agent is always acting on your behalf and gives you a permanent digital paper trail. So if you ever need to make a return, you and the merchant are looking at the same record.
+
+Your payment info stays shielded, the data stays private, and your purchases stay secure. We'll begin bringing AP2 to Google products in the coming months, starting with Gemini Spark. So these protocols are powering the foundation of this new era, which brings us to our final building block of agent e-commerce.
+
+I am excited to announce the Universal Cart, a truly intelligent shopping cart. It works across merchants and across services. You'll be able to add things to your cart when you're browsing search, chatting with Gemini, watching YouTube, or even reading your Gmail. 
+
+The moment you add a product, your cart goes to work for you in the background. It finds deals, looks at price drops, gives you insights on the price history, and alerts you when something comes back in stock. It all runs on our Gemini models, so your cart gets even smarter as the models improve. 
+
+So just think of it as shopping with superpowers. Now, another game changer is how it applies intelligent reasoning. Let's say you're building your first custom PC. 
+
+You see a motherboard with great reviews and just add that to your cart. Now, you already picked out a processor, but what you didn't realize is that the processor needs a motherboard with a different type of socket. Your cart catches this for you and suggests an alternative, preventing a problem you didn't really see coming. 
+
+Next, my favorite feature is how the cart can actually find hidden savings for you. If you're like me, you have different payment cards with different perks that are just hard to keep track of. Now, you don't have to. 
+
+The cart can do it for you because it's built on Google Wallet. Here's an example. Right here, there's an offer from Target for some products that were added to the cart earlier in the week. 
+
+I see it, so I just want to get it now. And UCP makes this checkout from your cart super smooth. For many of your favorite brands, you can check out right on Google in just a few taps with Google Pay, or you can transfer all these items straight to the retailer's site and then buy it there. 
+
+I am excited to announce that we are rolling out the universal cart in the U.S. across Search and the Gemini app this summer with YouTube and Gmail to follow. The building blocks we showed you today won't just create the foundation for agent e-commerce, they will transform the way you shop on Google, making it more powerful, more intelligent, and a lot more fun. Happy shopping, and back to you, Liz. 
+
+Today, you've seen how we're bringing together the best of a search engine with the best of AI to build a Google Search that's more helpful and powerful than ever before, where search agents work for you around the clock, where agentic coding means that Search can build experiences as unique as your questions, and where the power of agentic commerce isn't in the distant future, it's here now. So in this chapter of AI Search, Google can help you find, understand, build, do anything. So go ahead, just ask.

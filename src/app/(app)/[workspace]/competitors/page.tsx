@@ -1,6 +1,7 @@
 ﻿import { Plus, Radar, ShieldAlert, TrendingUp } from "lucide-react";
 import { createCompetitorAction } from "@/actions/competitors";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
+import { getUserPreferences } from "@/lib/preferences-server";
 
 export default async function Page({
 	params,
@@ -11,7 +12,10 @@ export default async function Page({
 }) {
 	const { workspace: slug } = await params;
 	const status = await searchParams;
-	const workspace = await requireWorkspace(slug);
+	const [workspace] = await Promise.all([
+		requireWorkspace(slug),
+		getUserPreferences(),
+	]);
 	const { competitors, runs } = await getWorkspaceOverview(workspace.id);
 	const action = createCompetitorAction.bind(
 		null,

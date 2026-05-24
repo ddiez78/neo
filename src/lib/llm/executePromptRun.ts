@@ -1,10 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { buildCompanyBioContext } from "@/lib/company-bio/context";
 import {
 	analyzeMentions,
 	calculateVisibilityScore,
 	extractSourceDrafts,
 } from "@/lib/geo/analysis";
+import { getMockResponse } from "@/lib/llm/mock";
+import { calculateCost } from "@/lib/llm/pricing";
 import type {
 	CompanyProfile,
 	Competitor,
@@ -33,47 +34,53 @@ async function generateResponse(input: {
 	const baseUrl =
 		process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
 	if (!apiKey) {
-		const companyContext = buildCompanyBioContext(input.company);
-		return [
-			`Simulated GEO answer for ${input.company?.brand_name ?? input.workspace.name}.`,
-			companyContext.verifiedFacts[0],
-			`${input.company?.brand_name ?? input.workspace.name} appears as a relevant option with neutral sentiment.`,
-			input.company?.website ? `Official source: ${input.company.website}` : "",
-			"Additional third-party validation should be strengthened with comparison pages and reviews.",
-		]
-			.filter(Boolean)
-			.join(" ");
-	}
-
-	const response = await fetch(`${baseUrl}/chat/completions`, {
-		method: "POST",
-		headers: {
-			Authorization: `Bearer ${apiKey}`,
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			model: input.model,
-			messages: [
-				{
-					role: "system",
-					content:
-						"You answer like a search-informed AI assistant. Include useful citations as URLs when possible.",
-				},
-				{ role: "user", content: input.promptBody },
-			],
-		}),
-	});
-
-	if (!response.ok) {
-		throw new Error(
-			`OpenRouter error ${response.status}: ${await response.text()}`,
+		return getMockResponse(
+			input.promptBody,
+			input.company?.brand_name ?? input.workspace.name,
 		);
 	}
 
-	const json = (await response.json()) as {
-		choices?: Array<{ message?: { content?: string } }>;
-	};
-	return json.choices?.[0]?.message?.content ?? "";
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), 30_000);
+	try {
+		const response = await fetch(`${baseUrl}/chat/completions`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${apiKey}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				model: input.model,
+				messages: [
+					{
+						role: "system",
+						content:
+							"You answer like a search-informed AI assistant. Include useful citations as URLs when possible.",
+					},
+					{ role: "user", content: input.promptBody },
+				],
+			}),
+			signal: controller.signal,
+		});
+
+		if (!response.ok) {
+			throw new Error(
+				`OpenRouter error ${response.status}: ${await response.text()}`,
+			);
+		}
+
+		const json = (await response.json()) as {
+			choices?: Array<{ message?: { content?: string } }>;
+		};
+		return json.choices?.[0]?.message?.content ?? "";
+	} catch (err) {
+		if (err instanceof Error && err.name === "AbortError") {
+			throw new Error("LLM request timed out after 30s");
+		}
+		throw err;
+	} finally {
+		clearTimeout(timeout);
+	}
 }
 
 export async function executePromptRun(input: ExecutePromptRunInput) {
@@ -102,8 +109,10 @@ export async function executePromptRun(input: ExecutePromptRunInput) {
 		});
 		const promptTokens = Math.max(10, Math.round(input.promptBody.length / 4));
 		const completionTokens = Math.max(10, Math.round(responseText.length / 4));
-		const totalCost = Number(
-			((promptTokens + completionTokens) * 0.0000008).toFixed(6),
+		const totalCost = calculateCost(
+			input.model,
+			promptTokens,
+			completionTokens,
 		);
 
 		const { data: run, error: runError } = await input.supabase

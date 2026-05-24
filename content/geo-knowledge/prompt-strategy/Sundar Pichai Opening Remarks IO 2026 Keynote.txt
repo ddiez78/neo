@@ -1,0 +1,281 @@
+Hello Showline, and hello to everyone watching from around the world. Excited to be back for this year's IOW. I think it's been an incredible year. 
+
+All of the relentless shipping, the rapid advances in technology, it's been a period of hyper progress. I've definitely felt it myself, it's been an intense year. Here's a look at what I've been up to. 
+
+Okay, I wish this was my year. Actually, the one of me plugging in the TPU is pretty accurate, so there's still more work to do before it's in space. We are working on that. 
+
+On a serious note, it's been an extraordinary moment. It's been 10 years since we pivoted the company to be AI first. We knew how profound AI would be to advancing our mission and improving people's lives at scale. 
+
+This is why we are taking a differentiated, full-stack approach to AI innovation. From our custom silicon and secure foundation, to our world-class research and models, to our products and platforms that reach billions of people. This approach enables us to iterate and innovate faster, and it's lighting up every part of the company. 
+
+What's really incredible is how people are using our AI. Students prepping for final exams with the Gemini app. Musicians and artists using generative AI models like Lyria and Veo as part of their creative flow. 
+
+Developers coding and bringing their ideas to life. I've been using Gemini in a myriad of ways. Recently, I've been turning to Gemini to make sense of my parents' doctor visits. 
+
+I'm sure many of you have done a version of that. These stories of how people are using AI are the best measure of progress. To understand the scale at which people are adopting AI, there's another great proxy, tokens. 
+
+The fundamental units of data are models processed, many representing a problem being solved. Two years, we were processing 9.7 trillion tokens a month across the surface. It's a huge number. 
+
+Last year at IEO, that grew to about 480 trillion tokens. And fast forward to today, that number has jumped seven times to 3.2 quadrillion tokens per month. Never imagined I'd say quadrillion in an IEO keynote, but here we are. 
+
+Now, some out there might call this token maxing. And there's probably some truth to it. I still think it tells an important story about our products and how others are building as well. 
+
+Especially our developers. Over 8.5 million of you are now building new apps and experiences with our models monthly. And our model APIs are now processing around 19 billion tokens per minute. 
+
+Over the past 12 months, over 375 customers each processed more than 1 trillion tokens, representing incredible demand for AI across the industry. We are of course also seeing incredible demand across our products. We now have 13 products with over a billion users each. 
+
+Five of those have more than three billion users. Our Gemini models are a big reason more people are using our products and why they are using our products more. It all starts with search, which is bringing the benefits of generative AI to more people than any other product in the world. 
+
+AI overviews now has over 2.5 billion monthly users. And AI mode has been a revelation, our biggest upgrade to search ever. People love it. 
+
+In just a year, it's already surpassed 1 billion monthly users. When people use our AI-powered features in search, they use search more. I love how search has become less about individual queries and feels more like an ongoing conversation, giving you deeper insights and connecting you with the vastness of the web. 
+
+Another place we've been rapidly innovating is in the Gemini app. Last year at IEO, the Gemini app had 400 million monthly active users. Today we have surpassed 900 million, more than doubling in a year. 
+
+In that same time, daily requests have grown over seven times. It's incredible growth. We've been adding a lot of unique features like personal intelligence, which makes responses more customized and helpful. 
+
+And to date, more than 50 billion images have been generated with our Nano Banana models. There was a breakout start this past year. I know you all have been having a lot of fun with it. 
+
+Beyond the Gemini app, we're also having much more natural conversations with Gemini directly inside many of our products. Recently, Maps got its biggest upgrade in a decade, including a new feature called Ask Maps. People are using it to ask more complex and much longer questions. 
+
+Here is a real query from a parent. My kid just fell into the duck pond and the wedding starts in 30 minutes. Where can I walk and buy her a new dress? I'd like to hear how that turned out. 
+
+We're also bringing this conversational AI to two more products. First, Ask YouTube. People come to YouTube every day to ask a lot of questions. 
+
+It's a lot of great videos. Sometimes it's hard to know where to start. Ask YouTube entirely reimagines the experience. 
+
+Say you want to teach your three-year-old how to ride a pedal bike, and they already know how to ride a balance bike. Just ask YouTube. You will see a couple of differences in results. 
+
+The information is digestible and easy to navigate. You get an overview and helpful tips. You will see videos that best match your interest, so if you want to try a specific method of teaching, you can go deeper there. 
+
+And best of all, it jumps right to the part of the video most relevant for you. Brings back memories of teaching my kids to ride. It remembers the context, so you can follow up with questions like, should I buy one with hand brakes or pedal brakes, making it an ongoing conversation. 
+
+It even lays out the information in a table, so it's easy to compare. We are starting to test Ask YouTube now, and it will roll out broadly in the U.S. this summer. So far, we have shown conversational text queries. 
+
+A lot of times, I want to get things done at the speed of my voice. That is much more possible today, thanks to technical leaps in our audio models. A new feature called Docs Live takes this to another level. 
+
+To create a doc with Gemini before, you would have to type up a really precise prompt. With Docs Live, you can just verbally brain dump whatever is on your mind, and let Gemini do the rest. Let's see it in action with a demo from our product team. 
+
+This is all in real time, not sped up. All right, let's try this out. So I just remembered, I'm doing an alumni talk for my high school's career day tomorrow. 
+
+I need to come up with some talking points to explain what I do for a living as a software engineer, but I'm not really sure where to start. Oh, actually, can you just pull my resume from Drive? Although, that might be boring. Maybe can you come up with some funny analogies, so it'll be more of an engaging talk for the students? Oh, and also, I think the school sent me an email. 
+
+I think the subject is something like career day logistics. Maybe just grab the details from there, throw them at the top of the doc, so I know where to go and what time to get there. Let's just update those requirements and turn this straight into a draft. 
+
+This is cool, but it's a little dense. Maybe format the analogies as a table, so it's a little easier for me to scan, and also add a note to tell the story about how my brother inspired me to become a software engineer, sort of at the top of my doc, and bold it so I don't miss it. Yeah, that looks great. 
+
+In the future, you'll be able to create new docs and edit them directly, all with your voice. Docs Live is rolling out for Pro and Ultra subscribers this summer, and the same powerful voice capabilities will come to Gmail and Google Keep then, too. Incredible to see the pace of innovation rolling out across our products. 
+
+Supporting all of this at scale for our users, while also serving enterprises and developers around the world, requires massive investments in infrastructure, and we have been investing for today and for the future. In 2022, we were spending 31 billion dollars annually in CapEx. This year, we expect that number to be about six times that, approximately 180 to 190 billion dollars. 
+
+A key part of this investment is our custom silicon. A decade ago, we announced our very first commercial tensor processing unit, or TPU, on this I.O. stage. Since then, we have transformed how the industry builds for AI. 
+
+We recently announced our 8th generation of TPUs at Cloud Next. For the first time, we have taken a dual-chip approach with specialized architectures for training and inference, TPU-80 and 80i. While they may look similar, they're actually pretty different. 
+
+80 is optimized for large-scale pre-training, and it's nearly three times the raw computing power of our previous generation. We have taken a fundamentally different approach with our training infrastructure. With Jackson Pathways, our training is no longer constrained by the limits of a single massive data center. 
+
+Instead, we can now seamlessly distribute training across multiple sites, scaling across more than 1 million TPUs globally. This gives us the ability to create the largest training cluster in the world. For model builders, this means training larger, more capable models in weeks rather than months. 
+
+TPU-80i is designed for inference. We have dramatically improved speed at every step, because if we learn anything in 27 years of working on Search, it's that latency matters. To give you a live sense of what the speed feels like, here's a prompt on an upcoming flash model if it were running on 8i. 
+
+I'll ask it to create a Chrome dino game, push submit. The response is generated in real time. As you watch, take a look at the tokens per second in the top right corner. 
+
+The speed is pretty incredible, nearly 1,500 tokens per second. It almost took longer to write out the request, and the game is pretty fun too. In addition to speed, we are also thinking about scaling sustainably. 
+
+Both chips are more energy efficient, delivering up to two times better performance per watt. TPUs have been hard at work training for I.O. this year. I'm told we have a behind-the-scenes look.
+
+Hey, did we get it? Yeah, just folded proteins across rare oncology data sets. You? Simulated the next 50 years of climate data. I made a picture of a pug. 
+
+What? You ever see a pug dressed like an accountant? No. You wanna? All right, listen up TPUs. I.O.'s starting soon, and we got a job to do. 
+
+Actually, we got trillions of jobs to do. So clear your cache. Damn me. 
+
+Dry your fans. Let's fire it up. Hey, what are you doing? I'm doing the montage thing. 
+
+Yeah, well, how about you wait down here and help out? What, like now? All right, coming. I bet Timmy TPU will be ready to teraflop right into bed after I.O. Our compute innovations enable our advances. There are three areas where I want to go deeper today to show you the progress in each. 
+
+Models, coding, and agents. Let's start with the exciting progress in world models. With world models, AI is moving from predicting text to simulating reality. 
+
+Demis and the team at Google DeepMind have been working to push the boundaries of what these models can do. Let me invite Demis out to share more. Hi, everyone. 
+
+It's really great to be here. Over the past year, AI capabilities have leaped forwards. We now have agents that can plan and act on our behalf, and artificial general intelligence is just a few years away.
+
+Today, I'm excited to share the progress we've made towards building AGI. Last year, I outlined our vision of extending Gemini's incredible multimodal capabilities to become a world model. AI that can understand and simulate the world. 
+
+This is a crucial aspect of achieving AGI, and will be important for everything from building AI assistance to training robots. Now we're taking the next big step. I'm excited to announce Gemini Omni, our new model that can create anything from any input. 
+
+It combines Gemini's intelligence with the best of our generative media models for a new level of world understanding, multimodality, and editing. Models like Vio, Nanobanana, and Genie are able to create extremely realistic videos, images, and interactive simulations. Although not perfect, they already demonstrate some impressive notions of intuitive physics. 
+
+And with Omni, we've now made even more progress. It's a step change in simulating things like kinetic energy and gravity. Previous systems would have found these concepts difficult. 
+
+Gemini's world knowledge and reasoning really shine in Omni. It can translate complex ideas into highly accurate videos. So for example, you can give it a simple prompt like make a claymation explainer of protein folding, and get this. 
+
+Proteins start as chains of amino acids. They fold into patterns like the alpha helix and flat sections called beta sheets, forming a perfect three-dimensional shape. But the initial generation is just the start.
+
+The creative process is rarely a single step. It's usually iterative. Just like Nanobanana redefined image editing, Omni gives you a more natural way to edit video with conversational language. 
+
+What's really cool is you can give it your own videos, for example this selfie, and change reality in a really fun way. You can easily adjust the details and style, or even add elements. And the whole scene watered to reflect your new idea. 
+
+A simple circle turns into a black hole or an evening stroll comes to life. Anything becomes a canvas for creating entirely new realities. Let's take a look at what Omni can do.
+
+We're starting with video, but over time Omni will be able to generate any output from any input. This was always our goal with Gemini, and why we built it to be multimodal from the very start. It was a harder path, but the foundation is now paying off. 
+
+Today we're launching the first model in the Omni family, Gemini Omni Flash. It's now available across our products, and you'll hear more about this later. We're excited with the progress we're making, and we'll be able to share more about Omni Pro soon. 
+
+We can't wait to see what you create. Back to you Sundar. Thanks, Demis. 
+
+This is huge progress. As generative AI gets better, so does the need for greater transparency. Research shows people can correctly identify high-quality deepfake videos only about a quarter of the time. 
+
+Three years ago we launched SynthID, our watermark that is invisible to the naked eye. Since launch, SynthID has now watermarked over 100 billion images and videos along with 60,000 years of audio assets. Millions of people are using our SynthID detector in the Gemini app to verify AI-generated content. 
+
+We are now going a step further and adding content credentials verification across products. This will show you if the origin of the content was AI or a camera, and if it's been edited with generative AI tools. In this example, Gemini can tell this photo was captured with a pixel camera and then edited with Google Photos. 
+
+We want more people to have easy access to these tools, so we are expanding both SynthID and content credentials verification to search in Chrome. You can simply circle to search or right-click in Chrome and ask, was this generated with AI? And you'll get a clear response along with other helpful context. For example, this image was making the rounds on social media last year. 
+
+It's obviously fake. I don't eat hamburgers. It might not be as clear to everyone else. 
+
+That's where these tools can be really useful. Of course, this only works at scale if more partners decide to watermark their own AI-generated content. NVIDIA signed on to SynthID last year, and today I'm thrilled to announce that OpenAI, Kakao, and Levin Labs are adopting SynthID too. 
+
+It's great to see the cross-industry collaboration. We are looking forward to expanding to more partners and setting the standard of transparency for the AI era. That's a look at the progress we are making with world models. 
+
+Now let's talk about what's next for our Gemini 3 family. Gemini 3 launched a few months ago with a full family of models. It's been our most adopted series yet. 
+
+We have loved seeing developers use Flash as their daily driver and build incredible experiences with pros, deep reasoning, and multi-modal capabilities. We've been hard at work on improving these models, especially focused on agentic coding, long horizon tasks, and real-world workflows. And today I'm excited to introduce Gemini 3.5 Flash, our first in a series of models combining frontier intelligence with action. 
+
+Two things I would highlight. First, when compared to 3.1 Pro, Flash is better across the board, almost all benchmarks. It's made huge progress in coding, and look at that extraordinary jump in GDPVal, a benchmark that captures many real-world economically valuable tasks. 
+
+Second, 3.5 Flash is a very capable model at the frontier and comparable to the best models, but much, much faster, which is why when you look at the intelligence versus output speed, it's in a whole league of its own in the top right quadrant. When looking at output tokens per second, it's four times faster than other frontier models, and it's an incredible delight to use. The new model has been a game changer for us internally at Google. 
+
+We've been using 3.5 Flash with the reimagined version of our agent-first development platform, Antigravity, and it's dramatically accelerated how we build. In March, we were processing half a trillion tokens a day internally for our developers. We've been doubling every few weeks, and now we are processing more than three trillion tokens a day. 
+
+This scale has created a powerful feedback loop, helping us improve 3.5, and of course, we are bringing it today to developers in Antigravity. Varun is going to share more. It's truly an amazing time to be a builder.
+
+We move beyond AI tools that help us write to agents that help us act. These agents have lowered the barrier to development so much that anyone can be a builder, even busy CEOs. In fact, Sundar used Google Antigravity last week to fix a bug in the Google codebase. 
+
+When we launched the Antigravity ID in November, we made sure to nail the core agent-powered ID experience and added an experimental first-of-its-kind agent-first surface as a glimpse of where we were heading. Millions of you already actively use Antigravity, and so we're excited to bring you even more today. We've seen the diversity of tasks, preferences, and frankly, product feedback. 
+
+We've taken all of these learnings, and now Antigravity is massively expanding its suite of agentic capabilities, surfaces, integrations, and product features. To start, we're launching a full CLI experience, an Antigravity SDK, native voice support with Gemini audio models, and integrations with many services and platforms like Android, Firebase, and Google AI Studio. All of this is available for you to try today. 
+
+But most importantly, at the core, is Antigravity 2.0, a new standalone desktop application that delivers fully on that original glimpse of a truly agent-optimized experience. The new Antigravity is unabashedly agent-first, focusing on the core agent conversations, agent-produced artifacts, and multi-agent orchestration. Like I said, unabashedly agent-first.
+
+As Sundar mentioned, this is the exact experience teams here at Google have been using to drive massive value. The Antigravity agent harness, the invisible framework for Gemini to perform real-world tasks, has become much more powerful with new core primitives such as sub-agents, hooks, and asynchronous task management. And underpinning all of this are the Gemini models, with Gemini 3.5 Flash having been co-optimized with the Antigravity harness.
+
+Of course, being engineers, we were curious to see how far we could push the limits of what was possible with these agents and models. So using the new Antigravity and Gemini 3.5 Flash, we asked our agents to take on what we consider to be a highly complex and impressive task, build a working operating system from scratch. We were surprised by what we found. 
+
+Asynchronously, Antigravity broke down the challenge into a cohesive plan, tackled tasks via parallel sub-agents, generated, executed, and iterated over its very own tests. Over 12 hours, 93 sub-agents working in parallel made over 15,000 model requests and processed 2.6 billion tokens to take an initially empty project to the core of a functioning operating system. This was not possible. 
+
+This was not possible on Gemini 3.1 Pro. But thanks to the performance and cost efficiency of Gemini 3.5 Flash, building an entirely functional operating system consumed less than $1,000 of API credits. The Antigravity agents wrote every line of code from the scheduler to the memory management to the file system, generated, audited, and tested entirely by an autonomous team of agents. 
+
+To put this in context, developing an OS from scratch is both notoriously brutal and can take many months to build. We weren't just building an application, but a fully functioning operating system that applications can run on. Let's take this live and actually show this operating system in action.
+
+So here, I'm actually in a terminal window in the OS that Antigravity built. Now, it's not super easy to demo a working operating system. So let's try something fun to see if it works.
+
+One interesting utility that you can install is SL, a common typo for LS. Without spoiling it, here it goes. It works. 
+
+You could see a cool locomotive passing through the screen with the Antigravity logo on it. But clearly, this isn't a real OS, unless I can play Doom. Now, if I try running Doom right now, it just doesn't work. 
+
+It turns out that the OS is currently missing some necessary video and keyboard drivers. So let's just try and fix it in the new Antigravity. I have a prompt prepared. 
+
+I'm going to paste it in. While it's running, let's take a tour of Antigravity 2.0. As you can see, Antigravity 2.0 is very much agent-first, with all of your conversations on the left side panel and all of your projects. Let's take a peek at one of the conversations that I previously had.
+
+I was curious for this demo about some fun facts about Doom. So I asked the agent to do some research. It generated some plots on the right side panel. 
+
+And then finally, it also generated a cool artifact for me. It even generated an infographic using NanoBananaPro. It generated some graphs using the code it just wrote. 
+
+And then afterwards, it generated some cool tables. As you can see, Antigravity 2.0 is unabashedly agent-first and has been optimized to be the best surface for you to interact with agents. Let's take a look at the previous conversation to see how it's going. 
+
+Antigravity ended up doing a whole host of research, ended up writing over 100 lines of code, and then finally built the operating system. Let's take a peek and see if it works. Moment of truth. 
+
+Amazing. That never gets old. While playing Doom on an operating system that Antigravity built is both fun and impressive, it hasn't stopped there. 
+
+We've tasked these agents to build a photo editing suite, a real-time messaging app, and a multi-user collaboration platform, all with the same results. Multi-day engineering efforts are collapsing into hours, if not minutes. This was made possible by the new sub-agent teamwork capability. 
+
+We're excited to bring this to you as an early research preview in Antigravity. Last but not least, 3.5 Flash is incredibly fast. Like Sundar said, it's four times faster than other frontier models. 
+
+But as we know, agent decoding is a token monster. So we've taken it to another level in Antigravity. We've optimized Flash to be not just four times, but 12 times faster in Antigravity.
+
+And we're thrilled to give you all a taste of this experience starting today. What we showed you today isn't just the vision. It's how we're building Antigravity to be the most complete agentic development platform for everyone. 
+
+We're doing it with the Google ecosystem, whether it's integrating tech stacks and tools that you already use, or using Antigravity's agent harness to power the next crop of agentic experiences across Google products. Today, Antigravity 2.0 is available globally for everyone. Join us in the developer keynote as we demo all the new capabilities.
+
+Back to you, Sundar. Thanks, Varun. It's incredible that Varun's entire OS was built by a team of sub-agents in just 12 hours and for such a low cost. 
+
+What's amazing about Flash is how it delivers frontier-level capabilities at less than half the price of comparable frontier models. We've heard that many companies are already blowing through their annual token budgets, and it's only May. If companies used a mix of Flash and other frontier models, they could save a lot of money.
+
+To put this in perspective, top companies in Google Cloud are processing about one trillion tokens a day. If they shifted 80 percent of their workloads from other frontier models to 3.5 Flash, they'd save over $1 billion annually. That is real savings they can pour back into their company. 
+
+Gemini 3.5 Flash is available for everyone today across our products and APIs. We're also excited for 3.5 Pro. We're using it internally. 
+
+It's showing great improvements. I know you can't wait to get your hands on it. Give us until next month to get it to you.
+
+Gemini 3.5 and antigravity are unlocking a new world of agents and agentic capabilities. We've been bringing agents to developers and enterprises for a while. Now, we are super focused on bringing the power of agents safely and securely to consumers so that they work for everyone. 
+
+You will see agentic experiences across many of our products today. I'm particularly excited for what we are bringing right into the Gemini app. Introducing Gemini Spark. 
+
+It's your personal AI agent that helps you navigate your digital life, taking action on your behalf and under your direction. It runs on dedicated virtual machines on Google Cloud and it's 24-7. And yes, you can close your laptop. 
+
+It's powered by Gemini 3.5 and the Google antigravity harness, which allows it to perform long-running tasks easily in the background. Spark will integrate seamlessly with tools, starting with our own and in the coming weeks with third-party tools through MCP. And you can work with Spark however it's most convenient, in the Gemini app or soon through email and chat. 
+
+Let's have Josh come up and share more. Thanks, Sundar. It's great to see everyone and let me show you how Spark works with some examples from my personal life. 
+
+So here we are. We have the new Gemini Open. It's been completely redesigned. 
+
+We'll talk about that later in the show. And I want to take you into Spark here. And what you can see immediately is a dashboard with all the different tasks that I have going on in the background that allows you to check in on these things. 
+
+And I'll paste in a task right off the bat. This is a pretty straightforward example, but it's so useful. Help me draft an email to the team. 
+
+Compile everything about our recent Gemini Live launches and wins from the last week. Use slash Ghostwriter. So there's a few things happening here.
+
+Compile everything. This goes across docs, email, your chats, and grabs the most important information that you need for this update. It also is going to use all of the stuff you see in the time period of the last week with this slash Ghostwriter. 
+
+That's a personal skill that I've written, so the email sounds like me. And what's great is that with Spark you can upload your favorite skills you find online. So we're going to let this run in the background. 
+
+You can see it's already started doing various tool calls. And I'm going to switch over to another one from our personal life. We're planning a big block party. 
+
+And you can see here this is a pretty complex prompt. We want help grabbing all the RSVPs. Keep a list of who's bringing what. 
+
+Remember to email those neighbors who haven't signed up yet. And what's amazing here is Spark will go through step by step. Look at all these steps. 
+
+All the time it saves you going through. And again, work across the various skills and apps that you have. And what's really amazing is it'll break it down and also be able to generate files for you. 
+
+So the first one here, this is a live RSVP tracker writing Google Sheets. You can see that it shows who's confirmed and who hasn't. What's amazing about this is it'll actually update because it's connected to Gmail.
+
+So when L. Thompson wrote eight RSVPs, it'll update, which is pretty amazing. The other thing is it keeps track of all the different guests as well as sending follow-up reminders to who hasn't signed up yet. So again, this will happen. 
+
+It'll create the drafts. And under my control, I can send them. And then finally, what the prompt did is it created a hype deck for the block party. 
+
+And you can see it creates writing Google Slides perfectly integrated. And you can see it even pulls in things like our giant bounce house that's going to be in the cul-de-sac. Now, all of this is happening in the background and under my control.
+
+And what's amazing is Jim and I can even go a step further and pull out things like your Neighborhood Homeowners Association won't let you set this up before Friday afternoon at June 5th. That's pulling from a file in my Google Drive. So it's incredibly helpful about how it pulls it all together. 
+
+Now, that's Spark working on a laptop. Spark is also amazing on the go. And it works across both Android and iPhone. 
+
+So here you can see on my phone here, I'll open it up and I can go into Spark. You see both of the tasks we just went through, they sync across all your devices, which is so helpful. And Spark is amazing at just brain-dumping things on your mind. 
+
+If you're super busy, it's almost you can just throw tasks over your shoulder. Spark will catch them and then run with them. So watch this. 
+
+Start a few threads for me. The first one, find all the upcoming meetings with Sundar and turn them all hot pink so I don't miss them. The second one, last night I met our new neighbor, John. 
+
+Write a note to him and his family. Invite them to our block party because they weren't on our list originally. The third one, create a document with the top things my wife and I need to do for the kids before the end of the school year.
+
+Categorize it by deadline and priority. Make it easy to digest. I don't want to miss anything.
+
+All right. So we'll send that in and you can see at the speed of my voice, it's taking that one task and it will capture all of that context as fast as I can talk. It starts out as a single thread here and in the background it's actually going to go through and break those down into individual tasks. 
+
+Now I can just put my phone away and get on with my day and Spark works in the background for me. We'll check in later and see how it's doing. You can see this is one of the first times we've been able to put a phone down and let it keep working on the I.O. stage. 
+
+It's great. Because we're prioritizing safety, we're rolling out Gemini Spark deliberately to trusted testers this week and as a beta for U.S. Google AI Ultra subscribers next week. We want this new type of help to be in as many hands as possible. 
+
+So to do that, we're introducing a new Ultra plan for $100 a month. And for those of you that need maximum limits, we're dropping the price for our top tier Ultra plan from $250 a month to $200 a month. And there's so much more to come. 
+
+Later this summer, Gemini Spark will operate directly within Chrome, acting as your agentic browser across the web. It can take action on your tasks under your direction. We're also building a dedicated home base for your agents on your phone, Android Halo, which is coming later this year. 
+
+As Sundar said, we've entered a new agentic era across Google, and we can't wait to see what you're going to build with it. Back to you, Sundar. Thanks, Josh. 
+
+So great to see Gemini Spark getting things done on your behalf. I've played around with all sorts of agents, and you can really see the potential. But it's still early days when it comes to making agents easy to use, super secure, and truly helpful. 
+
+That's why I'm really excited by Gemini Spark. We are laying the foundation to bring this all together in a safe and secure way to consumers everywhere. Look forward to having you all try it.
+
+We are firmly in our agentic Gemini era. Gemini Spark is the first experience you're seeing made possible by 3.5 models and anti-gravity. This combination gives us new ways to accelerate our mission and to transform our products to be radically more helpful. 
+
+And I can't wait to see how it will transform Search, our ultimate moonshot. This past year has proven just how much innovation is possible right at the heart of our information mission. And as we enter this agentic era, Search will be more helpful and powerful than ever before.

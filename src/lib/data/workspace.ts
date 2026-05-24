@@ -55,13 +55,14 @@ export async function getWorkspaces() {
 }
 
 export async function getWorkspaceBySlug(slug: string) {
-	const { supabase } = await requireUser();
+	const { supabase, user } = await requireUser();
 	const { data } = await supabase
-		.from("workspaces")
-		.select("*")
-		.eq("slug", slug)
-		.single();
-	return data as Workspace | null;
+		.from("workspace_members")
+		.select("workspaces!inner(*)")
+		.eq("user_id", user.id)
+		.eq("workspaces.slug", slug)
+		.maybeSingle();
+	return (data?.workspaces ?? null) as unknown as Workspace | null;
 }
 
 export async function requireWorkspace(slug: string) {

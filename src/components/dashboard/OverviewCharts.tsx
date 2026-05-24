@@ -14,6 +14,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { GlossaryTip } from "@/components/ui/GlossaryTip";
 import type {
 	CompetitorPressureItem,
 	CompetitorShareTrendPoint,
@@ -185,7 +186,22 @@ export function DiagnosticGrid({ items }: { items: DiagnosticItem[] }) {
 	);
 }
 
-export function OverviewKpiCard({ kpi }: { kpi: OverviewKpi }) {
+const KPI_GLOSSARY: Record<OverviewKpi["key"], string> = {
+	visibility: "visibility",
+	avgPosition: "avgPosition",
+	brandMentions: "brandMentionRate",
+	sentiment: "sentiment",
+	shareOfVoice: "shareOfVoice",
+	sources: "source",
+};
+
+export function OverviewKpiCard({
+	kpi,
+	isEn = false,
+}: {
+	kpi: OverviewKpi;
+	isEn?: boolean;
+}) {
 	const deltaIsGood =
 		kpi.deltaDirection === "flat" ||
 		kpi.deltaDirection === kpi.positiveDirection;
@@ -201,13 +217,16 @@ export function OverviewKpiCard({ kpi }: { kpi: OverviewKpi }) {
 			: kpi.deltaDirection === "down"
 				? "↓"
 				: "—";
+	const glossaryTerm = KPI_GLOSSARY[kpi.key];
 
 	return (
 		<article className="neo-card min-h-32 p-4">
 			<div className="flex items-start justify-between gap-3">
 				<div>
 					<p className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">
-						{kpi.label}
+						<GlossaryTip isEn={isEn} term={glossaryTerm}>
+							{kpi.label}
+						</GlossaryTip>
 					</p>
 					<div className="mt-2 flex items-baseline gap-2">
 						<p className="text-2xl font-black tracking-[-0.04em] text-[var(--foreground)]">

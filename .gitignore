@@ -41,4 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# tmp dev logs
+.tmp-dev*.log
+.tmp-dev-*.log
