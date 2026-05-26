@@ -52,7 +52,9 @@ function latestNumber<T>(
 	items: T[],
 	reader: (item: T) => number | string | null | undefined,
 ) {
-	const value = reader(items[items.length - 1]);
+	const last = items[items.length - 1];
+	if (last == null) return 0;
+	const value = reader(last);
 	return value == null ? 0 : Number(value);
 }
 

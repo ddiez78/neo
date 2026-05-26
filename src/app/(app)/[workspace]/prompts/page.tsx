@@ -1,6 +1,5 @@
 import {
 	Beaker,
-	CheckCircle2,
 	Cpu,
 	Layers3,
 	Play,
@@ -8,27 +7,26 @@ import {
 	ReceiptText,
 	Search,
 	Target,
-	XCircle,
 } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
 import {
 	acceptPromptCandidateAction,
 	acceptPromptCandidatesBulkAction,
 	createPromptAction,
+	deletePromptAction,
 	generatePromptCandidatesAction,
 	importPromptCandidatesAction,
 	rejectPromptCandidateAction,
 	runPromptAcrossEnabledLlmsAction,
+	togglePromptStatusAction,
 } from "@/actions/prompts";
-import { CandidateBulkPanel } from "@/components/prompts/CandidateBulkPanel";
+import { AddManualPromptPanel } from "@/components/prompts/AddManualPromptPanel";
+import { CandidateReviewPanel } from "@/components/prompts/CandidateReviewPanel";
+import { PromptsTable } from "@/components/prompts/PromptsTable";
 import { getWorkspaceOverview, requireWorkspace } from "@/lib/data/workspace";
 import { getUserPreferences } from "@/lib/preferences-server";
-import type {
-	Prompt,
-	PromptCandidate,
-	PromptRanking,
-	PromptRun,
-} from "@/types";
+import { intentFromPrompt } from "@/lib/prompts/intent";
+import type { Prompt, PromptRanking, PromptRun } from "@/types";
 
 const INTENT_OPTIONS = [
 	{ value: "awareness", label: "Awareness" },
@@ -50,69 +48,6 @@ function providerLabel(provider: string) {
 		deepseek: "DeepSeek",
 	};
 	return labels[provider] ?? provider;
-}
-
-function inferIntent(value: string) {
-	const text = value.toLowerCase();
-	if (
-		text.includes("precio") ||
-		text.includes("cost") ||
-		text.includes("price")
-	) {
-		return "Pricing";
-	}
-	if (
-		text.includes("alternativa") ||
-		text.includes("alternative") ||
-		text.includes(" vs ")
-	) {
-		return "Alternatives";
-	}
-	if (text.includes("compar") || text.includes("competidor")) {
-		return "Comparison";
-	}
-	if (
-		text.includes("riesgo") ||
-		text.includes("problem") ||
-		text.includes("avoid")
-	) {
-		return "Risk";
-	}
-	if (
-		text.includes("madrid") ||
-		text.includes("españa") ||
-		text.includes("local")
-	) {
-		return "Local";
-	}
-	if (
-		text.includes("mejor") ||
-		text.includes("recommend") ||
-		text.includes("best")
-	) {
-		return "Recommendation";
-	}
-	return "Awareness";
-}
-
-function intentFromPrompt(prompt: Prompt) {
-	const tagIntent = prompt.tags.find((tag) =>
-		[
-			"awareness",
-			"recommendation",
-			"comparacion",
-			"comparison",
-			"alternativas",
-			"alternatives",
-			"precio",
-			"pricing",
-			"risk",
-			"riesgo",
-			"local",
-			"branded",
-		].includes(tag.toLowerCase()),
-	);
-	return tagIntent ?? inferIntent(`${prompt.title} ${prompt.body}`);
 }
 
 function average(values: number[]) {
@@ -159,6 +94,16 @@ function statusClass(status: ReturnType<typeof promptStatus>) {
 
 function formatPercent(value: number) {
 	return `${value.toFixed(0)}%`;
+}
+
+function smeRelativeDate(dateStr: string): string {
+	const date = new Date(dateStr);
+	const diffDays = Math.floor(
+		(Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
+	);
+	if (diffDays === 0) return "Hoy";
+	if (diffDays < 7) return `Hace ${diffDays} días`;
+	return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 }
 
 function normalizeSearch(value: string) {
@@ -210,6 +155,7 @@ export default async function Page({
 		llmConfigs,
 		rankings,
 		runs,
+		sources,
 		promptGenerationBatches,
 		promptCandidates,
 	} = await getWorkspaceOverview(workspace.id);
@@ -247,6 +193,18 @@ export default async function Page({
 			run,
 		]);
 	}
+	const promptIdByRunId = new Map<string, string>();
+	for (const run of runs) {
+		if (run.prompt_id) promptIdByRunId.set(run.id, run.prompt_id);
+	}
+	const sourcesByPromptId = new Map<string, string[]>();
+	for (const src of sources) {
+		const promptId = promptIdByRunId.get(src.prompt_run_id);
+		if (!promptId) continue;
+		const list = sourcesByPromptId.get(promptId) ?? [];
+		if (!list.includes(src.domain)) list.push(src.domain);
+		sourcesByPromptId.set(promptId, list);
+	}
 	const visiblePrompts = prompts.filter(
 		(prompt) => rankingsByPrompt.get(prompt.id)?.brand_mentioned,
 	).length;
@@ -272,9 +230,6 @@ export default async function Page({
 				(candidate) => candidate.batch_id === latestBatch.id,
 			)
 		: promptCandidates;
-	const pendingCandidates = latestCandidates.filter(
-		(candidate) => candidate.status === "pending",
-	);
 	const coverageRows = INTENT_OPTIONS.map((intent) => {
 		const current = prompts.filter(
 			(prompt) => intentFromPrompt(prompt).toLowerCase() === intent.value,
@@ -321,6 +276,19 @@ export default async function Page({
 		const brandMentionRate = prompts.length
 			? Math.round((visiblePrompts / prompts.length) * 100)
 			: 0;
+		const coverageScore = coverageRows.length
+			? Math.round(
+					(coverageRows.filter((r) => r.current >= r.target).length /
+						coverageRows.length) *
+						100,
+				)
+			: 0;
+		const competitorWinRate = prompts.length
+			? Math.round((competitorWinningPrompts / prompts.length) * 100)
+			: 0;
+		const sourceGapRate = prompts.length
+			? Math.round((sourceGapPrompts / prompts.length) * 100)
+			: 0;
 		return (
 			<main className="flex-1 overflow-auto p-4 pb-24 lg:p-6 lg:pb-8">
 				<div className="mx-auto grid max-w-3xl gap-6">
@@ -339,148 +307,203 @@ export default async function Page({
 
 					<Message status={status} />
 
-					<div className="grid gap-3 sm:grid-cols-3">
+					<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
 						<div className="neo-card p-4">
 							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
-								Prompts activos
+								Coverage score
 							</p>
 							<p className="mt-2 text-4xl font-black text-[var(--foreground)]">
-								{activePrompts.length}
+								{coverageScore}
+								<span className="text-sm text-[var(--muted)]">%</span>
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								Intenciones cubiertas
 							</p>
 						</div>
 						<div className="neo-card p-4">
 							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
-								Apareces en
+								Brand mention rate
 							</p>
 							<p className="mt-2 text-4xl font-black text-[var(--brand)]">
-								{brandMentionRate}%
+								{brandMentionRate}
+								<span className="text-sm text-[var(--muted)]">%</span>
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								Apareces en los LLMs
 							</p>
 						</div>
 						<div className="neo-card p-4">
 							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
-								Gana competidor
+								Avg position
+							</p>
+							<p className="mt-2 text-4xl font-black text-[var(--foreground)]">
+								{avgPosition ? `#${avgPosition.toFixed(1)}` : "—"}
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								Ranking medio de marca
+							</p>
+						</div>
+						<div className="neo-card p-4">
+							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+								Competitor win rate
 							</p>
 							<p className="mt-2 text-4xl font-black text-red-400">
-								{competitorWinningPrompts}
+								{competitorWinRate}
+								<span className="text-sm text-[var(--muted)]">%</span>
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								{competitorWinningPrompts} prompts con rival dominante
+							</p>
+						</div>
+						<div className="neo-card p-4">
+							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+								Source gap rate
+							</p>
+							<p className="mt-2 text-4xl font-black text-amber-400">
+								{sourceGapRate}
+								<span className="text-sm text-[var(--muted)]">%</span>
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								Fuentes sin presencia de marca
+							</p>
+						</div>
+						<div className="neo-card p-4">
+							<p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+								LLM usage split
+							</p>
+							<p className="mt-2 text-4xl font-black text-[var(--foreground)]">
+								{activeConfigs.length ? `${usageShare.toFixed(0)}%` : "0%"}
+							</p>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								{activeConfigs.length} LLM
+								{activeConfigs.length !== 1 ? "s" : ""} activo
+								{activeConfigs.length !== 1 ? "s" : ""}
 							</p>
 						</div>
 					</div>
 
-					<details className="neo-card overflow-hidden">
-						<summary className="cursor-pointer px-5 py-4 text-base font-semibold text-[var(--foreground)]">
-							Generar preguntas nuevas
-						</summary>
-						<div className="border-t border-[var(--border)] p-5">
-							<form action={generateAction} className="grid gap-4">
-								<input name="returnTo" type="hidden" value="prompts" />
-								<div className="grid gap-4 sm:grid-cols-2">
-									<Field label="Nombre de tu negocio">
-										<input
-											defaultValue={company?.brand_name ?? workspace.name}
-											name="brandName"
-											required
-										/>
-									</Field>
-									<Field label="Web">
-										<input
-											defaultValue={company?.website ?? ""}
-											name="website"
-										/>
-									</Field>
-								</div>
-								<Field label="A que te dedicas">
-									<textarea
-										defaultValue={company?.description ?? ""}
-										name="description"
-										rows={2}
-									/>
-								</Field>
-								<div className="grid gap-4 sm:grid-cols-2">
-									<Field label="Ciudad o zona">
-										<input
-											defaultValue={company?.markets?.[0] ?? ""}
-											name="market"
-											placeholder="Madrid, Barcelona..."
-										/>
-									</Field>
-									<Field label="Servicios principales">
-										<input
-											defaultValue={company?.products?.join(", ") ?? ""}
-											name="services"
-											placeholder="ej. clinica dental, software, consultoría..."
-										/>
-									</Field>
-								</div>
-								<Field label="Competidores principales">
-									<input defaultValue={competitorList} name="competitors" />
-								</Field>
-								<details>
-									<summary className="cursor-pointer text-sm text-[var(--muted)] hover:text-[var(--foreground)]">
-										Opciones avanzadas
-									</summary>
-									<div className="mt-3 grid gap-4">
-										<Field label="Segmento">
-											<input name="segment" />
-										</Field>
-										<Field label="Audiencia">
-											<input name="audience" />
-										</Field>
-										<div className="grid gap-4 sm:grid-cols-3">
-											<Field label="Num. preguntas">
-												<input
-													defaultValue="20"
-													max="60"
-													min="6"
-													name="promptCount"
-													type="number"
-												/>
-											</Field>
-											<Field label="Idioma">
-												<select defaultValue="es" name="language">
-													<option value="es">Espanol</option>
-													<option value="en">English</option>
-												</select>
-											</Field>
-											<Field label="Pais">
-												<select
-													defaultValue={countryCode || "ES"}
-													name="country"
-												>
-													<option value="ES">ES</option>
-													<option value="US">US</option>
-													<option value="MX">MX</option>
-													<option value="GB">GB</option>
-												</select>
-											</Field>
-										</div>
-									</div>
-								</details>
-								<button
-									className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 py-3 text-sm font-black text-[#1b1000] transition hover:brightness-110"
-									type="submit"
-								>
-									<Beaker className="size-4" />
-									Generar preguntas
-								</button>
-							</form>
+					{/* Interactive coverage + intent selector */}
+					<section className="neo-card overflow-hidden">
+						<div className="border-b border-[var(--border)] px-5 py-4">
+							<div className="flex items-center gap-2">
+								<Layers3 className="size-4 text-[var(--brand)]" />
+								<h2 className="font-semibold text-[var(--foreground)]">
+									Cobertura de PROMPTs
+								</h2>
+							</div>
+							<p className="mt-1 text-xs text-[var(--muted)]">
+								Selecciona los tipos de PROMPTs que quieres cubrir. Los marcados
+								con Gap necesitan más prompts.
+							</p>
 						</div>
-					</details>
+						<form action={generateAction} className="p-5">
+							<input
+								name="brandName"
+								type="hidden"
+								value={company?.brand_name ?? workspace.name}
+							/>
+							<input
+								name="website"
+								type="hidden"
+								value={company?.website ?? ""}
+							/>
+							<input
+								name="description"
+								type="hidden"
+								value={company?.description ?? ""}
+							/>
+							<input
+								name="market"
+								type="hidden"
+								value={company?.markets?.[0] ?? ""}
+							/>
+							<input
+								name="services"
+								type="hidden"
+								value={company?.products?.join(", ") ?? ""}
+							/>
+							<input name="competitors" type="hidden" value={competitorList} />
+							<input name="promptCount" type="hidden" value="15" />
+							<input name="language" type="hidden" value="es" />
+							<input name="country" type="hidden" value={countryCode || "ES"} />
+							<input name="returnTo" type="hidden" value="prompts" />
+							<div className="grid gap-3 sm:grid-cols-2">
+								{coverageRows.map((row) => {
+									const score = Math.min(100, (row.current / row.target) * 100);
+									const isGap = row.current < row.target;
+									return (
+										<label
+											className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition hover:border-[var(--brand)] ${
+												isGap
+													? "border-[rgba(244,149,39,0.4)] bg-[rgba(244,149,39,0.04)]"
+													: "border-[var(--border)] bg-[var(--surface-subtle)]"
+											}`}
+											key={row.value}
+										>
+											<input
+												className="mt-0.5 shrink-0"
+												defaultChecked={isGap}
+												name="intents"
+												type="checkbox"
+												value={row.value}
+											/>
+											<div className="min-w-0 flex-1">
+												<div className="flex items-center justify-between gap-2">
+													<span className="text-sm font-semibold text-[var(--foreground)]">
+														{row.label}
+													</span>
+													<span
+														className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] ${
+															row.current >= row.target
+																? "bg-emerald-400/10 text-emerald-300"
+																: "bg-amber-400/10 text-amber-300"
+														}`}
+													>
+														{row.current >= row.target
+															? "OK"
+															: `Gap ${row.current}/${row.target}`}
+													</span>
+												</div>
+												<div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[rgba(231,233,238,0.08)]">
+													<div
+														className="h-full rounded-full bg-[var(--brand)]"
+														style={{ width: `${score}%` }}
+													/>
+												</div>
+											</div>
+										</label>
+									);
+								})}
+							</div>
+							<button
+								className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 py-3 text-sm font-black text-[#1b1000] transition hover:brightness-110"
+								type="submit"
+							>
+								<Beaker className="size-4" />
+								Generar PROMPTs para los seleccionados
+							</button>
+						</form>
+					</section>
+
+					<AddManualPromptPanel action={createAction} />
 
 					<section className="neo-card overflow-hidden">
 						<div className="border-b border-[var(--border)] px-5 py-4">
 							<h2 className="font-semibold text-[var(--foreground)]">
-								Tus preguntas activas
+								Tus PROMPTs activos
 							</h2>
 							<p className="text-sm text-[var(--muted)]">
-								{smePrompts.length} preguntas monitorizadas.
+								{smePrompts.length} PROMPTs monitorizados.
 							</p>
 						</div>
 						<div className="grid gap-4 p-5">
 							{smePrompts.length === 0 ? (
-								<EmptyState text="Aun no tienes preguntas activas. Genera algunas arriba o crea una manualmente." />
+								<EmptyState text="Aún no tienes PROMPTs activos. Genera algunos arriba o crea uno manualmente." />
 							) : null}
 							{smePrompts.map((prompt) => {
 								const ranking = rankingsByPrompt.get(prompt.id);
+								const promptRuns = runsByPrompt.get(prompt.id) ?? [];
+								const hasRuns = promptRuns.length > 0;
 								const rowStatus = promptStatus(prompt, ranking);
 								const runAction = runPromptAcrossEnabledLlmsAction.bind(
 									null,
@@ -500,14 +523,16 @@ export default async function Page({
 									expand: "border-amber-200 bg-amber-50 text-amber-700",
 									monitor: "border-sky-200 bg-sky-50 text-sky-700",
 								}[rowStatus];
+								const latestRun = promptRuns.sort(
+									(a, b) =>
+										new Date(b.created_at).getTime() -
+										new Date(a.created_at).getTime(),
+								)[0];
 								return (
 									<article
 										className="grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] p-4"
 										key={prompt.id}
 									>
-										<p className="text-sm font-semibold text-[var(--foreground)]">
-											{prompt.body}
-										</p>
 										<div className="flex flex-wrap gap-2">
 											<span
 												className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${ranking?.brand_mentioned ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-red-200 bg-red-50 text-red-700"}`}
@@ -526,18 +551,67 @@ export default async function Page({
 											>
 												{smeStatusLabel}
 											</span>
+											{!hasRuns ? (
+												<span className="rounded-full border border-amber-300/50 bg-amber-400/10 px-2.5 py-0.5 text-xs font-semibold text-amber-300">
+													Sin ejecutar
+												</span>
+											) : null}
 										</div>
-										<form action={runAction}>
-											<input name="body" type="hidden" value={prompt.body} />
-											<button
-												className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-1.5 text-xs font-semibold text-[var(--foreground)] transition hover:border-[var(--brand)] disabled:opacity-40"
-												disabled={activeConfigs.length === 0}
-												type="submit"
-											>
-												<Play className="size-3.5 text-[var(--brand)]" />
-												Actualizar datos
-											</button>
-										</form>
+										<p className="text-sm font-semibold text-[var(--foreground)]">
+											{prompt.body}
+										</p>
+										<div className="grid grid-cols-3 gap-2">
+											<div className="rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+												<p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+													Visibilidad
+												</p>
+												<p className="mt-1 text-sm font-black text-[var(--foreground)]">
+													{formatPercent(
+														Number(ranking?.visibility_score ?? 0),
+													)}
+												</p>
+											</div>
+											<div className="rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+												<p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+													Posicion
+												</p>
+												<p className="mt-1 text-sm font-black text-[var(--foreground)]">
+													{ranking?.brand_position
+														? `#${ranking.brand_position}`
+														: "—"}
+												</p>
+											</div>
+											<div className="rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+												<p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">
+													Fuentes
+												</p>
+												<p className="mt-1 text-sm font-black text-[var(--foreground)]">
+													{ranking?.source_count ?? 0}
+												</p>
+											</div>
+										</div>
+										<div className="flex items-center justify-between gap-3">
+											<p className="text-xs text-[var(--muted)]">
+												{latestRun
+													? `Último run: ${smeRelativeDate(latestRun.created_at)}`
+													: "Nunca ejecutado"}
+											</p>
+											<form action={runAction}>
+												<input name="body" type="hidden" value={prompt.body} />
+												<button
+													className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-40 ${
+														!hasRuns
+															? "bg-[var(--brand)] text-[#1b1000] hover:brightness-110"
+															: "border border-[var(--border)] bg-[var(--surface-raised)] text-[var(--foreground)] hover:border-[var(--brand)]"
+													}`}
+													disabled={activeConfigs.length === 0}
+													type="submit"
+												>
+													<Play className="size-3.5" />
+													Ejecutar
+												</button>
+											</form>
+										</div>
 									</article>
 								);
 							})}
@@ -560,7 +634,7 @@ export default async function Page({
 							{isPro ? "Prompts y Cobertura" : "GEO Prompt Command Center"}
 						</h1>
 						<p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-							Monitoriza preguntas reales que tus clientes harian a ChatGPT,
+							Monitoriza PROMPTs reales que tus clientes harían a ChatGPT,
 							Gemini, Claude o Perplexity antes de elegir una marca. Cada prompt
 							activo se ejecuta contra todos los LLMs habilitados con reparto
 							igualitario.
@@ -635,7 +709,7 @@ export default async function Page({
 						label="Source gap rate"
 						value={`${prompts.length ? Math.round((sourceGapPrompts / prompts.length) * 100) : 0}%`}
 						tone="watch"
-						text="Detecta preguntas donde hay fuentes/citas, pero aun no se convierten en presencia de marca."
+						text="Detecta PROMPTs donde hay fuentes/citas, pero aún no se convierten en presencia de marca."
 					/>
 					<InsightCard
 						label="LLM usage split"
@@ -714,31 +788,38 @@ export default async function Page({
 
 				<PromptImportPanel importAction={importAction} />
 
-				<CandidateReview
+				<CandidateReviewPanel
 					bulkAcceptAction={bulkAcceptAction}
-					candidates={latestCandidates}
-					pendingCount={pendingCandidates.length}
-					workspaceId={workspace.id}
-					workspaceSlug={workspace.slug}
+					candidatesWithActions={latestCandidates.map((c) => ({
+						candidate: c,
+						acceptAction: acceptPromptCandidateAction.bind(
+							null,
+							workspace.id,
+							workspace.slug,
+							c.id,
+						),
+						rejectAction: rejectPromptCandidateAction.bind(
+							null,
+							workspace.slug,
+							c.id,
+						),
+					}))}
 				/>
 
-				<section
-					className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]"
-					id="prompt-library"
-				>
-					<PromptLibrary
-						activeConfigs={activeConfigs}
-						filter={promptFilter}
-						prompts={filteredPrompts}
-						query={promptQuery}
-						rankingsByPrompt={rankingsByPrompt}
-						runsByPrompt={runsByPrompt}
-						totalPrompts={libraryPrompts.length}
-						workspaceId={workspace.id}
-						workspaceSlug={workspace.slug}
-					/>
-					<CreatePromptForm createAction={createAction} />
-				</section>
+				<PromptsTable
+					addPromptAction={createAction}
+					deleteAction={deletePromptAction.bind(null, workspace.slug)}
+					locale={prefs.locale}
+					prompts={prompts}
+					rankings={rankings}
+					runs={runs}
+					sourcesByPromptId={sourcesByPromptId}
+					toggleStatusAction={togglePromptStatusAction.bind(
+						null,
+						workspace.slug,
+					)}
+					workspaceCountryCode={countryCode}
+				/>
 			</div>
 		</main>
 	);
@@ -929,7 +1010,7 @@ function PromptImportPanel({
 						CSV/Excel a candidatos revisables
 					</h2>
 					<p className="mt-1 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-						Sube un archivo con prompts existentes, keywords o preguntas de
+						Sube un archivo con PROMPTs existentes, keywords o PROMPTs de
 						cliente. La app detecta columnas como title, prompt, intent,
 						category, funnel_stage, priority y tags; si el archivo viene
 						desordenado, intentara normalizarlo antes de crear candidatos
@@ -1002,8 +1083,8 @@ function CoveragePanel({
 				</h2>
 			</div>
 			<p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-				Comprueba si estas midiendo todas las preguntas clave del funnel antes
-				de activar nuevos candidatos.
+				Comprueba si estás midiendo todos los PROMPTs clave del funnel antes de
+				activar nuevos candidatos.
 			</p>
 			<div className="mt-5 grid gap-3">
 				{rows.map((row) => {
@@ -1048,113 +1129,7 @@ function CoveragePanel({
 	);
 }
 
-function CandidateReview({
-	bulkAcceptAction,
-	candidates,
-	pendingCount,
-	workspaceId,
-	workspaceSlug,
-}: {
-	bulkAcceptAction: (formData: FormData) => void | Promise<void>;
-	candidates: PromptCandidate[];
-	pendingCount: number;
-	workspaceId: string;
-	workspaceSlug: string;
-}) {
-	return (
-		<section className="neo-card overflow-hidden">
-			<div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border)] px-5 py-4">
-				<div>
-					<h2 className="text-lg font-black text-[var(--foreground)]">
-						Candidatos generados
-					</h2>
-					<p className="text-sm text-[var(--muted)]">
-						Revisa, edita y activa solo los prompts que quieras monitorizar.
-					</p>
-				</div>
-				<span className="rounded-full border border-[var(--brand)] bg-[var(--brand-soft)] px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-[var(--brand)]">
-					{pendingCount} pendientes
-				</span>
-			</div>
-			<div className="grid gap-4 p-5">
-				<CandidateBulkPanel action={bulkAcceptAction} candidates={candidates} />
-				{candidates.length ? (
-					candidates.map((candidate) => {
-						const acceptAction = acceptPromptCandidateAction.bind(
-							null,
-							workspaceId,
-							workspaceSlug,
-							candidate.id,
-						);
-						const rejectAction = rejectPromptCandidateAction.bind(
-							null,
-							workspaceSlug,
-							candidate.id,
-						);
-						return (
-							<article
-								className="rounded-xl border border-[var(--border)] bg-[rgba(231,233,238,0.03)] p-4"
-								key={candidate.id}
-							>
-								<div className="flex flex-wrap items-start justify-between gap-4">
-									<div className="min-w-0 flex-1">
-										<div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.08em]">
-											<Badge>Score {Number(candidate.score).toFixed(0)}</Badge>
-											<Badge>{candidate.intent}</Badge>
-											<Badge>{candidate.funnel_stage}</Badge>
-											<Badge>{candidate.status}</Badge>
-										</div>
-										<h3 className="mt-3 font-black text-[var(--foreground)]">
-											{candidate.title}
-										</h3>
-										<p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-											{candidate.body}
-										</p>
-										<p className="mt-3 text-xs text-[var(--muted)]">
-											{candidate.rationale}
-										</p>
-									</div>
-									<form action={rejectAction}>
-										<input name="returnTo" type="hidden" value="prompts" />
-										<button
-											className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-bold text-[var(--muted)] transition hover:border-red-400/40 hover:text-red-200 disabled:opacity-40"
-											disabled={candidate.status !== "pending"}
-											type="submit"
-										>
-											<XCircle className="size-4" />
-											Descartar
-										</button>
-									</form>
-								</div>
-								<form action={acceptAction} className="mt-4 grid gap-3">
-									<input name="returnTo" type="hidden" value="prompts" />
-									<input defaultValue={candidate.title} name="title" />
-									<textarea
-										defaultValue={candidate.body}
-										name="body"
-										rows={3}
-									/>
-									<button
-										className="inline-flex w-fit items-center gap-2 rounded-lg bg-[var(--brand)] px-3 py-2 text-sm font-black text-[#1b1000] disabled:cursor-not-allowed disabled:opacity-45"
-										disabled={candidate.status !== "pending"}
-										type="submit"
-									>
-										<CheckCircle2 className="size-4" />
-										Guardar como prompt activo
-									</button>
-								</form>
-							</article>
-						);
-					})
-				) : (
-					<EmptyState text="Todavia no hay candidatos. Genera un primer mapa de preguntas desde el GEO Research Studio." />
-				)}
-			</div>
-		</section>
-	);
-}
-
-function PromptLibrary({
+function _PromptLibrary({
 	prompts,
 	rankingsByPrompt,
 	runsByPrompt,
@@ -1368,7 +1343,7 @@ function PromptLibrary({
 	);
 }
 
-function CreatePromptForm({
+function _CreatePromptForm({
 	createAction,
 }: {
 	createAction: (formData: FormData) => Promise<void>;

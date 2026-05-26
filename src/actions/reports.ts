@@ -204,6 +204,7 @@ export async function uploadReportLogoAction(
 export async function generateMonthlyReportAction(
 	workspaceId: string,
 	workspaceSlug: string,
+	returnPath: string,
 ) {
 	const { supabase } = await requireUser();
 	const overview = await getWorkspaceOverview(workspaceId);
@@ -562,5 +563,6 @@ export async function generateMonthlyReportAction(
 	]);
 
 	revalidatePath(`/${workspaceSlug}/reports`);
-	redirect(`/${workspaceSlug}/reports?generated=1`);
+	revalidatePath(returnPath);
+	redirect(returnPath);
 }

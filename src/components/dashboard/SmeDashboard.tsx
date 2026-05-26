@@ -2,6 +2,8 @@ import {
 	AlertCircle,
 	ArrowRight,
 	CheckCircle2,
+	ExternalLink,
+	FileText,
 	TrendingUp,
 	Zap,
 } from "lucide-react";
@@ -9,6 +11,7 @@ import Link from "next/link";
 import { GlossaryTip } from "@/components/ui/GlossaryTip";
 import type { WeeklyActivity } from "@/lib/analytics/activity";
 import type { OverviewAnalytics } from "@/lib/analytics/overview";
+import type { MonthlyReport } from "@/types";
 import { ScoreCounter } from "./ScoreCounter";
 import { SetupChecklist, type SetupChecklistStatus } from "./SetupChecklist";
 import { WeeklyActivityFeed } from "./WeeklyActivityFeed";
@@ -46,12 +49,16 @@ export function SmeDashboard({
 	isEn,
 	setupStatus,
 	weeklyActivity,
+	latestReport,
+	generateReportAction,
 }: {
 	analytics: OverviewAnalytics;
 	workspaceSlug: string;
 	isEn: boolean;
 	setupStatus?: SetupChecklistStatus;
 	weeklyActivity?: WeeklyActivity;
+	latestReport?: MonthlyReport | null;
+	generateReportAction?: (formData: FormData) => Promise<void>;
 }) {
 	const scoreColor =
 		analytics.readinessScore >= 75
@@ -294,6 +301,95 @@ export function SmeDashboard({
 						);
 					})}
 				</section>
+
+				{/* Monthly report summary */}
+				{generateReportAction ? (
+					<section className="neo-card overflow-hidden">
+						<div className="flex items-center gap-3 border-b border-[var(--border)] px-5 py-4">
+							<FileText className="size-4 text-[var(--brand)]" />
+							<h2 className="text-sm font-black uppercase tracking-[0.1em] text-[var(--foreground)]">
+								{isEn ? "Monthly summary" : "Resumen mensual"}
+							</h2>
+						</div>
+						{latestReport ? (
+							<div className="p-5">
+								<p className="mb-4 text-xs text-[var(--muted)]">
+									{latestReport.title}
+								</p>
+								<div className="grid grid-cols-3 gap-3">
+									<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3 text-center">
+										<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+											{isEn ? "Visibility" : "Visibilidad"}
+										</p>
+										<p className="mt-1 text-2xl font-black text-[var(--brand)]">
+											{latestReport.visibility_score.toFixed(0)}%
+										</p>
+									</div>
+									<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3 text-center">
+										<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+											SOV
+										</p>
+										<p className="mt-1 text-2xl font-black text-[var(--foreground)]">
+											{latestReport.share_of_voice.toFixed(0)}%
+										</p>
+									</div>
+									<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] p-3 text-center">
+										<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+											{isEn ? "Mentions" : "Menciones"}
+										</p>
+										<p className="mt-1 text-2xl font-black text-[var(--foreground)]">
+											{(() => {
+												const v =
+													latestReport.kpi_summary?.brand_mentions ??
+													(latestReport.metrics as Record<string, unknown>)
+														?.brand_mentions;
+												return typeof v === "number" ? v : "—";
+											})()}
+										</p>
+									</div>
+								</div>
+								<div className="mt-4 flex flex-wrap gap-2">
+									<a
+										className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2 text-xs font-bold text-[var(--foreground)] transition hover:border-[var(--brand)]"
+										href={`/reports/${latestReport.share_token}`}
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										<ExternalLink className="size-3.5" />
+										{isEn ? "View full report" : "Ver informe completo"}
+									</a>
+									<form action={generateReportAction}>
+										<button
+											className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-xs font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--foreground)]"
+											type="submit"
+										>
+											{isEn ? "Regenerate" : "Nuevo mes"}
+										</button>
+									</form>
+								</div>
+							</div>
+						) : (
+							<div className="p-5">
+								<p className="text-sm text-[var(--muted)]">
+									{isEn
+										? "Generate your first monthly summary to track how your GEO visibility evolves over time."
+										: "Genera tu primer resumen mensual para ver como evoluciona tu visibilidad GEO."}
+								</p>
+								<form action={generateReportAction} className="mt-4">
+									<button
+										className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] px-4 py-2 text-sm font-black text-[#1b1000] transition hover:brightness-110"
+										type="submit"
+									>
+										<FileText className="size-4" />
+										{isEn
+											? "Generate monthly summary"
+											: "Generar resumen del mes"}
+									</button>
+								</form>
+							</div>
+						)}
+					</section>
+				) : null}
 			</div>
 		</main>
 	);

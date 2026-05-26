@@ -1,5 +1,6 @@
 ﻿import { Activity, Download } from "lucide-react";
 import Link from "next/link";
+import { generateMonthlyReportAction } from "@/actions/reports";
 import { ForecastPanel } from "@/components/dashboard/ForecastPanel";
 import {
 	BrandVisibilityChart,
@@ -119,10 +120,19 @@ export default async function Page({
 	);
 
 	if (mode === "sme") {
+		const latestReport = overview.reports[0] ?? null;
+		const generateReportAction = generateMonthlyReportAction.bind(
+			null,
+			workspace.id,
+			workspace.slug,
+			`/${workspace.slug}/dashboard`,
+		);
 		return (
 			<SmeDashboard
 				analytics={analytics}
+				generateReportAction={generateReportAction}
 				isEn={isEn}
+				latestReport={latestReport}
 				setupStatus={setupStatus}
 				weeklyActivity={weeklyActivity}
 				workspaceSlug={workspace.slug}

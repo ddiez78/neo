@@ -31,7 +31,7 @@ export const FEATURE_MIN_TIER: Record<TierFeature, AppMode> = {
 	recommendations: "sme",
 	competitors: "sme",
 	sources: "sme",
-	reports: "sme",
+	reports: "pro",
 	settings: "sme",
 	roi: "pro",
 	tasks: "pro",

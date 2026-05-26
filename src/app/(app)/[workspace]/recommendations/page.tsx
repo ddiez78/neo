@@ -4,6 +4,7 @@ import {
 	Clock3,
 	type LucideIcon,
 	ShieldAlert,
+	Zap,
 } from "lucide-react";
 import {
 	createRecommendationTaskAction,
@@ -241,7 +242,7 @@ function simpleArea(category: RecommendationCategory) {
 		content: "Contenido",
 		sources: "Fuentes",
 		competitors: "Competidores",
-		prompts: "Preguntas",
+		prompts: "PROMPTs",
 		technical: "Datos",
 		authority: "Fuentes",
 		sentiment: "Confianza y reseñas",
@@ -279,8 +280,8 @@ const smeSections: SmeSection[] = [
 			"Acciones urgentes para mejorar tu visibilidad en IA de inmediato.",
 		empty: "Todo en orden. Ninguna accion urgente.",
 		icon: AlertTriangle,
-		card: "border-red-200 bg-red-50/55",
-		chip: "border-red-200 bg-red-100 text-red-800",
+		card: "border-red-500/30 bg-red-500/[0.08]",
+		chip: "border-red-500/40 bg-red-500/[0.15] text-red-400",
 	},
 	{
 		key: "upcoming",
@@ -289,8 +290,8 @@ const smeSections: SmeSection[] = [
 			"Mejoras importantes que puedes planificar para las proximas semanas.",
 		empty: "No hay mejoras planificadas pendientes.",
 		icon: Clock3,
-		card: "border-amber-200 bg-amber-50/60",
-		chip: "border-amber-200 bg-amber-100 text-amber-800",
+		card: "border-amber-500/30 bg-amber-500/[0.08]",
+		chip: "border-amber-500/40 bg-amber-500/[0.15] text-amber-400",
 	},
 	{
 		key: "watching",
@@ -298,8 +299,8 @@ const smeSections: SmeSection[] = [
 		description: "Acciones en progreso o ya completadas.",
 		empty: "Nada en observacion aun.",
 		icon: CheckCircle2,
-		card: "border-emerald-200 bg-emerald-50/60",
-		chip: "border-emerald-200 bg-emerald-100 text-emerald-800",
+		card: "border-emerald-500/30 bg-emerald-500/[0.08]",
+		chip: "border-emerald-500/40 bg-emerald-500/[0.15] text-emerald-400",
 	},
 ];
 
@@ -369,22 +370,22 @@ function SmeRecommendationCard({
 				>
 					{simpleArea(recommendation.category)}
 				</span>
-				<span className="rounded-md bg-white/90 px-2 py-0.5 text-xs font-semibold text-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
+				<span className="rounded-md bg-[var(--surface-raised)] px-2 py-0.5 text-xs font-semibold text-[var(--foreground)]">
 					{statusLabels[recommendation.status]}
 				</span>
 			</div>
-			<h3 className="mt-2 text-base font-semibold text-slate-950">
+			<h3 className="mt-2 text-base font-semibold text-[var(--foreground)]">
 				{recommendation.title}
 			</h3>
-			<p className="mt-1 text-sm leading-6 text-slate-600">
+			<p className="mt-1 text-sm leading-6 text-[var(--muted)]">
 				{recommendation.description}
 			</p>
 			{actionItems.length > 0 ? (
-				<div className="mt-3 rounded-md bg-white/90 p-3 dark:bg-slate-900/40">
-					<p className="text-xs font-semibold uppercase tracking-[0.06em] text-slate-600 dark:text-slate-400">
+				<div className="mt-3 rounded-md bg-[var(--surface-raised)] p-3">
+					<p className="text-xs font-semibold uppercase tracking-[0.06em] text-[var(--muted)]">
 						Que hacer:
 					</p>
-					<ol className="mt-2 grid gap-1.5 text-sm text-slate-800 dark:text-slate-200">
+					<ol className="mt-2 grid gap-1.5 text-sm text-[var(--foreground)]">
 						{actionItems.slice(0, 3).map((item, i) => (
 							<li className="flex gap-2" key={item}>
 								<span
@@ -402,7 +403,7 @@ function SmeRecommendationCard({
 				{recommendation.status === "pending" ? (
 					<form action={markInProgress}>
 						<button
-							className="rounded-md bg-slate-950 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
+							className="rounded-md bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[#1b1000] hover:brightness-110"
 							type="submit"
 						>
 							Empezar esta semana
@@ -419,7 +420,7 @@ function SmeRecommendationCard({
 				</form>
 				<form action={dismiss}>
 					<button
-						className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+						className="rounded-md border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--surface-high)]"
 						type="submit"
 					>
 						Dejar para despues
@@ -660,6 +661,47 @@ export default async function Page({
 	const smeGrouped = smeGroupRecommendations(recommendations);
 
 	if (isSme) {
+		const smeGenerateAction = generateRecommendationsAction.bind(
+			null,
+			workspace.id,
+			workspace.slug,
+		);
+
+		if (recommendations.length === 0) {
+			return (
+				<main className="flex-1 overflow-auto p-4 pb-24 lg:p-6 lg:pb-8">
+					<div className="mx-auto max-w-3xl">
+						<section className="neo-card p-8 text-center">
+							<div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)]">
+								<Zap className="size-7 text-[var(--brand)]" />
+							</div>
+							<h1 className="mt-5 text-2xl font-black text-[var(--foreground)]">
+								Genera tu Plan de Acción
+							</h1>
+							<p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[var(--muted)]">
+								Analizamos tu visibilidad en IA y te damos recomendaciones
+								concretas para mejorar cómo los asistentes te mencionan y
+								recomiendan. Usa 2 ejecuciones de IA.
+							</p>
+							<form action={smeGenerateAction} className="mt-6">
+								<button
+									className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] px-6 py-3 text-sm font-black text-[#1b1000] transition hover:brightness-110"
+									type="submit"
+								>
+									<Zap className="size-4" />
+									Generar mi Plan de Acción
+								</button>
+							</form>
+							<p className="mt-4 text-xs text-[var(--muted)]">
+								Se analiza tu historial de PROMPTs, competidores y fuentes
+								activas.
+							</p>
+						</section>
+					</div>
+				</main>
+			);
+		}
+
 		const smePendingCount = recommendations.filter(
 			(r) => r.status === "pending",
 		).length;

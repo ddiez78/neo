@@ -74,6 +74,7 @@ export default async function Page({
 		null,
 		workspace.id,
 		workspace.slug,
+		`/${workspace.slug}/reports?generated=1`,
 	);
 	const branding = {
 		agency_name: reportBranding?.agency_name ?? "",

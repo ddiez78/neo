@@ -786,3 +786,40 @@ export async function rejectPromptCandidateAction(
 	revalidatePath(`/${workspaceSlug}/prompts`);
 	redirect(`/${workspaceSlug}/${returnTo}?rejected=1`);
 }
+
+export async function togglePromptStatusAction(
+	workspaceSlug: string,
+	promptId: string,
+	formData: FormData,
+) {
+	const currentStatus = formData.get("status");
+	const next = currentStatus === "active" ? "paused" : "active";
+	const { supabase } = await requireUser();
+	const { error } = await supabase
+		.from("prompts")
+		.update({ status: next, updated_at: new Date().toISOString() })
+		.eq("id", promptId);
+	if (error) {
+		redirect(
+			`/${workspaceSlug}/prompts?error=${encodeURIComponent(error.message)}`,
+		);
+	}
+	revalidatePath(`/${workspaceSlug}/prompts`);
+}
+
+export async function deletePromptAction(
+	workspaceSlug: string,
+	promptId: string,
+	// FormData is unused but the signature must accept it so the action can be
+	// passed directly to a <form action={...}> in a Client Component.
+	_formData?: FormData,
+) {
+	const { supabase } = await requireUser();
+	const { error } = await supabase.from("prompts").delete().eq("id", promptId);
+	if (error) {
+		redirect(
+			`/${workspaceSlug}/prompts?error=${encodeURIComponent(error.message)}`,
+		);
+	}
+	revalidatePath(`/${workspaceSlug}/prompts`);
+}

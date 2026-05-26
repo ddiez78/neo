@@ -27,18 +27,18 @@ const toneStyles: Record<
 > = {
 	high: {
 		border: "border-l-4 border-l-red-400",
-		badge: "border-violet-200 bg-violet-100 text-violet-800",
-		priorityText: "text-red-600",
+		badge: "border-red-500/40 bg-red-500/[0.15] text-red-400",
+		priorityText: "text-red-400",
 	},
 	medium: {
 		border: "border-l-4 border-l-amber-400",
-		badge: "border-amber-200 bg-amber-100 text-amber-800",
-		priorityText: "text-amber-600",
+		badge: "border-amber-500/40 bg-amber-500/[0.15] text-amber-400",
+		priorityText: "text-amber-400",
 	},
 	low: {
 		border: "border-l-4 border-l-emerald-400",
-		badge: "border-emerald-200 bg-emerald-100 text-emerald-800",
-		priorityText: "text-emerald-600",
+		badge: "border-emerald-500/40 bg-emerald-500/[0.15] text-emerald-400",
+		priorityText: "text-emerald-400",
 	},
 };
 
@@ -84,7 +84,7 @@ export function SimpleRecommendationCard({
 
 	return (
 		<article
-			className={`rounded-md border border-slate-200 bg-white p-5 ${tone.border}`}
+			className={`rounded-md border border-[var(--border)] bg-[var(--surface-raised)] p-5 ${tone.border}`}
 		>
 			<button
 				className="grid w-full gap-2 text-left"
@@ -104,34 +104,34 @@ export function SimpleRecommendationCard({
 					</div>
 					<ChevronDown
 						aria-hidden="true"
-						className={`size-4 shrink-0 text-slate-400 transition-transform ${expanded ? "rotate-180" : ""}`}
+						className={`size-4 shrink-0 text-[var(--muted)] transition-transform ${expanded ? "rotate-180" : ""}`}
 					/>
 				</div>
-				<h3 className="text-base font-semibold text-slate-950">
+				<h3 className="text-base font-semibold text-[var(--foreground)]">
 					{recommendation.title}
 				</h3>
 				{!expanded ? (
-					<p className="line-clamp-2 text-sm leading-6 text-slate-500">
+					<p className="line-clamp-2 text-sm leading-6 text-[var(--muted)]">
 						{recommendation.description}
 					</p>
 				) : null}
 			</button>
 
 			{expanded ? (
-				<div className="mt-4 grid gap-4 border-t border-slate-100 pt-4">
-					<p className="text-sm leading-6 text-slate-700">
+				<div className="mt-4 grid gap-4 border-t border-[var(--border)] pt-4">
+					<p className="text-sm leading-6 text-[var(--foreground)]">
 						{recommendation.description}
 					</p>
 
 					{actionItems.length > 0 ? (
 						<div className="grid gap-2">
-							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 								{isEn ? "Actions" : "Acciones"}
 							</p>
-							<ol className="grid gap-2 text-sm text-slate-700">
+							<ol className="grid gap-2 text-sm text-[var(--foreground)]">
 								{actionItems.map((item, index) => (
 									<li className="flex gap-3" key={item}>
-										<span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+										<span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--surface-high)] text-xs font-semibold text-[var(--muted)]">
 											{index + 1}
 										</span>
 										<span className="leading-6">{item}</span>
@@ -143,18 +143,18 @@ export function SimpleRecommendationCard({
 
 					{ragSources.length > 0 ? (
 						<div className="grid gap-2">
-							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 								{isEn ? "Based on" : "Basado en"}
 							</p>
 							<div className="flex flex-wrap gap-2">
 								{ragSources.map((source) => (
 									<span
-										className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-700"
+										className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--surface)] px-2 py-1 text-xs font-medium text-[var(--muted)]"
 										key={source}
 									>
 										<FileText
 											aria-hidden="true"
-											className="size-3.5 text-slate-400"
+											className="size-3.5 text-[var(--muted)]"
 										/>
 										{source}
 									</span>
@@ -167,7 +167,7 @@ export function SimpleRecommendationCard({
 						{canStart ? (
 							<form action={markInProgressAction}>
 								<button
-									className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+									className="rounded-md border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--surface-high)]"
 									type="submit"
 								>
 									{isEn ? "Start" : "Empezar"}
@@ -187,7 +187,7 @@ export function SimpleRecommendationCard({
 						{canResolve ? (
 							<form action={dismissAction}>
 								<button
-									className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+									className="rounded-md border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--surface-high)]"
 									type="submit"
 								>
 									{isEn ? "Dismiss" : "Descartar"}
@@ -196,7 +196,7 @@ export function SimpleRecommendationCard({
 						) : null}
 						<form action={createTaskAction}>
 							<button
-								className="rounded-md bg-slate-950 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
+								className="rounded-md bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[#1b1000] hover:brightness-110"
 								type="submit"
 							>
 								{isEn ? "Create task" : "Crear tarea"}

@@ -59,9 +59,9 @@ export function SimpleRecommendationsHeader({
 	}
 
 	return (
-		<div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white p-4">
+		<div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-[var(--surface-raised)] p-4">
 			<div>
-				<p className="text-sm font-semibold text-slate-950">
+				<p className="text-sm font-semibold text-[var(--foreground)]">
 					{formatActiveCount(activeCount, isEn)}
 				</p>
 				{summaryParts.length > 0 ? (
@@ -70,7 +70,7 @@ export function SimpleRecommendationsHeader({
 							<span className={`font-medium ${part.tone}`} key={part.label}>
 								{part.label}
 								{index < summaryParts.length - 1 ? (
-									<span className="ml-1 text-slate-300">·</span>
+									<span className="ml-1 text-[var(--border-strong)]">·</span>
 								) : null}
 							</span>
 						))}
@@ -89,7 +89,7 @@ export function SimpleRecommendationsHeader({
 							{isEn ? "Regenerate" : "Regenerar"}
 						</button>
 					</form>
-					<span className="text-[10px] text-slate-400">
+					<span className="text-[10px] text-[var(--muted)]">
 						{isEn ? "Uses 2 AI executions" : "Usará 2 ejecuciones IA"}
 					</span>
 				</div>
@@ -97,14 +97,14 @@ export function SimpleRecommendationsHeader({
 				<details className="relative">
 					<summary
 						aria-label={isEn ? "More options" : "Más opciones"}
-						className="inline-flex size-9 cursor-pointer list-none items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 [&::-webkit-details-marker]:hidden"
+						className="inline-flex size-9 cursor-pointer list-none items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface-raised)] text-[var(--muted)] hover:bg-[var(--surface-high)] [&::-webkit-details-marker]:hidden"
 					>
 						<MoreVertical aria-hidden="true" className="size-4" />
 					</summary>
-					<div className="absolute right-0 z-10 mt-1 w-56 rounded-md border border-slate-200 bg-white p-1 shadow-md">
+					<div className="absolute right-0 z-10 mt-1 w-56 rounded-md border border-[var(--border)] bg-[var(--surface-raised)] p-1 shadow-md">
 						<form action={importAction}>
 							<button
-								className="block w-full rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+								className="block w-full rounded-md px-3 py-2 text-left text-sm text-[var(--foreground)] hover:bg-[var(--surface-high)]"
 								type="submit"
 							>
 								{isEn ? "Import MD sources" : "Importar fuentes MD"}
@@ -112,7 +112,7 @@ export function SimpleRecommendationsHeader({
 						</form>
 						<form action={translateAction}>
 							<button
-								className="block w-full rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+								className="block w-full rounded-md px-3 py-2 text-left text-sm text-[var(--foreground)] hover:bg-[var(--surface-high)]"
 								type="submit"
 							>
 								{isEn ? "Translate to Spanish" : "Traducir a inglés"}
