@@ -490,30 +490,32 @@ function RecommendationCard({
 	);
 
 	return (
-		<article className={`rounded-md border bg-white p-5 ${config.card}`}>
+		<article className={`rounded-xl border p-5 ${config.card}`}>
 			<div className="flex flex-wrap items-start justify-between gap-4">
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-center gap-2">
-						<span
-							className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold uppercase ${config.chip}`}
-						>
-							<Icon aria-hidden="true" className="h-3.5 w-3.5" />
-							{config.shortLabel}
-						</span>
-						<span className="rounded-md bg-white/80 px-2 py-1 text-xs font-semibold uppercase text-slate-700">
+						{config.shortLabel ? (
+							<span
+								className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold uppercase ${config.chip}`}
+							>
+								<Icon aria-hidden="true" className="h-3.5 w-3.5" />
+								{config.shortLabel}
+							</span>
+						) : null}
+						<span className="rounded-md bg-[var(--surface-raised)] px-2 py-1 text-xs font-semibold uppercase text-[var(--foreground)]">
 							{simpleArea(recommendation.category)}
 						</span>
-						<span className="rounded-md bg-white/80 px-2 py-1 text-xs font-semibold uppercase text-slate-700">
+						<span className="rounded-md bg-[var(--surface-raised)] px-2 py-1 text-xs font-semibold uppercase text-[var(--muted)]">
 							P{recommendation.priority}
 						</span>
-						<span className="rounded-md bg-white/80 px-2 py-1 text-xs font-semibold uppercase text-slate-700">
+						<span className="rounded-md bg-[var(--surface-raised)] px-2 py-1 text-xs font-semibold uppercase text-[var(--muted)]">
 							{statusLabels[recommendation.status]}
 						</span>
 					</div>
-					<h3 className="mt-3 text-lg font-semibold text-slate-950">
+					<h3 className="mt-3 text-lg font-black text-[var(--foreground)]">
 						{recommendation.title}
 					</h3>
-					<p className="mt-2 max-w-4xl text-sm leading-6 text-slate-700">
+					<p className="mt-2 max-w-4xl text-sm leading-6 text-[var(--muted)]">
 						{recommendation.description}
 					</p>
 				</div>
@@ -530,28 +532,30 @@ function RecommendationCard({
 			</div>
 
 			<div className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr]">
-				<div className="rounded-md border border-white/80 bg-white/75 p-3">
-					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+				<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] p-3">
+					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 						Qué significa
 					</p>
-					<p className="mt-2 text-sm leading-6 text-slate-700">
+					<p className="mt-2 text-sm leading-6 text-[var(--foreground)]">
 						{plainMeaning(recommendation)}
 					</p>
 				</div>
-				<div className="rounded-md border border-white/80 bg-white/75 p-3">
-					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+				<div className="rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] p-3">
+					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 						Referencia concreta
 					</p>
-					<p className="mt-2 text-sm leading-6 text-slate-700">
+					<p className="mt-2 text-sm leading-6 text-[var(--foreground)]">
 						{technicalReference(recommendation) || "Sin referencias asociadas."}
 					</p>
 				</div>
 			</div>
 
-			<div className="mt-4 rounded-md border border-white/80 bg-white/80 p-3">
-				<p className="text-sm font-semibold text-slate-950">Qué hacer ahora</p>
+			<div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] p-3">
+				<p className="text-sm font-black text-[var(--foreground)]">
+					Qué hacer ahora
+				</p>
 				{actionItems.length > 0 ? (
-					<ol className="mt-3 grid gap-2 text-sm text-slate-700">
+					<ol className="mt-3 grid gap-2 text-sm text-[var(--foreground)]">
 						{actionItems.map((item, index) => (
 							<li className="flex gap-2" key={item}>
 								<span
@@ -564,7 +568,7 @@ function RecommendationCard({
 						))}
 					</ol>
 				) : (
-					<p className="mt-2 text-sm text-slate-600">
+					<p className="mt-2 text-sm text-[var(--muted)]">
 						Revisar esta recomendación y convertirla en una tarea concreta.
 					</p>
 				)}
@@ -572,13 +576,13 @@ function RecommendationCard({
 
 			{ragSources.length > 0 ? (
 				<div className="mt-4">
-					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+					<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 						Basado en
 					</p>
 					<div className="mt-2 flex flex-wrap gap-2">
 						{ragSources.map((source) => (
 							<span
-								className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700"
+								className="rounded-md border border-[var(--border)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-medium text-[var(--muted)]"
 								key={source}
 							>
 								{source}
@@ -591,7 +595,7 @@ function RecommendationCard({
 			<div className="mt-4 flex flex-wrap gap-2">
 				<form action={markInProgress}>
 					<button
-						className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+						className="rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--surface-high)]"
 						type="submit"
 					>
 						Empezar
@@ -599,7 +603,7 @@ function RecommendationCard({
 				</form>
 				<form action={markDone}>
 					<button
-						className="rounded-md bg-emerald-700 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-800"
+						className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-800"
 						type="submit"
 					>
 						Completada
@@ -607,7 +611,7 @@ function RecommendationCard({
 				</form>
 				<form action={dismiss}>
 					<button
-						className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+						className="rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-high)]"
 						type="submit"
 					>
 						Descartar
@@ -615,7 +619,7 @@ function RecommendationCard({
 				</form>
 				<form action={createTask}>
 					<button
-						className="rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800"
+						className="rounded-lg bg-[var(--brand)] px-3 py-2 text-sm font-black text-[#1b1000] transition hover:brightness-110"
 						type="submit"
 					>
 						Crear tarea
@@ -625,6 +629,17 @@ function RecommendationCard({
 		</article>
 	);
 }
+
+const CATEGORY_ACCENT: Partial<Record<RecommendationCategory, string>> = {
+	entity: "border-l-[var(--brand)]",
+	content: "border-l-[var(--info)]",
+	sources: "border-l-emerald-400",
+	competitors: "border-l-red-400",
+	prompts: "border-l-sky-400",
+	technical: "border-l-violet-400",
+	authority: "border-l-teal-400",
+	sentiment: "border-l-rose-400",
+};
 
 export default async function Page({
 	params,
@@ -806,24 +821,24 @@ export default async function Page({
 			shortLabel: "",
 			description: "",
 			empty: "Sin recomendaciones en esta categoria.",
-			tone: "text-slate-800",
-			card: "border-slate-200 bg-white",
-			chip: "border-slate-200 bg-slate-100 text-slate-700",
+			tone: "text-[var(--foreground)]",
+			card: "border-[var(--border)] bg-[var(--surface-subtle)]",
+			chip: "border-[var(--border-strong)] bg-[var(--surface-high)] text-[var(--foreground)]",
 			icon: Clock3,
 		};
 
 		return (
-			<main className="flex-1 overflow-auto bg-slate-50 p-4 lg:p-6">
+			<main className="flex-1 overflow-auto p-4 pb-24 lg:p-6 lg:pb-8">
 				<div className="grid gap-6">
 					<div className="flex flex-wrap items-start justify-between gap-4">
 						<div>
-							<p className="text-sm font-semibold uppercase text-cyan-700">
+							<p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--brand)]">
 								Pro
 							</p>
-							<h1 className="mt-2 text-2xl font-semibold text-slate-950">
+							<h1 className="mt-2 text-2xl font-black tracking-[-0.02em] text-[var(--foreground)]">
 								{isEn ? "Recommendations" : "Recomendaciones"}
 							</h1>
-							<p className="mt-2 max-w-3xl text-slate-600">
+							<p className="mt-2 max-w-3xl text-sm text-[var(--muted)]">
 								{isEn
 									? "Prioritized actions grouped by area. Fix critical issues first."
 									: "Acciones priorizadas agrupadas por area. Empieza por lo mas critico."}
@@ -831,7 +846,7 @@ export default async function Page({
 						</div>
 						<form action={generateAction}>
 							<button
-								className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+								className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] px-4 py-2 text-sm font-black text-[#1b1000] transition hover:brightness-110"
 								type="submit"
 							>
 								{isEn ? "Generate recommendations" : "Generar recomendaciones"}
@@ -840,12 +855,12 @@ export default async function Page({
 					</div>
 
 					{status.error ? (
-						<p className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+						<p className="rounded-lg border border-red-400/30 bg-red-400/10 p-3 text-sm text-red-300">
 							{status.error}
 						</p>
 					) : null}
 					{status.generated ? (
-						<p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
+						<p className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3 text-sm text-emerald-300">
 							{isEn
 								? `Generated ${status.generated} recommendations.`
 								: `Generadas ${status.generated} recomendaciones.`}
@@ -853,62 +868,75 @@ export default async function Page({
 					) : null}
 
 					<section className="grid gap-3 md:grid-cols-4">
-						<div className="rounded-md border border-slate-200 bg-white p-4">
-							<p className="text-sm text-slate-500">
+						<div className="rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] p-4">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
 								{isEn ? "Active" : "Activas"}
 							</p>
-							<p className="mt-2 text-3xl font-semibold text-slate-950">
+							<p className="mt-2 text-3xl font-black text-[var(--foreground)]">
 								{activeCount}
 							</p>
 						</div>
-						<div className="rounded-md border border-slate-200 bg-white p-4">
-							<p className="text-sm text-slate-500">
+						<div className="rounded-xl border border-[var(--border-strong)] bg-[var(--brand-soft)] p-4">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
 								{isEn ? "Pending" : "Pendientes"}
 							</p>
-							<p className="mt-2 text-3xl font-semibold text-slate-950">
+							<p className="mt-2 text-3xl font-black text-[var(--brand)]">
 								{pendingCount}
 							</p>
 						</div>
-						<div className="rounded-md border border-red-200 bg-red-50 p-4">
-							<p className="text-sm text-red-700">
+						<div className="rounded-xl border border-red-400/30 bg-red-400/10 p-4">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-red-300">
 								{isEn ? "High impact" : "Alto impacto"}
 							</p>
-							<p className="mt-2 text-3xl font-semibold text-red-950">
+							<p className="mt-2 text-3xl font-black text-red-300">
 								{highImpactCount}
 							</p>
 						</div>
-						<div className="rounded-md border border-rose-200 bg-rose-50 p-4">
-							<p className="text-sm text-rose-700">
+						<div className="rounded-xl border border-rose-400/30 bg-rose-400/10 p-4">
+							<p className="text-xs font-semibold uppercase tracking-[0.08em] text-rose-300">
 								{isEn ? "Reputation" : "Reputacion"}
 							</p>
-							<p className="mt-2 text-3xl font-semibold text-rose-950">
+							<p className="mt-2 text-3xl font-black text-rose-300">
 								{reputationCount}
 							</p>
 						</div>
 					</section>
 
 					{recommendations.length === 0 ? (
-						<div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center">
-							<h2 className="text-lg font-semibold text-slate-950">
+						<section className="neo-card p-8 text-center">
+							<h2 className="text-lg font-black text-[var(--foreground)]">
 								{isEn
 									? "No recommendations yet"
 									: "Sin recomendaciones todavia"}
 							</h2>
-							<p className="mt-2 text-sm text-slate-500">
+							<p className="mt-3 text-sm text-[var(--muted)]">
 								{isEn
 									? "Generate recommendations to get started."
 									: "Genera recomendaciones para empezar."}
 							</p>
-						</div>
+							<form action={generateAction} className="mt-6">
+								<button
+									className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] px-5 py-2.5 text-sm font-black text-[#1b1000] transition hover:brightness-110"
+									type="submit"
+								>
+									{isEn
+										? "Generate recommendations"
+										: "Generar recomendaciones"}
+								</button>
+							</form>
+						</section>
 					) : null}
 
 					{categoryGroups.map((group) => (
-						<section className="grid gap-3" key={group.category}>
+						<section
+							className={`grid gap-3 border-l-4 pl-4 ${CATEGORY_ACCENT[group.category] ?? "border-l-[var(--border)]"}`}
+							key={group.category}
+						>
 							<div className="flex items-center justify-between">
-								<h2 className="text-base font-semibold text-slate-950">
+								<h2 className="text-base font-black text-[var(--foreground)]">
 									{group.label}
 								</h2>
-								<span className="rounded-md border border-slate-200 bg-white px-2.5 py-0.5 text-sm font-semibold text-slate-700">
+								<span className="rounded-full border border-[var(--border)] bg-[var(--surface-subtle)] px-2.5 py-0.5 text-xs font-black text-[var(--muted)]">
 									{group.items.length}
 								</span>
 							</div>
